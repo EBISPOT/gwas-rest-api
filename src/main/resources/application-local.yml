@@ -1,0 +1,23 @@
+server:
+  port: 8087
+  servlet:
+    context-path: /gwas/rest/api
+
+
+
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=ora-spot-dev2-hl.ebi.ac.uk)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=SPOTDV2)))
+    username:
+    password:
+#  jpa:
+#    show-sql: true
+#    properties:
+#      hibernate.hibernate.format_sql : true
+
+sumstats:
+  link: http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/
+
+
+terms-of-use:
+  link: https://www.ebi.ac.uk/about/terms-of-use/

@@ -1,0 +1,18 @@
+server:
+  name: gwas-rest-api
+  port: 80
+
+logging:
+  level:
+    org:
+      springframework: ERROR
+
+
+
+spring:
+  datasource:
+    url:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username:
+    password:
+
