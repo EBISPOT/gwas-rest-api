@@ -39,7 +39,7 @@ public class StudyProjectionDtoAssembler extends RepresentationModelAssemblerSup
 
 
 
-        studyDto.add(linkTo(methodOn(StudiesController.class).getStudy(String.valueOf(studyProjection.getStudyId()))).withSelfRel());
+        studyDto.add(linkTo(methodOn(StudiesController.class).getStudyByAccession(studyProjection.getAccessionId())).withSelfRel());
         return studyDto;
     }
 }

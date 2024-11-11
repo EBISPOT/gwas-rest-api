@@ -38,7 +38,6 @@ public class StudyServiceImpl implements StudyService {
 
     @Transactional(readOnly = true)
     public  Page<Study> getStudies(Pageable pageable, SearchStudyParams searchStudyParams) {
-
         Page<StudyProjection> studyProjections = null;
         QStudy qStudy = QStudy.study;
         QEfoTrait qEfoTrait = QEfoTrait.efoTrait;
@@ -53,63 +52,50 @@ public class StudyServiceImpl implements StudyService {
         log.info("searchStudyParams {}", searchStudyParams);
         log.info("Inside searchStudyParams not null block");
         try {
-
-
             if (searchStudyParams.getEfoTrait() != null || searchStudyParams.getShortForm() != null) {
                 studyJPQLQuery =  studyJPQLQuery
                         .innerJoin(qStudy.efoTraits, qEfoTrait)
                         .fetchJoin();
             }
-
             if (searchStudyParams.getDiseaseTrait() != null) {
                 studyJPQLQuery = studyJPQLQuery.
                         innerJoin(qStudy.diseaseTrait, qDiseaseTrait)
                         .fetchJoin();
             }
-
             if (searchStudyParams.getPubmedId() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.
                         innerJoin(qStudy.publicationId, qPublication)
                         .fetchJoin();
             }
-
             if (searchStudyParams.getShortForm() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qEfoTrait.shortForm.equalsIgnoreCase(searchStudyParams.getShortForm()));
             }
-
             if (searchStudyParams.getEfoTrait() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qEfoTrait.trait.equalsIgnoreCase(searchStudyParams.getEfoTrait()));
             }
-
             if (searchStudyParams.getDiseaseTrait() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery  =  studyJPQLQuery.where(qDiseaseTrait.trait.equalsIgnoreCase(searchStudyParams.getDiseaseTrait()));
             }
-
-
             if (searchStudyParams.getPubmedId() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qPublication.pubmedId.eq(searchStudyParams.getPubmedId()));
             }
-
             if (searchStudyParams.getAccessionId() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qStudy.accessionId.equalsIgnoreCase(searchStudyParams.getAccessionId()));
             }
-
             if (searchStudyParams.getFullPvalueSet() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qStudy.fullPvalueSet.eq(searchStudyParams.getFullPvalueSet()));
             }
-
             if (searchStudyParams.getUserRequested() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qStudy.userRequested.eq(searchStudyParams.getUserRequested()));
             }
-
             if (isExpressionNotEmpty) {
                 Long totalElements = studyJPQLQuery.fetchCount();
                 List<Study> results = querydsl.applyPagination(pageable, studyJPQLQuery).fetch();
@@ -160,6 +146,12 @@ public class StudyServiceImpl implements StudyService {
     public Study getStudy(Long studyId) {
         return studyRepository.findById(studyId).orElse(null);
     }
+
+    public Study getStudy(String accessionId) {
+        return studyRepository.findByAccessionId(accessionId).orElse(null);
+    }
+
+
 
 
 

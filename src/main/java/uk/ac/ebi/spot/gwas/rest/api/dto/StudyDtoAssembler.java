@@ -2,19 +2,16 @@ package uk.ac.ebi.spot.gwas.rest.api.dto;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.gwas.model.*;
 import uk.ac.ebi.spot.gwas.rest.api.config.RestAPIConfiguration;
 import uk.ac.ebi.spot.gwas.rest.api.controller.StudiesController;
 import uk.ac.ebi.spot.gwas.rest.dto.StudyDto;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 
@@ -61,12 +58,12 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
                 .platforms(study.getPlatforms() != null ? this.getPlatforms(study) : null)
                 .discoveryAncestry(study.getAncestries() != null ? this.getInitialAncestryLinks(study) : null)
                 .replicationAncestry(study.getAncestries() != null ? this.getReplicationAncestryLinks(study) : null)
-                .fullSummaryStats(study.getFullPvalueSet() ? this.getSummaryStatsFTPDetails(study.getAccessionId()) : "NA")
+                .fullSummaryStats(study.getFullPvalueSet() && study.getAccessionId() != null ? this.getSummaryStatsFTPDetails(study.getAccessionId()) : "NA")
                 .termsOfLicense(study.isAgreedToCc0() != null && study.isAgreedToCc0() ? restAPIConfiguration.getTermsOfUseLink() : "NA")
                 .build();
 
         //studyDto.add(linkTo(methodOn(StudiesController.class).getStudy(String.valueOf(study.getId()))).withSelfRel());
-        studyDto.add(linkTo(methodOn(StudiesController.class).getStudy(String.valueOf(study.getId()))).withSelfRel());
+        studyDto.add(linkTo(methodOn(StudiesController.class).getStudyByAccession(study.getAccessionId())).withSelfRel());
         return studyDto;
     }
 
@@ -109,7 +106,23 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
         } else {
             ancestryGroupBuilder.append("NR");
         }
+        StringBuilder countryOfRecruitmentBuilder = new StringBuilder();
+
+        if(ancestry.getCountryOfRecruitment() != null && !ancestry.getCountryOfRecruitment().isEmpty()) {
+            for(Country cor : ancestry.getCountryOfRecruitment()) {
+                if(countryOfRecruitmentBuilder.length() == 0) {
+                    countryOfRecruitmentBuilder.append(" (");
+                    countryOfRecruitmentBuilder.append(cor.getCountryName());
+                } else {
+                    countryOfRecruitmentBuilder.append(", ").append(cor.getCountryName());
+                }
+            }
+        } else{
+            countryOfRecruitmentBuilder.append("NR");
+        }
+        countryOfRecruitmentBuilder.append(")");
         ancestryDescBuilder.append(ancestryGroupBuilder);
+        ancestryDescBuilder.append(countryOfRecruitmentBuilder);
         return ancestryDescBuilder.toString();
     }
 

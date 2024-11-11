@@ -12,4 +12,6 @@ public interface StudyService {
     Page<Study> getStudies(Pageable pageable, SearchStudyParams searchStudyParams);
 
     Study getStudy(Long studyId);
+
+    Study getStudy(String accessionId);
 }

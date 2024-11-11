@@ -47,6 +47,8 @@ public interface StudyRepository extends JpaRepository<Study, Long>, QuerydslPre
                                             @Param("userRequested") Boolean userRequested,
                                             Pageable pageable);
 
+   Optional<Study> findByAccessionId(String accessionId);
+
 
 
 }

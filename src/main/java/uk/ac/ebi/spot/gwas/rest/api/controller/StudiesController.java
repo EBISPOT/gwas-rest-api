@@ -48,15 +48,17 @@ public class StudiesController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{studyId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudyDto getStudy(@PathVariable String studyId) {
-      Study study =  studyService.getStudy(Long.valueOf(studyId));
+    @GetMapping(value = "/{accessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public StudyDto getStudyByAccession(@PathVariable String accessionId) {
+      Study study =  studyService.getStudy(accessionId);
       if(study != null) {
          return  studyDtoAssembler.toModel(study);
       } else {
-          throw new EntityNotFoundException(studyId);
+          throw new EntityNotFoundException(accessionId);
       }
 
     }
+
+
 
 }
