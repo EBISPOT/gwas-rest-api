@@ -11,11 +11,11 @@
 
     <name>GWAS Deposition App Curation Service</name>
 
-<!--    <parent>
-        <groupId>uk.ac.ebi.spot.gwasdepo</groupId>
-        <artifactId>gwasdepo-master</artifactId>
-        <version>1.0.4</version>
-    </parent>-->
+    <!--    <parent>
+            <groupId>uk.ac.ebi.spot.gwasdepo</groupId>
+            <artifactId>gwasdepo-master</artifactId>
+            <version>1.0.4</version>
+        </parent>-->
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -28,7 +28,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
-      <!--  <start-class>uk.ac.ebi.spot.gwas.curation.Application</start-class>-->
+        <!--  <start-class>uk.ac.ebi.spot.gwas.curation.Application</start-class>-->
     </properties>
 
     <scm>
@@ -60,7 +60,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-      <repository>
+        <repository>
             <id>central</id>
             <name>Maven Central</name>
             <layout>default</layout>
@@ -131,10 +131,10 @@
                 </exclusion>
             </exclusions>-->
         </dependency>
-  <!--      <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
-        </dependency> -->
+        <!--      <dependency>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-starter-jetty</artifactId>
+              </dependency> -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -156,15 +156,21 @@
             <artifactId>spring-data-rest-hal-browser</artifactId>
             <version>3.1.9.RELEASE</version>
         </dependency>
-      <dependency>
+        <dependency>
             <groupId>org.springframework.hateoas</groupId>
             <artifactId>spring-hateoas</artifactId>
+        </dependency>
+       <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.5</version>
         </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -179,10 +185,10 @@
             <artifactId>modelmapper</artifactId>
             <version>1.0.0</version>
         </dependency>
-       <!-- <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>-->
+        <!-- <dependency>
+             <groupId>commons-io</groupId>
+             <artifactId>commons-io</artifactId>
+         </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -209,10 +215,10 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
         </dependency>
-  <!--      <dependency>
-            <groupId>com.novemberain</groupId>
-            <artifactId>quartz-mongodb</artifactId>
-        </dependency>-->
+        <!--      <dependency>
+                  <groupId>com.novemberain</groupId>
+                  <artifactId>quartz-mongodb</artifactId>
+              </dependency>-->
 
         <dependency>
             <groupId>junit</groupId>
@@ -225,16 +231,16 @@
             <version>2.18.3</version>
             <scope>test</scope>
         </dependency>
- <!--       <dependency>
-            <groupId>nl.jqno.equalsverifier</groupId>
-            <artifactId>equalsverifier</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-            <scope>test</scope>
-        </dependency>-->
+        <!--       <dependency>
+                   <groupId>nl.jqno.equalsverifier</groupId>
+                   <artifactId>equalsverifier</artifactId>
+                   <scope>test</scope>
+               </dependency>
+               <dependency>
+                   <groupId>org.apache.httpcomponents</groupId>
+                   <artifactId>fluent-hc</artifactId>
+                   <scope>test</scope>
+               </dependency>-->
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
@@ -252,18 +258,18 @@
             </exclusions>
         </dependency>
 
-       <!-- <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-            <scope>test</scope>
-        </dependency>
+        <!-- <dependency>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-starter-jdbc</artifactId>
+             <scope>test</scope>
+         </dependency>
 
-        <dependency>
-            <groupId>com.oracle.ojdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>19.3.0.0</version>
-            <scope>test</scope>
-        </dependency>-->
+         <dependency>
+             <groupId>com.oracle.ojdbc</groupId>
+             <artifactId>ojdbc8</artifactId>
+             <version>19.3.0.0</version>
+             <scope>test</scope>
+         </dependency>-->
 
 
         <dependency>
@@ -273,11 +279,11 @@
             <scope>test</scope>
         </dependency>
 
-<!--        <dependency>
-            <groupId>org.javers</groupId>
-            <artifactId>javers-spring-mongo</artifactId>
-            <version>5.0.0</version>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>org.javers</groupId>
+                    <artifactId>javers-spring-mongo</artifactId>
+                    <version>5.0.0</version>
+                </dependency>-->
 
         <dependency>
             <groupId>com.github.java-json-tools</groupId>

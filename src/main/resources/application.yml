@@ -16,3 +16,11 @@ spring:
     username:
     password:
 
+springdoc:
+  swagger-ui:
+    url: /curation-doc.yaml
+    layout: BaseLayout
+    disable-swagger-default-url: true
+    path: /documentation
+  api-docs:
+    path: /curation-doc

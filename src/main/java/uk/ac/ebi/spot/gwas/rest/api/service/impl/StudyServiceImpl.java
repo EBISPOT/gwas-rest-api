@@ -43,8 +43,8 @@ public class StudyServiceImpl implements StudyService {
         QEfoTrait qEfoTrait = QEfoTrait.efoTrait;
         QDiseaseTrait qDiseaseTrait =  QDiseaseTrait.diseaseTrait;
         QPublication qPublication = QPublication.publication1;
+        QHousekeeping qHousekeeping = QHousekeeping.housekeeping;
         Boolean isExpressionNotEmpty = false;
-        BooleanExpression finalExpression = null;
         Querydsl querydsl = new Querydsl(em , (new PathBuilderFactory()).create(Study.class));
         JPAQueryFactory jpaQuery = new JPAQueryFactory(em);
         JPQLQuery<Study> studyJPQLQuery = jpaQuery.select(qStudy).distinct()
@@ -54,19 +54,16 @@ public class StudyServiceImpl implements StudyService {
         try {
             if (searchStudyParams.getEfoTrait() != null || searchStudyParams.getShortForm() != null) {
                 studyJPQLQuery =  studyJPQLQuery
-                        .innerJoin(qStudy.efoTraits, qEfoTrait)
-                        .fetchJoin();
+                        .innerJoin(qStudy.efoTraits, qEfoTrait);
             }
             if (searchStudyParams.getDiseaseTrait() != null) {
                 studyJPQLQuery = studyJPQLQuery.
-                        innerJoin(qStudy.diseaseTrait, qDiseaseTrait)
-                        .fetchJoin();
+                        innerJoin(qStudy.diseaseTrait, qDiseaseTrait);
             }
             if (searchStudyParams.getPubmedId() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.
-                        innerJoin(qStudy.publicationId, qPublication)
-                        .fetchJoin();
+                        innerJoin(qStudy.publicationId, qPublication);
             }
             if (searchStudyParams.getShortForm() != null) {
                 isExpressionNotEmpty = true;
@@ -97,6 +94,9 @@ public class StudyServiceImpl implements StudyService {
                 studyJPQLQuery = studyJPQLQuery.where(qStudy.userRequested.eq(searchStudyParams.getUserRequested()));
             }
             if (isExpressionNotEmpty) {
+                studyJPQLQuery = studyJPQLQuery.innerJoin(qStudy.housekeeping, qHousekeeping)
+                        .where(qHousekeeping.isPublished.eq(true))
+                        .where(qHousekeeping.catalogPublishDate.isNotNull());
                 Long totalElements = studyJPQLQuery.fetchCount();
                 List<Study> results = querydsl.applyPagination(pageable, studyJPQLQuery).fetch();
 
@@ -111,7 +111,7 @@ public class StudyServiceImpl implements StudyService {
             log.error("Throwable in dsl query"+ex.getMessage(),ex);
         }
 
-        return studyRepository.findAll(pageable);
+        return studyRepository.findByHousekeepingIsPublishedAndHousekeepingCatalogPublishDateIsNotNull(true, pageable);
 
       /*List<Study> studies = studyRepository.findByCustomQuery(searchStudyParams.getAccessionId(),
                 searchStudyParams.getFullPvalueSet(),

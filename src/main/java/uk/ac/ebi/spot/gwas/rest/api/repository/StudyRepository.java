@@ -49,6 +49,8 @@ public interface StudyRepository extends JpaRepository<Study, Long>, QuerydslPre
 
    Optional<Study> findByAccessionId(String accessionId);
 
+   Page<Study> findByHousekeepingIsPublishedAndHousekeepingCatalogPublishDateIsNotNull(Boolean published, Pageable pageable);
+
 
 
 }

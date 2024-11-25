@@ -1,5 +1,7 @@
 package uk.ac.ebi.spot.gwas.rest.api;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,27 +14,11 @@ import java.net.UnknownHostException;
 @EnableJpaRepositories("uk.ac.ebi.spot.gwas.rest.api.repository")
 @EntityScan("uk.ac.ebi.spot.gwas.model")
 @Slf4j
-//public class RestApiApplication implements WebMvcConfigurer {
+@OpenAPIDefinition(info = @Info(title = "Rest API V2", version = "2.0", description = "Refactored Rest API"))
 public class RestApiApplication {
 
-    /*@Autowired
-    private SystemConfigProperties systemConfigProperties;
-
-    @PostConstruct
-    public void init() {
-        log.info("[{}] Initializing: {}", DateTime.now(), systemConfigProperties.getServerName());
-    }
-
-    @PreDestroy
-    public void destroy() {
-        log.info("[{}] Shutting down: {}", DateTime.now(), systemConfigProperties.getServerName());
-    }
-*/
     public static void main(String[] args) throws UnknownHostException {
         log.info("Inside Curation Application");
-        /*String hostAddress = InetAddress.getLocalHost().getHostAddress();
-        String logFileName = System.getenv(GeneralCommon.LOG_FILE_NAME);
-        System.setProperty("log.file.name", logFileName + "-" + hostAddress);*/
         try {
             SpringApplication.run(RestApiApplication.class, args);
         } catch (Exception e) {

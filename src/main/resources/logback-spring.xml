@@ -89,8 +89,9 @@
                 <timeBasedFileNamingAndTriggeringPolicy
                         class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <!-- or whenever the file size reaches 100MB -->
-                    <maxFileSize>${log.max.file.size}</maxFileSize>
+                    <maxFileSize>25MB</maxFileSize>
                 </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>10</maxHistory>
             </rollingPolicy>
             <encoder>
                 <pattern>${log.pattern}</pattern>
@@ -117,6 +118,7 @@
                     <!-- or whenever the file size reaches 100MB -->
                     <maxFileSize>${log.max.file.size}</maxFileSize>
                 </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>10</maxHistory>
             </rollingPolicy>
             <encoder>
                 <pattern>${log.pattern}</pattern>
@@ -209,8 +211,9 @@
                 <timeBasedFileNamingAndTriggeringPolicy
                         class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <!-- or whenever the file size reaches 100MB -->
-                    <maxFileSize>${log.max.file.size}</maxFileSize>
+                    <maxFileSize>25MB</maxFileSize>
                 </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>10</maxHistory>
             </rollingPolicy>
             <encoder>
                 <pattern>${log.pattern}</pattern>
