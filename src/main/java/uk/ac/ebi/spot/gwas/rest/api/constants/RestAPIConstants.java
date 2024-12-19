@@ -14,4 +14,17 @@ public class RestAPIConstants {
 
     public static final String API_EFO_TRAITS = "/efo-traits";
 
+    public static final String API_ANCESTRIES = "/ancestries";
+
+    public static final String API_LOCI = "/loci";
+
+    public static final String API_GENOMIC_CONTEXTS = "/genomic-contexts";
+
+    public static final String API_UNPUBLISHED_STUDIES = "/unpublished-studies";
+
+    public static final String API_BODY_OF_WORK = "/body-of-works";
+
+    public static final String API_UNPUBLISHED_ANCESTRIES = "/unpublished-ancestries";
+
+
 }

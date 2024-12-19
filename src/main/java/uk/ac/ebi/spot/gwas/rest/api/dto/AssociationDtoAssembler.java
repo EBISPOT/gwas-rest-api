@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.gwas.model.*;
 import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
 import uk.ac.ebi.spot.gwas.rest.api.controller.AssociationController;
+import uk.ac.ebi.spot.gwas.rest.api.controller.LocusController;
 import uk.ac.ebi.spot.gwas.rest.api.service.AssociationService;
 import uk.ac.ebi.spot.gwas.rest.dto.AssociationDTO;
 import uk.ac.ebi.spot.gwas.rest.dto.EFOWrapperDTO;
@@ -57,6 +58,9 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
                 .build();
 
         associationDTO.add(linkTo(methodOn(AssociationController.class).getAssociation(String.valueOf(association.getId()))).withSelfRel());
+        if(association.getLoci() != null && !association.getLoci().isEmpty()) {
+            associationDTO.add(linkTo(methodOn(LocusController.class).getLoci(String.valueOf(association.getId()))).withRel("loci"));
+        }
         return associationDTO;
     }
 

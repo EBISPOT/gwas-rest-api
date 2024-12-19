@@ -6,6 +6,7 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.gwas.model.*;
 import uk.ac.ebi.spot.gwas.rest.api.config.RestAPIConfiguration;
+import uk.ac.ebi.spot.gwas.rest.api.controller.AncestryController;
 import uk.ac.ebi.spot.gwas.rest.api.controller.StudiesController;
 import uk.ac.ebi.spot.gwas.rest.dto.StudyDto;
 import java.util.Set;
@@ -64,6 +65,7 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
 
         //studyDto.add(linkTo(methodOn(StudiesController.class).getStudy(String.valueOf(study.getId()))).withSelfRel());
         studyDto.add(linkTo(methodOn(StudiesController.class).getStudyByAccession(study.getAccessionId())).withSelfRel());
+        studyDto.add(linkTo(methodOn(AncestryController.class).getAncestries(study.getAccessionId())).withRel("ancestries"));
         return studyDto;
     }
 
