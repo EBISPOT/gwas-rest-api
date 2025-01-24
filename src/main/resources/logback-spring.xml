@@ -7,40 +7,23 @@
 
 
     <springProfile name="local">
-        <appender name="Console"
-                  class="ch.qos.logback.core.ConsoleAppender">
-            <layout class="ch.qos.logback.classic.PatternLayout">
-                <Pattern>
-                    %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-                </Pattern>
-            </layout>
-        </appender>
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>${LOG_PATTERN}</pattern>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>utf8</charset>
             </encoder>
         </appender>
 
-
-        <root level="ERROR">
+        <logger name="uk.ac.ebi.spot.gwas" level="INFO">
             <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <logger name="org.springframework" level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <root level="OFF">
         </root>
-
-        <logger name="uk.ac.ebi.spot.gwas" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE"/>
-        </logger>
-
-
-
-<!--        <logger name="org.hibernate.SQL"  level="DEBUG">
-            <appender-ref ref="CONSOLE"/>
-        </logger>
-
-        <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="TRACE">
-            <appender-ref ref="CONSOLE"/>
-        </logger>-->
-
-
     </springProfile>
 
     <springProfile name="dev">
