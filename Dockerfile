@@ -11,4 +11,4 @@ ADD target/gwas-rest-api-*.jar /home/gwas-rest-api/
 USER gwas-rest-api
 
 # Launch application server
-ENTRYPOINT exec $JAVA_HOME/bin/java $XMX $XMS -jar -Dspring.profiles.active=$ENVIRONMENT /home/gwas-rest-api/gwas-rest-api-*.jar
+ENTRYPOINT exec $JAVA_HOME/bin/java $XMX $XMS -jar -Dspring.profiles.active=$ENVIRONMENT -Dspring.datasource.username=$DB_USER -Dspring.datasource.password=$DB_PASSWORD /home/gwas-rest-api/gwas-rest-api-*.jar

@@ -16,6 +16,11 @@ spring:
     username:
     password:
 
+ensembl:
+  server:
+    url: https://rest.ensembl.org/variation/human
+
+
 springdoc:
   swagger-ui:
     url: /curation-doc.yaml
@@ -24,3 +29,11 @@ springdoc:
     path: /documentation
   api-docs:
     path: /curation-doc
+
+
+sumstats:
+  link: http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/
+
+
+terms-of-use:
+  link: https://www.ebi.ac.uk/about/terms-of-use/
