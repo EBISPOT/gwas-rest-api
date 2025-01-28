@@ -1,0 +1,59 @@
+# Default values for gwas-backend-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ebispot/gwas-rest-api
+  tag: latest
+  pullPolicy: Always
+  containerPort: 8080
+  logMountPath: "/var/log/gwas"
+  env:
+    envName: "sandbox"
+    logFileName: "gwas-rest-api"
+    xms: "-Xms4096m"
+    xmx: "-Xmx4096m"
+    dbUser: ""
+    secretsName: ""
+    secretsKey: ""
+  volume:
+    claimName: gwas-depo-logs
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  name: gwas-rest-api
+  type: NodePort
+  port: 8080
+
+ingress:
+  name: rest-api-ingress
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+
+  host: chart-example.local
+  path: "/rest-api(/|$)(.*)"
+
+  tls: []
+
+k8Namespace: default
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 5120Mi
+  requests:
+    cpu: 100m
+    memory: 4096Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
