@@ -1,0 +1,129 @@
+image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - build
+#  - test
+  - docker
+  - docker-release
+  - deploy-sandbox
+  - deploy-sandbox-migration
+  - deploy-fallback
+  - deploy-live
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  BACKEND_REGISTRY_IMAGE: ebispot/gwas-rest-api
+  BACKEND_SERVICE_NAME: gwas-rest-api
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+
+maven-build:
+  image: maven:3-jdk-8
+  stage: build
+  script:
+    - echo ${MAVEN_SETTINGS} | base64 -d > settings.xml
+    - mvn -s settings.xml clean install -B -Dspring.profiles.active=test -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true
+  artifacts:
+    paths:
+      - target/*.jar
+
+#Uncommenting Solr cloud related changes
+#sonarcloud-check:
+  #image: maven:3.6.3-jdk-11
+  #stage: test
+  #cache:
+    #key: "${CI_JOB_NAME}"
+    #paths:
+     # - .sonar/cache
+  #script:
+    #- echo ${MAVEN_SETTINGS} | base64 -d > settings.xml
+    #- mvn -s settings.xml sonar:sonar -Dspring.profiles.active=test
+  #only:
+   # - merge_requests
+    #- develop
+
+build-backend-container:
+  stage: docker
+  script:
+    - echo "$DOCKER_HUB_PASSWORD" > dhpw.txt
+    - docker login -u "${DOCKER_HUB_USER}" --password-stdin < dhpw.txt
+    - docker build --cache-from $BACKEND_REGISTRY_IMAGE:latest -t $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker push $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA
+
+build-backend-release:
+  variables:
+    GIT_STRATEGY: none
+  stage: docker-release
+  script:
+  - echo "$DOCKER_HUB_PASSWORD" > dhpw.txt
+  - docker login -u "${DOCKER_HUB_USER}" --password-stdin < dhpw.txt
+  - docker pull $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  - docker tag $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA $BACKEND_REGISTRY_IMAGE:latest
+  - docker tag $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_TAG
+  - docker push $BACKEND_REGISTRY_IMAGE:latest
+  - docker push $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_TAG
+  only:
+  - tags
+
+deploy-backend-sandbox:
+  image: dtzar/helm-kubectl:2.13.1
+  stage: deploy-sandbox
+  script:
+    - echo "Deploy to sandbox server"
+    - mkdir -p /root/.kube
+    - echo ${SANBOX_KUBECONF} | base64 -d > /root/.kube/config
+    - helm init --stable-repo-url https://charts.helm.sh/stable
+    - helm delete --purge gwas-curation-traits-service || true
+    - helm install --name gwas-curation-traits-service --set k8Namespace=gwas,image.repository=$BACKEND_REGISTRY_IMAGE,image.tag=$CI_COMMIT_SHA,image.env.secretsName=sandbox-secrets,image.env.secretsKey=db-backend ./k8chart/ --wait
+  environment:
+    name: sandbox
+  only:
+    - curation#44-add-reported-trait
+
+deploy-backend-sandbox-migration:
+  image: dtzar/helm-kubectl:2.13.1
+  stage: deploy-sandbox-migration
+  script:
+    - echo "Deploy to sandbox server"
+    - mkdir -p /root/.kube
+    - echo ${PLIVE_KUBECONFIG} | base64 -d > /root/.kube/config
+    - helm init --stable-repo-url https://charts.helm.sh/stable
+    - helm delete --purge gwas-rest-api-dev || true
+    - helm install --name gwas-rest-api-dev --set k8Namespace=gwas-dev,service.name=gwas-rest-api-dev,ingress.name=curation-ingress-dev,image.env.envName=sandbox-migration,image.volume.claimName=gwas-dev-depo-logs,image.repository=$BACKEND_REGISTRY_IMAGE,image.tag=$CI_COMMIT_SHA,image.env.dbUser=gwas,image.env.secretsName=sandbox-secrets,image.env.secretsKey=oracle-backend ./k8chart/ --wait
+  environment:
+    name: sandbox-migration
+  only:
+    - develop
+
+deploy-fallback:
+  image: dtzar/helm-kubectl:2.13.1
+  stage: deploy-fallback
+  script:
+  - echo "Deploy to Production fallback server"
+  - mkdir -p /root/.kube
+  - echo ${PFALLBACK_KUBECONFIG} | base64 -d > /root/.kube/config
+  - helm init --stable-repo-url https://charts.helm.sh/stable
+  - helm delete --purge gwas-rest-api || true
+  - helm install --name gwas-rest-api --set k8Namespace=gwas,replicaCount=1,image.env.envName=prod-fallback,image.repository=$BACKEND_REGISTRY_IMAGE,image.tag=$CI_COMMIT_SHA,image.env.dbUser=gwasdepo,image.env.secretsName=prod-secrets,image.env.secretsKey=db-backend,image.env.rabbitSecretsName=prod-secrets,image.env.rabbitSecretsKey=rabbitmq-password ./k8chart/ --wait
+  environment:
+    name: prod
+  only:
+  - tags
+
+deploy-live:
+  image: dtzar/helm-kubectl:2.13.1
+  stage: deploy-live
+  script:
+  - echo "Deploy to Production server"
+  - mkdir -p /root/.kube
+  - echo ${PLIVE_KUBECONFIG} | base64 -d > /root/.kube/config
+  - helm init --stable-repo-url https://charts.helm.sh/stable
+  - helm delete --purge gwas-rest-api || true
+  - helm install --name gwas-rest-api --set k8Namespace=gwas,replicaCount=1,image.env.envName=prod,image.repository=$BACKEND_REGISTRY_IMAGE,image.tag=$CI_COMMIT_SHA,image.env.dbUser=gwasdepo,image.env.secretsName=prod-secrets,image.env.secretsKey=db-backend,image.env.rabbitSecretsName=prod-secrets,image.env.rabbitSecretsKey=rabbitmq-password ./k8chart/ --wait
+  environment:
+    name: prod
+  only:
+  - tags
