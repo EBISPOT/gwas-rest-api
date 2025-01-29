@@ -50,8 +50,8 @@ build-backend-container:
   script:
     - echo "$DOCKER_HUB_PASSWORD" > dhpw.txt
     - docker login -u "${DOCKER_HUB_USER}" --password-stdin < dhpw.txt
-    #- docker build --cache-from $BACKEND_REGISTRY_IMAGE:latest -t $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA .
-    - docker build -t $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker build --cache-from $BACKEND_REGISTRY_IMAGE:latest -t $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    #- docker build -t $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA .
     - docker push $BACKEND_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
 build-backend-release:
