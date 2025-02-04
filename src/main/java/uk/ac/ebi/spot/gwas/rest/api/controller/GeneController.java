@@ -27,11 +27,7 @@ public class GeneController {
     @GetMapping(value = "/{geneName}")
     public GeneDTO getGeneByName(@PathVariable String geneName) {
         GeneSolrDto geneSolrDto = geneService.getGeneByName(geneName);
-        if (geneSolrDto == null) {
-            throw new EntityNotFoundException(geneName);
-        } else {
-            return geneSolrDtoAssembler.toModel(geneSolrDto);
-        }
+        return geneSolrDtoAssembler.toModel(geneSolrDto);
     }
 
     @GetMapping
