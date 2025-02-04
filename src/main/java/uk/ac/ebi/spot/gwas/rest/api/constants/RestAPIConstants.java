@@ -8,6 +8,8 @@ public class RestAPIConstants {
 
     public static final String API_ASSOCIATIONS = "/associations";
 
+    public static final String API_GENES = "/genes";
+
     public static final String ENSEMBL_SOURCE = "Ensembl";
 
     public static final String API_SNPS = "/singleNucleotidePolymorphisms";
