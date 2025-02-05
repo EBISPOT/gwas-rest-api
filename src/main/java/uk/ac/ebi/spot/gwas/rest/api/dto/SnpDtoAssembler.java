@@ -4,6 +4,7 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.gwas.ensembl.Variant;
 import uk.ac.ebi.spot.gwas.model.SingleNucleotidePolymorphism;
+import uk.ac.ebi.spot.gwas.rest.api.controller.GenomicContextController;
 import uk.ac.ebi.spot.gwas.rest.api.controller.SnpsController;
 import uk.ac.ebi.spot.gwas.rest.api.service.RestInteractionService;
 import uk.ac.ebi.spot.gwas.rest.api.service.SnpService;
@@ -52,6 +53,7 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
                 .mappedGenes(snpService.findMatchingGenes(snp.getId()))
                 .build();
         singleNucleotidePolymorphismDTO.add(linkTo(methodOn(SnpsController.class).getSingleNucleotidePolymorphism(snp.getRsId())).withSelfRel());
+        singleNucleotidePolymorphismDTO.add(linkTo(methodOn(GenomicContextController.class).getGenomicContexts(snp.getRsId())).withRel("genomic-contexts"));
         return singleNucleotidePolymorphismDTO;
     }
 
