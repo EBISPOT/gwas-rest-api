@@ -13,9 +13,17 @@ public interface PublicationRepository extends JpaRepository<Publication, Long> 
 
   Optional<Publication> findByPubmedIdEquals(String pubmedId);
 
+  Page<Publication> findByPubmedIdEqualsAndTitleContainingIgnoreCaseAndFirstAuthorFullnameContainingIgnoreCase(String pubmedId, String title, String firstAuthor, Pageable pageable);
+
   Page<Publication> findByPubmedIdEqualsAndTitleContainingIgnoreCase(String pubmedId, String title, Pageable pageable);
 
+  Page<Publication> findByPubmedIdEqualsAndFirstAuthorFullnameContainingIgnoreCase(String pubmedId, String firstAuthor, Pageable pageable);
+
+  Page<Publication> findByTitleContainingIgnoreCaseAndFirstAuthorFullnameContainingIgnoreCase(String title, String firstAuthor, Pageable pageable);
+
   Page<Publication> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+  Page<Publication> findByFirstAuthorFullnameContainingIgnoreCase(String firstAuthor, Pageable pageable);
 
   Page<Publication> findByPublicationContainingIgnoreCase(String journal, Pageable pageable);
 

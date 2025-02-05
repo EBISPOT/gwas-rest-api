@@ -41,13 +41,13 @@ public class EFOTraitsController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{efoTraitId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public EFOTraitDTO getEFOTraitsDTO(@PathVariable String efoTraitId) {
-      EfoTrait efoTrait =  efoTraitService.getEFOTrait(Long.valueOf(efoTraitId));
+    @GetMapping(value = "/{shortForm}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public EFOTraitDTO getEFOTraitsDTO(@PathVariable String shortForm) {
+      EfoTrait efoTrait =  efoTraitService.getEFOTrait(shortForm);
       if(efoTrait != null) {
          return efoTraitDtoAssembler.toModel(efoTrait);
       } else {
-          throw new EntityNotFoundException(efoTraitId);
+          throw new EntityNotFoundException(shortForm);
       }
     }
 }

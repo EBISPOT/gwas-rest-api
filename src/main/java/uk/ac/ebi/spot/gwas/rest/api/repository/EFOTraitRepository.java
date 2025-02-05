@@ -6,7 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import uk.ac.ebi.spot.gwas.model.EfoTrait;
 
+import java.util.Optional;
+
 public interface EFOTraitRepository extends JpaRepository<EfoTrait, Long>, QuerydslPredicateExecutor<EfoTrait> {
 
     Page<EfoTrait> findDistinctByStudiesHousekeepingIsPublishedAndStudiesHousekeepingCatalogPublishDateIsNotNull(Boolean flag, Pageable pageable);
+
+    Optional<EfoTrait> findByShortForm(String shortForm);
 }

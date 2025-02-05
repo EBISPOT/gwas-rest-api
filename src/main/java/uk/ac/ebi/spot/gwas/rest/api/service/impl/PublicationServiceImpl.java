@@ -17,7 +17,20 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public Page<Publication> findPublications(String pubmedId, String title,Pageable pageable) {
+    public Page<Publication> findPublications(String pubmedId, String title,String firstAuthor, Pageable pageable) {
+
+        if(pubmedId != null && title != null && firstAuthor != null) {
+            return publicationRepository.findByPubmedIdEqualsAndTitleContainingIgnoreCaseAndFirstAuthorFullnameContainingIgnoreCase(pubmedId, title, firstAuthor, pageable);
+        }
+
+        if(pubmedId != null && firstAuthor != null) {
+            return publicationRepository.findByPubmedIdEqualsAndFirstAuthorFullnameContainingIgnoreCase(pubmedId, firstAuthor, pageable);
+        }
+
+        if( title != null && firstAuthor != null) {
+            return publicationRepository.findByTitleContainingIgnoreCaseAndFirstAuthorFullnameContainingIgnoreCase(title, firstAuthor, pageable);
+        }
+
         if(pubmedId != null && title != null) {
             return publicationRepository.findByPubmedIdEqualsAndTitleContainingIgnoreCase(pubmedId, title, pageable);
         }
@@ -26,6 +39,9 @@ public class PublicationServiceImpl implements PublicationService {
         }
         if(title != null) {
             return publicationRepository.findByTitleContainingIgnoreCase(title, pageable);
+        }
+        if(firstAuthor != null) {
+            return publicationRepository.findByFirstAuthorFullnameContainingIgnoreCase(firstAuthor, pageable);
         }
        return publicationRepository.findAll(pageable);
     }

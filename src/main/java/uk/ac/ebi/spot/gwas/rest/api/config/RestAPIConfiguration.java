@@ -14,5 +14,8 @@ public class RestAPIConfiguration {
     @Value("${terms-of-use.link:#{NULL}}")
     private String termsOfUseLink;
 
+    @Value("${ensembl.server.url:#{NULL}}")
+    private String ensemblServerUrl;
+
 
 }

@@ -8,13 +8,8 @@ public class PublicationAuthorDtoAssembler {
 
   public PublicationAuthorDto assemble(Author author) {
    return PublicationAuthorDto.builder()
-              .affiliation(author.getAffiliation())
-              .firstName(author.getFirstName())
               .fullName(author.getFullname())
-              .fullNameStandard(author.getFullnameStandard())
-              .initials(author.getInitials())
               .orcid(author.getOrcid())
-              .lastName(author.getLastName())
               .build();
   }
 
