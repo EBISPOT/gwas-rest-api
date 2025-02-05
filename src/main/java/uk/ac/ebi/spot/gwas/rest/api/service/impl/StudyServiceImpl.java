@@ -40,6 +40,7 @@ public class StudyServiceImpl implements StudyService {
     public  Page<Study> getStudies(Pageable pageable, SearchStudyParams searchStudyParams) {
         Page<StudyProjection> studyProjections = null;
         QStudy qStudy = QStudy.study;
+        QStudyExtension qStudyExtension = QStudyExtension.studyExtension;
         QEfoTrait qEfoTrait = QEfoTrait.efoTrait;
         QDiseaseTrait qDiseaseTrait =  QDiseaseTrait.diseaseTrait;
         QPublication qPublication = QPublication.publication1;
@@ -64,6 +65,11 @@ public class StudyServiceImpl implements StudyService {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.
                         innerJoin(qStudy.publicationId, qPublication);
+            }
+            if(searchStudyParams.getCohort() != null) {
+                isExpressionNotEmpty = true;
+                studyJPQLQuery = studyJPQLQuery
+                        .innerJoin(qStudy.studyExtension, qStudyExtension);
             }
             if (searchStudyParams.getShortForm() != null) {
                 isExpressionNotEmpty = true;
@@ -92,6 +98,14 @@ public class StudyServiceImpl implements StudyService {
             if (searchStudyParams.getUserRequested() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qStudy.userRequested.eq(searchStudyParams.getUserRequested()));
+            }
+            if(searchStudyParams.getCohort() != null) {
+                isExpressionNotEmpty = true;
+                studyJPQLQuery = studyJPQLQuery.where(qStudyExtension.cohort.containsIgnoreCase(searchStudyParams.getCohort()));
+            }
+            if(searchStudyParams.getGxe() != null) {
+                isExpressionNotEmpty = true;
+                studyJPQLQuery = studyJPQLQuery.where(qStudy.gxe.eq(searchStudyParams.getGxe()));
             }
             if (isExpressionNotEmpty) {
                 studyJPQLQuery = studyJPQLQuery.innerJoin(qStudy.housekeeping, qHousekeeping)

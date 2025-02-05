@@ -89,7 +89,7 @@ public class EFOTraitServiceImpl implements EFOTraitService {
         return efoTraitRepository.findDistinctByStudiesHousekeepingIsPublishedAndStudiesHousekeepingCatalogPublishDateIsNotNull(true, pageable);
     }
 
-    public EfoTrait getEFOTrait(Long id) {
-        return efoTraitRepository.findById(id).orElse(null);
+    public EfoTrait getEFOTrait(String shortForm) {
+        return efoTraitRepository.findByShortForm(shortForm).orElse(null);
     }
 }

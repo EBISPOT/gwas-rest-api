@@ -8,6 +8,7 @@ import uk.ac.ebi.spot.gwas.model.*;
 import uk.ac.ebi.spot.gwas.rest.api.config.RestAPIConfiguration;
 import uk.ac.ebi.spot.gwas.rest.api.controller.AncestryController;
 import uk.ac.ebi.spot.gwas.rest.api.controller.StudiesController;
+import uk.ac.ebi.spot.gwas.rest.api.service.RestInteractionService;
 import uk.ac.ebi.spot.gwas.rest.dto.StudyDto;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
 
     @Autowired
     RestAPIConfiguration restAPIConfiguration;
+
 
     public StudyDtoAssembler() {
         super(StudiesController.class, StudyDto.class);
@@ -61,6 +63,9 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
                 .replicationAncestry(study.getAncestries() != null ? this.getReplicationAncestryLinks(study) : null)
                 .fullSummaryStats(study.getFullPvalueSet() && study.getAccessionId() != null ? this.getSummaryStatsFTPDetails(study.getAccessionId()) : "NA")
                 .termsOfLicense(study.isAgreedToCc0() != null && study.isAgreedToCc0() ? restAPIConfiguration.getTermsOfUseLink() : "NA")
+                .cohort(study.getStudyExtension() != null ? study.getStudyExtension().getCohort() : null)
+                .arrayManufacturer(study.getPlatforms() != null ? study.getPlatforms().stream().map(Platform::getManufacturer)
+                        .collect(Collectors.toList()) : null)
                 .build();
 
         //studyDto.add(linkTo(methodOn(StudiesController.class).getStudy(String.valueOf(study.getId()))).withSelfRel());

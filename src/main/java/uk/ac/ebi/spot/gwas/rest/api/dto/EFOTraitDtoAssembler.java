@@ -24,7 +24,7 @@ public class EFOTraitDtoAssembler extends RepresentationModelAssemblerSupport<Ef
                 .shortForm(efoTrait.getShortForm())
                 .uri(efoTrait.getUri())
                 .build();
-        efoTraitDTO.add(linkTo(methodOn(EFOTraitsController.class).getEFOTraitsDTO(String.valueOf(efoTrait.getId()))).withSelfRel());
+        efoTraitDTO.add(linkTo(methodOn(EFOTraitsController.class).getEFOTraitsDTO(efoTrait.getShortForm())).withSelfRel());
         return efoTraitDTO;
     }
 }

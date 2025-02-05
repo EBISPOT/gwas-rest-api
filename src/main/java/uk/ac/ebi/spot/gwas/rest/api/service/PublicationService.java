@@ -7,7 +7,7 @@ import uk.ac.ebi.spot.gwas.model.Publication;
 public interface PublicationService {
 
 
-   Page<Publication> findPublications(String pubmedId, String title, Pageable pageable);
+   Page<Publication> findPublications(String pubmedId, String title, String firstAuthor, Pageable pageable);
 
    Publication findPublicationByPmid(String pmid);
 }
