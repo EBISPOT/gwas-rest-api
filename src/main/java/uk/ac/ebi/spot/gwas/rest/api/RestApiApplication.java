@@ -17,14 +17,12 @@ import java.net.UnknownHostException;
 @OpenAPIDefinition(info = @Info(title = "Rest API V2", version = "2.0", description = "Refactored Rest API"))
 public class RestApiApplication {
 
-    public static void main(String[] args) throws UnknownHostException {
-        log.info("Inside Curation Application");
+    public static void main(String[] args) {
+        log.info("Inside GWAS Rest API V2 Application");
         try {
             SpringApplication.run(RestApiApplication.class, args);
         } catch (Exception e) {
-            log.error("Exception occured in main class"+e.getMessage(),e);
-        }catch (Throwable e) {
-            log.error("Throwable occured in main class"+e.getMessage(),e);
+            log.error("Exception occurred in main class {}", e.getMessage(), e);
         }
     }
 }

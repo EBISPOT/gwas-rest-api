@@ -9,31 +9,36 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ebi.spot.gwas.exception.EntityNotFoundException;
+import uk.ac.ebi.spot.gwas.rest.dto.ApiErrorResponse;
+
+import java.time.Instant;
 
 
 @Slf4j
 @ControllerAdvice(annotations = RestController.class)
 public class ExceptionHandlerAdvice {
 
-
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
-
-        log.error("EntityNotFoundException :"+e.getLocalizedMessage(),e);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>(e.getMessage(), headers, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(EntityNotFoundException e) {
+        log.error("EntityNotFoundException: {}", e.getLocalizedMessage(), e);
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "Entity Not Found",
+                e.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception e) {
-
-        log.error("Exception :"+e.getLocalizedMessage(),e);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>(e.getMessage(), headers, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiErrorResponse> handleException(Exception e) {
+        log.error("Exception: {}", e.getLocalizedMessage(), e);
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "Internal Server Error",
+                e.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
