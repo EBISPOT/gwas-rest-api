@@ -19,7 +19,8 @@ spring:
 ensembl:
   server:
     url: https://rest.ensembl.org/variation/human
-
+  mapping:
+    version: 113
 
 springdoc:
   swagger-ui:
@@ -37,3 +38,11 @@ sumstats:
 
 terms-of-use:
   link: https://www.ebi.ac.uk/about/terms-of-use/
+
+
+cco:
+  link: https://creativecommons.org/publicdomain/zero/1.0/
+  exception:
+    pmids: 30510241,36539618,37770635
+    readme-text: Please Refer to ReadMe File
+

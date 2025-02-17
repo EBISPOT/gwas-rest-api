@@ -17,5 +17,15 @@ public class RestAPIConfiguration {
     @Value("${ensembl.server.url:#{NULL}}")
     private String ensemblServerUrl;
 
+    @Value("${ensembl.mapping.version:#{NULL}}")
+    private String ensemblVersion;
 
+    @Value("${cco.exception.pmids:#{NULL}}")
+    private String ccoExceptionPmids;
+
+    @Value("${cco.link:#{NULL}}")
+    private String ccoLink;
+
+    @Value("${cco.exception.readme-text:#{NULL}}")
+    private String ccoReadmeText;
 }

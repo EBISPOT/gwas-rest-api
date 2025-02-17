@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,8 +34,8 @@ public class UnpublishedStudiesController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(SearchUnpublishedStudyParams searchUnpublishedStudyParams,
-                                                                 @SortDefault(sort = "accession", direction = Sort.Direction.DESC)  Pageable pageable) {
+    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@ParameterObject SearchUnpublishedStudyParams searchUnpublishedStudyParams,
+                                                                 @SortDefault(sort = "accession", direction = Sort.Direction.DESC)  @ParameterObject Pageable pageable) {
         Page<UnpublishedStudy> unpublishedStudies = unpublishedStudyService.getUnpublishedStudies(searchUnpublishedStudyParams, pageable);
         return pagedResourcesAssembler.toModel(unpublishedStudies, unpublishedStudyDtoAssembler);
     }

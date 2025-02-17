@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,7 @@ public class PublicationsController {
     public PagedModel<PublicationDto> getPublications(@RequestParam(value = "pubmedId", required = false) String pubmedId,
                                                       @RequestParam(value = "title", required = false) String title,
                                                       @RequestParam(value = "firstAuthor", required = false) String firstAuthor,
-                                                      Pageable pageable) {
+                                                      @ParameterObject Pageable pageable) {
         Page<Publication> publications = publicationService.findPublications(pubmedId, title, firstAuthor, pageable);
         return pagedResourcesAssembler.toModel(publications, publicationDtoAssembler);
 

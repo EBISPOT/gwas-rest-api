@@ -1,14 +1,20 @@
 package uk.ac.ebi.spot.gwas.rest.api.dto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.gwas.ensembl.Variant;
 import uk.ac.ebi.spot.gwas.model.SingleNucleotidePolymorphism;
+import uk.ac.ebi.spot.gwas.rest.api.config.RestAPIConfiguration;
 import uk.ac.ebi.spot.gwas.rest.api.controller.GenomicContextController;
 import uk.ac.ebi.spot.gwas.rest.api.controller.SnpsController;
+import uk.ac.ebi.spot.gwas.rest.api.service.EnsemblRestHistoryService;
 import uk.ac.ebi.spot.gwas.rest.api.service.RestInteractionService;
 import uk.ac.ebi.spot.gwas.rest.api.service.SnpService;
 import uk.ac.ebi.spot.gwas.rest.dto.LocationDTO;
+import uk.ac.ebi.spot.gwas.rest.dto.RestResponseResult;
 import uk.ac.ebi.spot.gwas.rest.dto.SingleNucleotidePolymorphismDTO;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,6 +23,7 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @Component
 public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleNucleotidePolymorphism, SingleNucleotidePolymorphismDTO> {
 
@@ -27,7 +34,15 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
     RestInteractionService restInteractionService;
 
     @Autowired
+    EnsemblRestHistoryService ensemblRestHistoryService;
+
+    @Autowired
+    RestAPIConfiguration restAPIConfiguration;
+
+    @Autowired
     SnpService snpService;
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public SnpDtoAssembler() {
         super(SnpsController.class, SingleNucleotidePolymorphismDTO.class);
@@ -36,8 +51,23 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
     private final String ALLELE_PATTERN = "\\w{1,2}";
 
     public SingleNucleotidePolymorphismDTO toModel(SingleNucleotidePolymorphism snp) {
-        Variant variant = restInteractionService.getEnsemblResponse(snp.getRsId());
-
+        RestResponseResult restResponseResult = ensemblRestHistoryService.getHistoryByTypeParamAndVersion("snp", snp.getRsId(), restAPIConfiguration.getEnsemblVersion());
+        Variant variant = null;
+        if(restResponseResult != null) {
+            try {
+                if(restResponseResult.getRestResult() != null) {
+                    log.info("inside getting rsid from History block");
+                    variant = mapper.readValue(restResponseResult.getRestResult(), Variant.class);
+                } else{
+                    variant = mapper.readValue(restResponseResult.getError(), Variant.class);
+                }
+            } catch (JsonProcessingException e) {
+                log.error("Error in parsing Variant response"+e.getMessage(),e);
+            }
+        } else {
+            log.info("calling API block");
+            variant = restInteractionService.getEnsemblResponse(snp.getRsId());
+        }
         SingleNucleotidePolymorphismDTO singleNucleotidePolymorphismDTO = SingleNucleotidePolymorphismDTO
                 .builder()
                 .rsId(snp.getRsId())

@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +48,7 @@ public class BodyOfWorkController {
    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
    public PagedModel<BodyOfWorkDTO> getBodiesOfWork(@RequestParam(value = "title", required = false) String title,
                                                     @RequestParam(value = "first-author", required = false) String firstAuthor,
-                                                    @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                    @SortDefault(sort = "id", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
        Page<BodyOfWork> bodyOfWorks = bodyOfWorkService.getBodyOfWork(title, firstAuthor, pageable);
        return pagedResourcesAssembler.toModel(bodyOfWorks, bodyOfWorkDtoAssembler);
     }

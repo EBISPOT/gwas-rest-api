@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.service.impl;
 
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilderFactory;
 import com.querydsl.jpa.JPQLQuery;
@@ -45,11 +46,15 @@ public class StudyServiceImpl implements StudyService {
         QDiseaseTrait qDiseaseTrait =  QDiseaseTrait.diseaseTrait;
         QPublication qPublication = QPublication.publication1;
         QHousekeeping qHousekeeping = QHousekeeping.housekeeping;
+        QAncestry qAncestry  = QAncestry.ancestry;
+        QAncestralGroup qAncestralGroup = QAncestralGroup.ancestralGroup1;
         Boolean isExpressionNotEmpty = false;
         Querydsl querydsl = new Querydsl(em , (new PathBuilderFactory()).create(Study.class));
         JPAQueryFactory jpaQuery = new JPAQueryFactory(em);
         JPQLQuery<Study> studyJPQLQuery = jpaQuery.select(qStudy).distinct()
                 .from(qStudy);
+        JPQLQuery<Long> studySubQuery = jpaQuery.select(qStudy.id).from(qStudy)
+                .innerJoin(qStudy.ancestries, qAncestry).where(qAncestry.type.eq("initial"));
         log.info("searchStudyParams {}", searchStudyParams);
         log.info("Inside searchStudyParams not null block");
         try {
@@ -70,6 +75,19 @@ public class StudyServiceImpl implements StudyService {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery
                         .innerJoin(qStudy.studyExtension, qStudyExtension);
+            }
+
+            if(searchStudyParams.getAncestralGroup() != null) {
+                isExpressionNotEmpty = true;
+                studyJPQLQuery = studyJPQLQuery
+                        .innerJoin(qStudy.ancestries, qAncestry)
+                        .innerJoin(qAncestry.ancestralGroups, qAncestralGroup);
+            }
+            if(searchStudyParams.getNoOfIndividuals() != null) {
+                isExpressionNotEmpty = true;
+                studyJPQLQuery = studyJPQLQuery
+                        .innerJoin(qStudy.ancestries, qAncestry);
+
             }
             if (searchStudyParams.getShortForm() != null) {
                 isExpressionNotEmpty = true;
@@ -107,6 +125,21 @@ public class StudyServiceImpl implements StudyService {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qStudy.gxe.eq(searchStudyParams.getGxe()));
             }
+
+            if(searchStudyParams.getAncestralGroup() != null) {
+                isExpressionNotEmpty = true;
+                studyJPQLQuery = studyJPQLQuery.where(qAncestry.type.eq("initial"))
+                        .where(qAncestralGroup.ancestralGroup
+                        .containsIgnoreCase(searchStudyParams.getAncestralGroup()));
+            }
+            if(searchStudyParams.getNoOfIndividuals() != null) {
+                isExpressionNotEmpty = true;
+                studySubQuery  =  studySubQuery
+                        .groupBy(qStudy.id)
+                        .having(qAncestry.numberOfIndividuals.sum().goe(searchStudyParams.getNoOfIndividuals()));
+                studyJPQLQuery = studyJPQLQuery.where(qStudy.id.in(studySubQuery));
+            }
+
             if (isExpressionNotEmpty) {
                 studyJPQLQuery = studyJPQLQuery.innerJoin(qStudy.housekeeping, qHousekeeping)
                         .where(qHousekeeping.isPublished.eq(true))

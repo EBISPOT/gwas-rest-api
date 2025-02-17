@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,8 +36,8 @@ public class AssociationController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<AssociationDTO> getAssociations(SearchAssociationParams searchAssociationParams,
-                                                      @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public PagedModel<AssociationDTO> getAssociations(@ParameterObject SearchAssociationParams searchAssociationParams,
+                                                      @SortDefault(sort = "id", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
       Page<Association> associations = associationService.getAssociations(pageable, searchAssociationParams);
       return pagedResourcesAssembler.toModel(associations, associationDtoAssembler);
     }
