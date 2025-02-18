@@ -47,7 +47,7 @@ public class BodyOfWorkController {
    @ResponseStatus(HttpStatus.OK)
    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
    public PagedModel<BodyOfWorkDTO> getBodiesOfWork(@RequestParam(value = "title", required = false) String title,
-                                                    @RequestParam(value = "first-author", required = false) String firstAuthor,
+                                                    @RequestParam(value = "first_author", required = false) String firstAuthor,
                                                     @SortDefault(sort = "id", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
        Page<BodyOfWork> bodyOfWorks = bodyOfWorkService.getBodyOfWork(title, firstAuthor, pageable);
        return pagedResourcesAssembler.toModel(bodyOfWorks, bodyOfWorkDtoAssembler);

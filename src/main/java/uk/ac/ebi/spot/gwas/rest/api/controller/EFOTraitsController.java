@@ -34,7 +34,7 @@ public class EFOTraitsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<EFOTraitDTO> getEFOTraits(@ParameterObject SearchEfoParams searchEfoParams, @ParameterObject Pageable pageable) {
+    public PagedModel<EFOTraitDTO> getEFOTraits(@RequestParam SearchEfoParams searchEfoParams, @ParameterObject Pageable pageable) {
       Page<EfoTrait> efoTraits = efoTraitService.getEFOTraits(searchEfoParams, pageable);
       return pagedResourcesAssembler.toModel(efoTraits, efoTraitDtoAssembler);
     }

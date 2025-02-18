@@ -31,9 +31,9 @@ public class PublicationsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<PublicationDto> getPublications(@RequestParam(value = "pubmedId", required = false) String pubmedId,
+    public PagedModel<PublicationDto> getPublications(@RequestParam(value = "pubmed_id", required = false) String pubmedId,
                                                       @RequestParam(value = "title", required = false) String title,
-                                                      @RequestParam(value = "firstAuthor", required = false) String firstAuthor,
+                                                      @RequestParam(value = "first_author", required = false) String firstAuthor,
                                                       @ParameterObject Pageable pageable) {
         Page<Publication> publications = publicationService.findPublications(pubmedId, title, firstAuthor, pageable);
         return pagedResourcesAssembler.toModel(publications, publicationDtoAssembler);
@@ -42,7 +42,7 @@ public class PublicationsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{pubmedId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PublicationDto getPublication(@PathVariable("pubmedId") String pubmedId) {
+    public PublicationDto getPublication(@PathVariable("pubmed_id") String pubmedId) {
         Publication publication = publicationService.findPublicationByPmid(pubmedId);
         return publicationDtoAssembler.toModel(publication);
     }

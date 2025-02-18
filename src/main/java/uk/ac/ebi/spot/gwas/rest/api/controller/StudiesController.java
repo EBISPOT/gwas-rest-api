@@ -40,8 +40,7 @@ public class StudiesController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<StudyDto> getStudies( @ParameterObject
-                                           SearchStudyParams studyParams,
+    public PagedModel<StudyDto> getStudies(@RequestParam SearchStudyParams studyParams,
                                            @SortDefault(sort = "accessionId", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
 
        Page<Study>  studies = studyService.getStudies(pageable, studyParams);

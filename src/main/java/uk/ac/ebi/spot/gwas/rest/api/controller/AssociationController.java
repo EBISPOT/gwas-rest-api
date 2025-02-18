@@ -36,7 +36,7 @@ public class AssociationController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<AssociationDTO> getAssociations(@ParameterObject SearchAssociationParams searchAssociationParams,
+    public PagedModel<AssociationDTO> getAssociations(@RequestParam SearchAssociationParams searchAssociationParams,
                                                       @SortDefault(sort = "id", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
       Page<Association> associations = associationService.getAssociations(pageable, searchAssociationParams);
       return pagedResourcesAssembler.toModel(associations, associationDtoAssembler);
