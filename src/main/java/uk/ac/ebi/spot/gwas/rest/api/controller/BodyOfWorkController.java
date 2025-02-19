@@ -10,10 +10,13 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.gwas.constants.GeneralCommon;
+import uk.ac.ebi.spot.gwas.exception.EntityNotFoundException;
 import uk.ac.ebi.spot.gwas.model.BodyOfWork;
 import uk.ac.ebi.spot.gwas.model.UnpublishedStudy;
+import uk.ac.ebi.spot.gwas.rest.api.constants.EntityType;
 import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
 import uk.ac.ebi.spot.gwas.rest.api.dto.BodyOfWorkDtoAssembler;
 import uk.ac.ebi.spot.gwas.rest.api.dto.UnpublishedStudyDtoAssembler;
@@ -54,9 +57,11 @@ public class BodyOfWorkController {
     }
 
     @GetMapping(value = "/{bowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BodyOfWorkDTO getBodyOfWork(@PathVariable String bowId) {
-       BodyOfWork bodyOfWork = bodyOfWorkService.getBodyOfWork(bowId);
-       return bodyOfWorkDtoAssembler.toModel(bodyOfWork);
+    public ResponseEntity<BodyOfWorkDTO> getBodyOfWork(@PathVariable String bowId) {
+        return bodyOfWorkService.getBodyOfWork(bowId)
+                .map(bodyOfWorkDtoAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.BODY_OF_WORKS, "Id", bowId));
     }
 
     @GetMapping(value = "/{bowId}"+RestAPIConstants.API_UNPUBLISHED_STUDIES, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -7,6 +7,8 @@ import uk.ac.ebi.spot.gwas.model.Publication;
 import uk.ac.ebi.spot.gwas.rest.api.repository.PublicationRepository;
 import uk.ac.ebi.spot.gwas.rest.api.service.PublicationService;
 
+import java.util.Optional;
+
 @Service
 public class PublicationServiceImpl implements PublicationService {
 
@@ -46,7 +48,7 @@ public class PublicationServiceImpl implements PublicationService {
        return publicationRepository.findAll(pageable);
     }
 
-    public Publication findPublicationByPmid(String pmid) {
-       return publicationRepository.findByPubmedIdEquals(pmid).orElse(null);
+    public Optional<Publication> findPublicationByPmid(String pmid) {
+       return publicationRepository.findByPubmedIdEquals(pmid);
     }
 }

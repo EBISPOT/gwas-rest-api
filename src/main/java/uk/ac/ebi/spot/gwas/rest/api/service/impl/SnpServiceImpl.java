@@ -119,8 +119,8 @@ SnpServiceImpl implements SnpService {
 
     }
 
-    public SingleNucleotidePolymorphism getSnp(String rsId) {
-        return  singleNucleotidePolymorphismRepository.findByRsId(rsId).orElse(null);
+    public Optional<SingleNucleotidePolymorphism> getSnp(String rsId) {
+        return  singleNucleotidePolymorphismRepository.findByRsId(rsId);
     }
 
     public List<String> findMatchingGenes(Long snpId) {

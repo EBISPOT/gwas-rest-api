@@ -10,9 +10,12 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.gwas.constants.GeneralCommon;
+import uk.ac.ebi.spot.gwas.exception.EntityNotFoundException;
 import uk.ac.ebi.spot.gwas.model.UnpublishedStudy;
+import uk.ac.ebi.spot.gwas.rest.api.constants.EntityType;
 import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
 import uk.ac.ebi.spot.gwas.rest.api.dto.UnpublishedStudyDtoAssembler;
 import uk.ac.ebi.spot.gwas.rest.api.service.UnpublishedStudyService;
@@ -41,8 +44,10 @@ public class UnpublishedStudiesController {
     }
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UnpublishedStudyDTO getUnpublishedStudy(@PathVariable String accessionId) {
-       UnpublishedStudy unpublishedStudy = unpublishedStudyService.findByAccession(accessionId);
-       return unpublishedStudyDtoAssembler.toModel(unpublishedStudy);
+    public ResponseEntity<UnpublishedStudyDTO> getUnpublishedStudy(@PathVariable String accessionId) {
+        return unpublishedStudyService.findByAccession(accessionId)
+                .map(unpublishedStudyDtoAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.UNPUBLISHED_STUDY, "Accession Id", accessionId));
     }
 }

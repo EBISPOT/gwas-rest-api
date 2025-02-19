@@ -8,9 +8,12 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.gwas.constants.GeneralCommon;
+import uk.ac.ebi.spot.gwas.exception.EntityNotFoundException;
 import uk.ac.ebi.spot.gwas.model.Publication;
+import uk.ac.ebi.spot.gwas.rest.api.constants.EntityType;
 import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
 import uk.ac.ebi.spot.gwas.rest.api.dto.PublicationDtoAssembler;
 import uk.ac.ebi.spot.gwas.rest.api.service.PublicationService;
@@ -40,11 +43,12 @@ public class PublicationsController {
 
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{pubmedId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PublicationDto getPublication(@PathVariable("pubmed_id") String pubmedId) {
-        Publication publication = publicationService.findPublicationByPmid(pubmedId);
-        return publicationDtoAssembler.toModel(publication);
+    public ResponseEntity<PublicationDto> getPublication(@PathVariable String pubmedId) {
+        return publicationService.findPublicationByPmid(pubmedId)
+                .map(publicationDtoAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.PUBLICATIONS, "Pubmed id", pubmedId));
     }
 
 }

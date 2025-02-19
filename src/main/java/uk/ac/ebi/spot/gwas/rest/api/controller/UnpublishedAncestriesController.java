@@ -3,9 +3,12 @@ package uk.ac.ebi.spot.gwas.rest.api.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.gwas.constants.GeneralCommon;
+import uk.ac.ebi.spot.gwas.exception.EntityNotFoundException;
 import uk.ac.ebi.spot.gwas.model.UnpublishedAncestry;
+import uk.ac.ebi.spot.gwas.rest.api.constants.EntityType;
 import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
 import uk.ac.ebi.spot.gwas.rest.api.dto.UnpublishedAncestryDTOAssembler;
 import uk.ac.ebi.spot.gwas.rest.api.service.UnpublishedAncestryService;
@@ -30,11 +33,13 @@ public class UnpublishedAncestriesController {
         return unpublishedAncestryDTOAssembler.toCollectionModel(unpublishedAncestries, accessionId);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES + "/{ancestryId}")
-    public UnpublishedAncestryDTO getUnpublishedAncestry(@PathVariable String accessionId,
+    public ResponseEntity<UnpublishedAncestryDTO> getUnpublishedAncestry(@PathVariable String accessionId,
                                                          @PathVariable String ancestryId) {
-        UnpublishedAncestry unpublishedAncestry =  unpublishedAncestryService.getAncestry(Long.valueOf(ancestryId));
-        return unpublishedAncestryDTOAssembler.toModel(unpublishedAncestry);
+        return unpublishedAncestryService.getAncestry(Long.valueOf(ancestryId))
+                .map(unpublishedAncestryDTOAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.UNPUBLISHED_ANCESTRY, "Id", ancestryId));
+
     }
 }

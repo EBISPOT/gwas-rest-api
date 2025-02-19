@@ -22,6 +22,7 @@ import uk.ac.ebi.spot.gwas.rest.projection.StudyProjection;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -160,33 +161,6 @@ public class StudyServiceImpl implements StudyService {
 
         return studyRepository.findByHousekeepingIsPublishedAndHousekeepingCatalogPublishDateIsNotNull(true, pageable);
 
-      /*List<Study> studies = studyRepository.findByCustomQuery(searchStudyParams.getAccessionId(),
-                searchStudyParams.getFullPvalueSet(),
-                searchStudyParams.getShortForm(),
-                searchStudyParams.getEfoTrait(),
-                searchStudyParams.getDiseaseTrait(),
-                searchStudyParams.getPubmedId(),
-                searchStudyParams.getUserRequested());
-      log.info("Studies size {}", studies.size()); */
-       /* try {
-            log.info("Inside getStudies()");
-            studyProjections = studyRepository.findByCustomQuery(searchStudyParams.getAccessionId(),
-                    searchStudyParams.getFullPvalueSet(),
-                    searchStudyParams.getShortForm(),
-                    searchStudyParams.getEfoTrait(),
-                    searchStudyParams.getDiseaseTrait(),
-                    searchStudyParams.getPubmedId(),
-                    searchStudyParams.getUserRequested(),
-                    pageable);
-
-        } catch(Exception ex) {
-            log.info("Inside getStudies() exception");
-            log.error("Exception in custom query"+ex.getMessage(),ex);
-        } catch(Throwable ex) {
-            log.info("Inside getStudies() Throwable");
-            log.error("Error in custom query"+ex.getMessage(),ex);
-        }*/
-
     }
 
 
@@ -194,8 +168,9 @@ public class StudyServiceImpl implements StudyService {
         return studyRepository.findById(studyId).orElse(null);
     }
 
-    public Study getStudy(String accessionId) {
-        return studyRepository.findByAccessionId(accessionId).orElse(null);
+    public Optional<Study> getStudy(String accessionId) {
+        log.info("Find study by accessionId {}", accessionId);
+        return studyRepository.findByAccessionId(accessionId);
     }
 
 
