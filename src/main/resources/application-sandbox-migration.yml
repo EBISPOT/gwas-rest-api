@@ -15,4 +15,7 @@ spring:
 #    properties:
 #      hibernate.hibernate.format_sql : true
 
+gwas-ui:
+  url: https://wwwdev.ebi.ac.uk/gwas
+
 

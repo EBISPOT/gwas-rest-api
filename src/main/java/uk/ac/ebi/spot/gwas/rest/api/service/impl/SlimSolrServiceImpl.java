@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import uk.ac.ebi.spot.gwas.rest.api.config.RestAPIConfiguration;
 import uk.ac.ebi.spot.gwas.rest.api.dto.solr.SolrApiResponse;
 import uk.ac.ebi.spot.gwas.rest.api.dto.solr.slim.GeneSolrDto;
 import uk.ac.ebi.spot.gwas.rest.api.service.SlimSolrService;
@@ -15,19 +16,21 @@ import uk.ac.ebi.spot.gwas.rest.api.service.SlimSolrService;
 public class SlimSolrServiceImpl implements SlimSolrService {
 
     private final RestTemplate restTemplate;
-    private final String slimSolrUrl = "http://ves-pg-7f:8983/solr/gwas_slim";
+    private final RestAPIConfiguration restAPIConfiguration;
 
-    public SlimSolrServiceImpl(RestTemplate restTemplate) {
+    public SlimSolrServiceImpl(RestTemplate restTemplate, RestAPIConfiguration restAPIConfiguration) {
         this.restTemplate = restTemplate;
+        this.restAPIConfiguration = restAPIConfiguration;
     }
 
     @Override
     public SolrApiResponse<GeneSolrDto> fetchGeneData(String geneName) {
-        String url = slimSolrUrl + "/select/?q=title:" + geneName + " AND resourcename:gene&wt=json";
-        log.info("Fetching gene data from URL: {}", url);
+        String gwasUiUrl = restAPIConfiguration.getGwasUiUrl();
+        String geneCallUrl = gwasUiUrl + "?q=title:" + geneName + " AND resourcename:gene";
+        log.info("Fetching gene data from URL: {}", geneCallUrl);
         try {
             ResponseEntity<SolrApiResponse<GeneSolrDto>> response = restTemplate.exchange(
-                    url,
+                    geneCallUrl,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<SolrApiResponse<GeneSolrDto>>() {}
