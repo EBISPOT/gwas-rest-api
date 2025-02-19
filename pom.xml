@@ -11,12 +11,6 @@
 
     <name>GWAS Deposition App Curation Service</name>
 
-    <!--    <parent>
-            <groupId>uk.ac.ebi.spot.gwasdepo</groupId>
-            <artifactId>gwasdepo-master</artifactId>
-            <version>1.0.4</version>
-        </parent>-->
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -86,10 +80,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <!--<configuration>
-                    <outputDirectory>${user.dir}</outputDirectory>
-                    <finalName>gwas-curation-service</finalName>
-                </configuration>-->
             </plugin>
 
             <plugin>
@@ -124,17 +114,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <!--<exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>-->
         </dependency>
-        <!--      <dependency>
-                  <groupId>org.springframework.boot</groupId>
-                  <artifactId>spring-boot-starter-jetty</artifactId>
-              </dependency> -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -176,19 +156,11 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.1</version>
         </dependency>
-        <!--<dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <!-- <dependency>
-             <groupId>commons-io</groupId>
-             <artifactId>commons-io</artifactId>
-         </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -215,10 +187,6 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
         </dependency>
-        <!--      <dependency>
-                  <groupId>com.novemberain</groupId>
-                  <artifactId>quartz-mongodb</artifactId>
-              </dependency>-->
 
         <dependency>
             <groupId>junit</groupId>
@@ -231,16 +199,6 @@
             <version>2.18.3</version>
             <scope>test</scope>
         </dependency>
-        <!--       <dependency>
-                   <groupId>nl.jqno.equalsverifier</groupId>
-                   <artifactId>equalsverifier</artifactId>
-                   <scope>test</scope>
-               </dependency>
-               <dependency>
-                   <groupId>org.apache.httpcomponents</groupId>
-                   <artifactId>fluent-hc</artifactId>
-                   <scope>test</scope>
-               </dependency>-->
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
@@ -258,32 +216,12 @@
             </exclusions>
         </dependency>
 
-        <!-- <dependency>
-             <groupId>org.springframework.boot</groupId>
-             <artifactId>spring-boot-starter-jdbc</artifactId>
-             <scope>test</scope>
-         </dependency>
-
-         <dependency>
-             <groupId>com.oracle.ojdbc</groupId>
-             <artifactId>ojdbc8</artifactId>
-             <version>19.3.0.0</version>
-             <scope>test</scope>
-         </dependency>-->
-
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>5.1.8.RELEASE</version>
             <scope>test</scope>
         </dependency>
-
-        <!--        <dependency>
-                    <groupId>org.javers</groupId>
-                    <artifactId>javers-spring-mongo</artifactId>
-                    <version>5.0.0</version>
-                </dependency>-->
 
         <dependency>
             <groupId>com.github.java-json-tools</groupId>

@@ -7,6 +7,7 @@ import uk.ac.ebi.spot.gwas.model.DiseaseTrait;
 import uk.ac.ebi.spot.gwas.rest.dto.SearchAssociationParams;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AssociationService {
 
@@ -14,5 +15,5 @@ public interface AssociationService {
 
    List<DiseaseTrait> getDiseaseTraits(Long associationId);
 
-   Association getAssociation(Long associationId);
+   Optional<Association> getAssociation(Long associationId);
 }

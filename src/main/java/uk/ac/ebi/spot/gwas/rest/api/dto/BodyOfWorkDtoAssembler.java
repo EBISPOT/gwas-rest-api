@@ -26,7 +26,7 @@ public class BodyOfWorkDtoAssembler extends RepresentationModelAssemblerSupport<
                 .build();
 
         bodyOfWorkDTO.add(linkTo(methodOn(BodyOfWorkController.class).getBodyOfWork(bodyOfWork.getPublicationId())).withSelfRel());
-        bodyOfWorkDTO.add(linkTo(methodOn(BodyOfWorkController.class).getUnpublishedStudies(bodyOfWork.getPublicationId(), null)).withRel("bodyofworks"));
+        bodyOfWorkDTO.add(linkTo(methodOn(BodyOfWorkController.class).getUnpublishedStudies(bodyOfWork.getPublicationId(), null)).withRel("body_of_works"));
         return bodyOfWorkDTO;
     }
 }

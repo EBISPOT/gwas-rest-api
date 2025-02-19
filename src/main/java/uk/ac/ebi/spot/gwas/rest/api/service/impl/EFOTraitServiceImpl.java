@@ -16,6 +16,7 @@ import uk.ac.ebi.spot.gwas.rest.dto.SearchEfoParams;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -89,7 +90,7 @@ public class EFOTraitServiceImpl implements EFOTraitService {
         return efoTraitRepository.findDistinctByStudiesHousekeepingIsPublishedAndStudiesHousekeepingCatalogPublishDateIsNotNull(true, pageable);
     }
 
-    public EfoTrait getEFOTrait(String shortForm) {
-        return efoTraitRepository.findByShortForm(shortForm).orElse(null);
+    public Optional<EfoTrait> getEFOTrait(String shortForm) {
+        return efoTraitRepository.findByShortForm(shortForm);
     }
 }

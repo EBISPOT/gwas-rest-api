@@ -4,10 +4,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import uk.ac.ebi.spot.gwas.model.Publication;
 
+import java.util.Optional;
+
 public interface PublicationService {
 
 
    Page<Publication> findPublications(String pubmedId, String title, String firstAuthor, Pageable pageable);
 
-   Publication findPublicationByPmid(String pmid);
+   Optional<Publication> findPublicationByPmid(String pmid);
 }
