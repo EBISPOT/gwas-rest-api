@@ -26,7 +26,7 @@ public class SlimSolrServiceImpl implements SlimSolrService {
     @Override
     public SolrApiResponse<GeneSolrDto> fetchGeneData(String geneName) {
         String gwasUiUrl = restAPIConfiguration.getGwasUiUrl();
-        String geneCallUrl = gwasUiUrl + "?q=title:" + geneName + " AND resourcename:gene";
+        String geneCallUrl = gwasUiUrl + "/api/search?q=title:" + geneName + " AND resourcename:gene";
         log.info("Fetching gene data from URL: {}", geneCallUrl);
         try {
             ResponseEntity<SolrApiResponse<GeneSolrDto>> response = restTemplate.exchange(
