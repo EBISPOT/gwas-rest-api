@@ -8,5 +8,5 @@ public interface BodyOfWorkService {
 
    Page<BodyOfWork> getBodyOfWork(String title, String firstAuthor, Pageable pageable);
 
-   BodyOfWork getBodyOfWork(String bowId);
+   BodyOfWork getBodyOfWork(Long bowId);
 }

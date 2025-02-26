@@ -37,8 +37,6 @@ public class UnpublishedAncestryDTOAssembler extends RepresentationModelAssemble
                 .controls(unpublishedAncestry.getControls())
                 .countryRecruitment(unpublishedAncestry.getCountryRecruitment())
                 .sampleSize(unpublishedAncestry.getSampleSize())
-                .stage(unpublishedAncestry.getStage())
-                .studyTag(unpublishedAncestry.getStudyTag())
                 .build();
 
         unpublishedAncestryDTO.add(linkTo(methodOn(UnpublishedAncestriesController.class).getUnpublishedAncestry(accessionId, String.valueOf(unpublishedAncestry.getId()))).withSelfRel());

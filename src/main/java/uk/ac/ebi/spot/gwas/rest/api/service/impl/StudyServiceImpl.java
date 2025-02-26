@@ -95,11 +95,11 @@ public class StudyServiceImpl implements StudyService {
             }
             if (searchStudyParams.getEfoTrait() != null) {
                 isExpressionNotEmpty = true;
-                studyJPQLQuery = studyJPQLQuery.where(qEfoTrait.trait.equalsIgnoreCase(searchStudyParams.getEfoTrait()));
+                studyJPQLQuery = studyJPQLQuery.where(qEfoTrait.trait.containsIgnoreCase(searchStudyParams.getEfoTrait()));
             }
             if (searchStudyParams.getDiseaseTrait() != null) {
                 isExpressionNotEmpty = true;
-                studyJPQLQuery  =  studyJPQLQuery.where(qDiseaseTrait.trait.equalsIgnoreCase(searchStudyParams.getDiseaseTrait()));
+                studyJPQLQuery  =  studyJPQLQuery.where(qDiseaseTrait.trait.containsIgnoreCase(searchStudyParams.getDiseaseTrait()));
             }
             if (searchStudyParams.getPubmedId() != null) {
                 isExpressionNotEmpty = true;
@@ -112,10 +112,6 @@ public class StudyServiceImpl implements StudyService {
             if (searchStudyParams.getFullPvalueSet() != null) {
                 isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.where(qStudy.fullPvalueSet.eq(searchStudyParams.getFullPvalueSet()));
-            }
-            if (searchStudyParams.getUserRequested() != null) {
-                isExpressionNotEmpty = true;
-                studyJPQLQuery = studyJPQLQuery.where(qStudy.userRequested.eq(searchStudyParams.getUserRequested()));
             }
             if(searchStudyParams.getCohort() != null) {
                 isExpressionNotEmpty = true;
@@ -157,36 +153,7 @@ public class StudyServiceImpl implements StudyService {
             log.info("Inside Throwable in dsl query");
             log.error("Throwable in dsl query"+ex.getMessage(),ex);
         }
-
         return studyRepository.findByHousekeepingIsPublishedAndHousekeepingCatalogPublishDateIsNotNull(true, pageable);
-
-      /*List<Study> studies = studyRepository.findByCustomQuery(searchStudyParams.getAccessionId(),
-                searchStudyParams.getFullPvalueSet(),
-                searchStudyParams.getShortForm(),
-                searchStudyParams.getEfoTrait(),
-                searchStudyParams.getDiseaseTrait(),
-                searchStudyParams.getPubmedId(),
-                searchStudyParams.getUserRequested());
-      log.info("Studies size {}", studies.size()); */
-       /* try {
-            log.info("Inside getStudies()");
-            studyProjections = studyRepository.findByCustomQuery(searchStudyParams.getAccessionId(),
-                    searchStudyParams.getFullPvalueSet(),
-                    searchStudyParams.getShortForm(),
-                    searchStudyParams.getEfoTrait(),
-                    searchStudyParams.getDiseaseTrait(),
-                    searchStudyParams.getPubmedId(),
-                    searchStudyParams.getUserRequested(),
-                    pageable);
-
-        } catch(Exception ex) {
-            log.info("Inside getStudies() exception");
-            log.error("Exception in custom query"+ex.getMessage(),ex);
-        } catch(Throwable ex) {
-            log.info("Inside getStudies() Throwable");
-            log.error("Error in custom query"+ex.getMessage(),ex);
-        }*/
-
     }
 
 

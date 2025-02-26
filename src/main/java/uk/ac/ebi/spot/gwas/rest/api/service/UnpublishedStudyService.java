@@ -11,7 +11,7 @@ public interface UnpublishedStudyService {
 
   UnpublishedStudy findByAccession(String accession);
 
-  Page<UnpublishedStudy> findByBodyOfWork(String bowId, Pageable pageable);
+  Page<UnpublishedStudy> findByBodyOfWork(Long bowId, Pageable pageable);
 
 
 }

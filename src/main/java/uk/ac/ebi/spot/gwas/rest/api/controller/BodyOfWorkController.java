@@ -54,13 +54,13 @@ public class BodyOfWorkController {
     }
 
     @GetMapping(value = "/{bowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BodyOfWorkDTO getBodyOfWork(@PathVariable String bowId) {
+    public BodyOfWorkDTO getBodyOfWork(@PathVariable Long bowId) {
        BodyOfWork bodyOfWork = bodyOfWorkService.getBodyOfWork(bowId);
        return bodyOfWorkDtoAssembler.toModel(bodyOfWork);
     }
 
     @GetMapping(value = "/{bowId}"+RestAPIConstants.API_UNPUBLISHED_STUDIES, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@PathVariable String bowId, Pageable pageable) {
+    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@PathVariable Long bowId, Pageable pageable) {
         Page<UnpublishedStudy> unpublishedStudies = unpublishedStudyService.findByBodyOfWork(bowId, pageable);
         return unpublishedStudyPagedResourcesAssembler.toModel(unpublishedStudies, unpublishedStudyDtoAssembler);
     }

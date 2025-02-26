@@ -58,7 +58,7 @@ public class UnpublishedStudyServiceImpl implements UnpublishedStudyService {
             if(searchUnpublishedStudyParams.getDiseaseTrait() != null) {
                 isExpressionNotEmpty = true;
                 unpublishedStudyJPQLQuery = unpublishedStudyJPQLQuery.where(qUnpublishedStudy.trait
-                        .equalsIgnoreCase(searchUnpublishedStudyParams.getDiseaseTrait()));
+                        .containsIgnoreCase(searchUnpublishedStudyParams.getDiseaseTrait()));
             }
 
             if(searchUnpublishedStudyParams.getTitle() != null) {
@@ -98,7 +98,7 @@ public class UnpublishedStudyServiceImpl implements UnpublishedStudyService {
         return unpublishedStudyRepository.findByAccession(accession).orElse(null);
     }
 
-    public Page<UnpublishedStudy> findByBodyOfWork(String bowId, Pageable pageable) {
-        return unpublishedStudyRepository.findByBodiesOfWorkPublicationId(bowId, pageable);
+    public Page<UnpublishedStudy> findByBodyOfWork(Long bowId, Pageable pageable) {
+        return unpublishedStudyRepository.findByBodiesOfWorkId(bowId, pageable);
     }
 }
