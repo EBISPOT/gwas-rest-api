@@ -7,11 +7,13 @@ import uk.ac.ebi.spot.gwas.model.Study;
 import uk.ac.ebi.spot.gwas.rest.dto.SearchStudyParams;
 import uk.ac.ebi.spot.gwas.rest.projection.StudyProjection;
 
+import java.util.Optional;
+
 public interface StudyService {
 
     Page<Study> getStudies(Pageable pageable, SearchStudyParams searchStudyParams);
 
     Study getStudy(Long studyId);
 
-    Study getStudy(String accessionId);
+    Optional<Study> getStudy(String accessionId);
 }

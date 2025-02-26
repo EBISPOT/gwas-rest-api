@@ -18,6 +18,7 @@ import uk.ac.ebi.spot.gwas.rest.dto.SearchAssociationParams;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -124,8 +125,8 @@ public class AssociationServiceImpl implements AssociationService {
         return associationRepository.findByStudyHousekeepingIsPublishedAndStudyHousekeepingCatalogPublishDateIsNotNull(true, pageable);
     }
 
-    public Association getAssociation(Long associationId) {
-        return associationRepository.findById(associationId).orElse(null);
+    public Optional<Association> getAssociation(Long associationId) {
+        return associationRepository.findById(associationId);
     }
 
     public List<DiseaseTrait> getDiseaseTraits(Long associationId) {

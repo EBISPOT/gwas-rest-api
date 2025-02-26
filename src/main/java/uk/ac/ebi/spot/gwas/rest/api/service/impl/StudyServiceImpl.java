@@ -22,6 +22,7 @@ import uk.ac.ebi.spot.gwas.rest.projection.StudyProjection;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -161,8 +162,9 @@ public class StudyServiceImpl implements StudyService {
         return studyRepository.findById(studyId).orElse(null);
     }
 
-    public Study getStudy(String accessionId) {
-        return studyRepository.findByAccessionId(accessionId).orElse(null);
+    public Optional<Study> getStudy(String accessionId) {
+        log.info("Find study by accessionId {}", accessionId);
+        return studyRepository.findByAccessionId(accessionId);
     }
 
 

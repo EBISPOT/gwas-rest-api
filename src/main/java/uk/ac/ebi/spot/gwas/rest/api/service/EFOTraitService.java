@@ -11,5 +11,5 @@ public interface EFOTraitService {
 
     Page<EfoTrait> getEFOTraits(SearchEfoParams searchEfoParams, Pageable pageable);
 
-    EfoTrait getEFOTrait(String shortForm);
+    Optional<EfoTrait> getEFOTrait(String shortForm);
 }

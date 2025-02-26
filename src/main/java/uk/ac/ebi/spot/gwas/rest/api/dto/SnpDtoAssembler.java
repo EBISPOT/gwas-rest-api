@@ -83,7 +83,7 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
                 .mappedGenes(snpService.findMatchingGenes(snp.getId()))
                 .build();
         singleNucleotidePolymorphismDTO.add(linkTo(methodOn(SnpsController.class).getSingleNucleotidePolymorphism(snp.getRsId())).withSelfRel());
-        singleNucleotidePolymorphismDTO.add(linkTo(methodOn(GenomicContextController.class).getGenomicContexts(snp.getRsId())).withRel("genomic-contexts"));
+        singleNucleotidePolymorphismDTO.add(linkTo(methodOn(GenomicContextController.class).getGenomicContexts(snp.getRsId())).withRel("genomic_contexts"));
         return singleNucleotidePolymorphismDTO;
     }
 

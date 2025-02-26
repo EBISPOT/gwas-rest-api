@@ -5,11 +5,13 @@ import org.springframework.data.domain.Pageable;
 import uk.ac.ebi.spot.gwas.model.UnpublishedStudy;
 import uk.ac.ebi.spot.gwas.rest.dto.SearchUnpublishedStudyParams;
 
+import java.util.Optional;
+
 public interface UnpublishedStudyService {
 
   Page<UnpublishedStudy> getUnpublishedStudies(SearchUnpublishedStudyParams searchUnpublishedStudyParams, Pageable pageable);
 
-  UnpublishedStudy findByAccession(String accession);
+  Optional<UnpublishedStudy> findByAccession(String accession);
 
   Page<UnpublishedStudy> findByBodyOfWork(Long bowId, Pageable pageable);
 

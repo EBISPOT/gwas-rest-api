@@ -4,10 +4,11 @@ import uk.ac.ebi.spot.gwas.model.Ancestry;
 import uk.ac.ebi.spot.gwas.model.UnpublishedAncestry;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UnpublishedAncestryService {
 
     List<UnpublishedAncestry> getAllUnpublishedAncestry(String accessionId);
 
-    UnpublishedAncestry getAncestry(Long id);
+    Optional<UnpublishedAncestry> getAncestry(Long id);
 }
