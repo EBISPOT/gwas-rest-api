@@ -142,7 +142,7 @@ SnpServiceImpl implements SnpService {
                     .collect(Collectors.toList());
 
             List<String>  mappedDownStreamGenes =  geneProjections.stream()
-                    .filter(GeneProjection::getIsUpstream)
+                    .filter(GeneProjection::getIsDownstream)
                     .filter(geneProjection -> ( minDownStreamDistance.longValue() == geneProjection.getDistance().longValue()))
                     .map(GeneProjection::getGeneName)
                     .distinct()

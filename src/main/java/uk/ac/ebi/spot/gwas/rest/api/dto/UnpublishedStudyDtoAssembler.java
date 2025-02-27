@@ -50,7 +50,7 @@ public class UnpublishedStudyDtoAssembler extends RepresentationModelAssemblerSu
 
         BodyOfWork bodyOfWork = unpublishedStudy.getBodiesOfWork().stream().findFirst().orElse(null);
         if (bodyOfWork != null) {
-            unpublishedStudyDTO.add(linkTo(methodOn(BodyOfWorkController.class).getBodyOfWork(bodyOfWork.getPublicationId())).withRel("body_of_work"));
+            unpublishedStudyDTO.add(linkTo(methodOn(BodyOfWorkController.class).getBodyOfWork(bodyOfWork.getId())).withRel("body_of_work"));
         }
         return unpublishedStudyDTO;
     }

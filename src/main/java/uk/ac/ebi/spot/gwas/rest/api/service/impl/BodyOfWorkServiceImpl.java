@@ -33,7 +33,9 @@ public class BodyOfWorkServiceImpl implements BodyOfWorkService {
         return bodyOfWorkRepository.findAll(pageable);
     }
 
-   public Optional<BodyOfWork> getBodyOfWork(String bowId) {
-       return bodyOfWorkRepository.findByPublicationId(bowId);
+
+   public Optional<BodyOfWork> getBodyOfWork(Long bowId) {
+       return bodyOfWorkRepository.findById(bowId);
    }
+
 }

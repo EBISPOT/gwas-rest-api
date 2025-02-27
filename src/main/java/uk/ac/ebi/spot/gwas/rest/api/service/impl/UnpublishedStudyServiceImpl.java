@@ -64,7 +64,7 @@ public class UnpublishedStudyServiceImpl implements UnpublishedStudyService {
             if (searchUnpublishedStudyParams.getDiseaseTrait() != null) {
                 isExpressionNotEmpty = true;
                 unpublishedStudyJPQLQuery = unpublishedStudyJPQLQuery.where(qUnpublishedStudy.trait
-                        .equalsIgnoreCase(searchUnpublishedStudyParams.getDiseaseTrait()));
+                        .containsIgnoreCase(searchUnpublishedStudyParams.getDiseaseTrait()));
             }
 
             if (searchUnpublishedStudyParams.getTitle() != null) {
@@ -104,9 +104,10 @@ public class UnpublishedStudyServiceImpl implements UnpublishedStudyService {
         return unpublishedStudyRepository.findByAccession(accession);
     }
 
-    public Page<UnpublishedStudy> findByBodyOfWork(String bowId, Pageable pageable) {
+
+    public Page<UnpublishedStudy> findByBodyOfWork(Long bowId, Pageable pageable) {
         return bodyOfWorkService.getBodyOfWork(bowId)
-                .map(bodyOfWork -> unpublishedStudyRepository.findByBodiesOfWorkPublicationId(bowId, pageable))
-                .orElseThrow(() -> new EntityNotFoundException(EntityType.BODY_OF_WORKS, "id", bowId));
+                .map(bodyOfWork -> unpublishedStudyRepository.findByBodiesOfWorkId(bowId, pageable))
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.BODY_OF_WORKS, "id", String.valueOf(bowId)));
     }
 }

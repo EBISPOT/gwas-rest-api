@@ -57,15 +57,16 @@ public class BodyOfWorkController {
     }
 
     @GetMapping(value = "/{bowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BodyOfWorkDTO> getBodyOfWork(@PathVariable String bowId) {
+
+    public ResponseEntity<BodyOfWorkDTO> getBodyOfWork(@PathVariable Long bowId) {
         return bodyOfWorkService.getBodyOfWork(bowId)
                 .map(bodyOfWorkDtoAssembler::toModel)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new EntityNotFoundException(EntityType.BODY_OF_WORKS, "Id", bowId));
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.BODY_OF_WORKS, "Id", String.valueOf(bowId)));
     }
 
     @GetMapping(value = "/{bowId}"+RestAPIConstants.API_UNPUBLISHED_STUDIES, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@PathVariable String bowId, Pageable pageable) {
+    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@PathVariable Long bowId, Pageable pageable) {
         Page<UnpublishedStudy> unpublishedStudies = unpublishedStudyService.findByBodyOfWork(bowId, pageable);
         return unpublishedStudyPagedResourcesAssembler.toModel(unpublishedStudies, unpublishedStudyDtoAssembler);
     }

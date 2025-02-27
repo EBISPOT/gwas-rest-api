@@ -10,5 +10,7 @@ public interface BodyOfWorkService {
 
    Page<BodyOfWork> getBodyOfWork(String title, String firstAuthor, Pageable pageable);
 
-   Optional<BodyOfWork> getBodyOfWork(String bowId);
+
+   Optional<BodyOfWork> getBodyOfWork(Long bowId);
+
 }
