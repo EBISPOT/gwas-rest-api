@@ -43,7 +43,6 @@ public class GeneSolrDtoAssembler extends RepresentationModelAssemblerSupport<Ge
                         geneSolrDto.getChromosomeEnd()))
                 .build();
         geneDTO.add(linkTo(methodOn(GeneController.class).getGeneByName(geneDTO.getGeneName())).withSelfRel());
-        geneDTO.add(linkTo(methodOn(GeneController.class).searchGenes(null)).withRel("search"));
         return geneDTO;
     }
 }
