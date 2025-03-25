@@ -10,6 +10,8 @@ logging:
 
 
 spring:
+  profiles:
+    active: local
   datasource:
     url:
     driver-class-name: oracle.jdbc.driver.OracleDriver

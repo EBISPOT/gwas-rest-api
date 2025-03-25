@@ -69,10 +69,20 @@ public class AssociationServiceImpl implements AssociationService {
                 associationJPQLQuery = associationJPQLQuery
                         .innerJoin(qAssociation.study, qStudy);
             }*/
-            if(searchAssociationParams.getEfoTrait() != null || searchAssociationParams.getShortForm() != null) {
+            if(searchAssociationParams.getShowChildTrait() != null && (searchAssociationParams.getEfoTrait() != null || searchAssociationParams.getShortForm() != null)) {
+                if(searchAssociationParams.getShowChildTrait()) {
+                    associationJPQLQuery = associationJPQLQuery
+                            .innerJoin(qAssociation.parentEfoTraits, qEfoTrait);
+                } else {
+                    associationJPQLQuery = associationJPQLQuery
+                            .innerJoin(qAssociation.efoTraits, qEfoTrait);
+                }
+            }
+            if(searchAssociationParams.getShowChildTrait() == null &&  (searchAssociationParams.getEfoTrait() != null || searchAssociationParams.getShortForm() != null)) {
                 associationJPQLQuery = associationJPQLQuery
                         .innerJoin(qAssociation.efoTraits, qEfoTrait);
             }
+
             if(searchAssociationParams.getRsId() != null) {
                 isExpressionNotEmpty = true;
                 associationJPQLQuery = associationJPQLQuery
@@ -105,6 +115,7 @@ public class AssociationServiceImpl implements AssociationService {
                 associationJPQLQuery = associationJPQLQuery
                         .where(qEfoTrait.shortForm.equalsIgnoreCase(searchAssociationParams.getShortForm()));
             }
+
             if(isExpressionNotEmpty) {
                 associationJPQLQuery = associationJPQLQuery
                         .innerJoin(qAssociation.study, qStudy)
