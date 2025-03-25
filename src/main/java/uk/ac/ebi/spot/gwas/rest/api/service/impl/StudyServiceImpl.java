@@ -1,7 +1,5 @@
 package uk.ac.ebi.spot.gwas.rest.api.service.impl;
 
-import com.querydsl.core.group.GroupBy;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilderFactory;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,7 +15,6 @@ import uk.ac.ebi.spot.gwas.model.*;
 import uk.ac.ebi.spot.gwas.rest.api.repository.StudyRepository;
 import uk.ac.ebi.spot.gwas.rest.api.service.StudyService;
 import uk.ac.ebi.spot.gwas.rest.dto.SearchStudyParams;
-import uk.ac.ebi.spot.gwas.rest.projection.StudyProjection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -40,7 +37,6 @@ public class StudyServiceImpl implements StudyService {
 
     @Transactional(readOnly = true)
     public  Page<Study> getStudies(Pageable pageable, SearchStudyParams searchStudyParams) {
-        Page<StudyProjection> studyProjections = null;
         QStudy qStudy = QStudy.study;
         QStudyExtension qStudyExtension = QStudyExtension.studyExtension;
         QEfoTrait qEfoTrait = QEfoTrait.efoTrait;
@@ -59,11 +55,24 @@ public class StudyServiceImpl implements StudyService {
         log.info("searchStudyParams {}", searchStudyParams);
         log.info("Inside searchStudyParams not null block");
         try {
-            if (searchStudyParams.getEfoTrait() != null || searchStudyParams.getShortForm() != null) {
+
+            if (searchStudyParams.getShowChildTrait() != null && (searchStudyParams.getEfoTrait() != null || searchStudyParams.getShortForm() != null)) {
+                if(searchStudyParams.getShowChildTrait()) {
+                    isExpressionNotEmpty = true;
+                    studyJPQLQuery =  studyJPQLQuery
+                            .innerJoin(qStudy.parentStudyEfoTraits, qEfoTrait);
+                } else {
+                    studyJPQLQuery =  studyJPQLQuery
+                            .innerJoin(qStudy.efoTraits, qEfoTrait);
+                }
+            }
+            if (searchStudyParams.getShowChildTrait() == null && (searchStudyParams.getEfoTrait() != null || searchStudyParams.getShortForm() != null)) {
+                isExpressionNotEmpty = true;
                 studyJPQLQuery =  studyJPQLQuery
                         .innerJoin(qStudy.efoTraits, qEfoTrait);
             }
             if (searchStudyParams.getDiseaseTrait() != null) {
+                isExpressionNotEmpty = true;
                 studyJPQLQuery = studyJPQLQuery.
                         innerJoin(qStudy.diseaseTrait, qDiseaseTrait);
             }
