@@ -93,7 +93,7 @@ deploy-backend-sandbox-migration:
     - echo ${PLIVE_KUBECONFIG} | base64 -d > /root/.kube/config
     - helm init --stable-repo-url https://charts.helm.sh/stable
     - helm delete --purge gwas-rest-api-dev || true
-    - helm install --name gwas-rest-api-dev --set k8Namespace=gwas-dev,service.name=gwas-rest-api-dev,ingress.name=rest-api-ingress-dev,image.env.envName=sandbox-migration,image.volume.claimName=gwas-dev-depo-logs,image.repository=$BACKEND_REGISTRY_IMAGE,image.tag=$CI_COMMIT_SHA,image.env.dbUser=gwas,image.env.secretsName=sandbox-secrets,image.env.secretsKey=oracle-backend,image.env.HTTP_PROXY="http://hh-wwwcache.ebi.ac.uk:3128",image.env.HTTPS_PROXY="http://hh-wwwcache.ebi.ac.uk:3128",image.env.http_proxy="http://hh-wwwcache.ebi.ac.uk:3128",image.env.https_proxy="http://hh-wwwcache.ebi.ac.uk:3128" ./k8chart/ --wait
+    - helm install --name gwas-rest-api-dev --set k8Namespace=gwas-dev,service.name=gwas-rest-api-dev,ingress.name=rest-api-ingress-dev,image.env.envName=sandbox-migration,image.volume.claimName=gwas-dev-depo-logs,image.repository=$BACKEND_REGISTRY_IMAGE,image.tag=$CI_COMMIT_SHA,image.env.dbUser=gwas,image.env.secretsName=sandbox-secrets,image.env.secretsKey=oracle-backend,image.env.HTTP_PROXY="http://hh-wwwcache.ebi.ac.uk:3128",image.env.HTTPS_PROXY="http://hh-wwwcache.ebi.ac.uk:3128",image.env.http_proxy="http://hh-wwwcache.ebi.ac.uk:3128",image.env.https_proxy="http://hh-wwwcache.ebi.ac.uk:3128",image.env.no_proxy="localhost,.cluster.local"  ./k8chart/ --wait
   environment:
     name: sandbox-migration
   only:
