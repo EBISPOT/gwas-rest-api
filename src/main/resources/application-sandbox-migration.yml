@@ -16,6 +16,6 @@ spring:
 #      hibernate.hibernate.format_sql : true
 
 gwas-ui:
-  url: https://wwwdev.ebi.ac.uk/gwas
+  url: https://www.ebi.ac.uk/gwas
 
 
