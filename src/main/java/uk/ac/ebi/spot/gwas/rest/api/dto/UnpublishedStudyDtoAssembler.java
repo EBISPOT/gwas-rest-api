@@ -26,11 +26,14 @@ public class UnpublishedStudyDtoAssembler extends RepresentationModelAssemblerSu
 
     @Override
     public UnpublishedStudyDTO toModel(UnpublishedStudy unpublishedStudy) {
+
+        BodyOfWork bodyOfWork = getBodoyofWork(unpublishedStudy);
         UnpublishedStudyDTO unpublishedStudyDTO = UnpublishedStudyDTO.builder()
                 .accession(unpublishedStudy.getAccession())
                 .agreedToCc0(unpublishedStudy.getAgreedToCc0())
                 .arrayInformation(unpublishedStudy.getArrayInformation())
                 .arrayManufacturer(unpublishedStudy.getArrayManufacturer())
+                .trait(unpublishedStudy.getTrait())
                 .backgroundEfoTrait(unpublishedStudy.getBackgroundEfoTrait())
                 .backgroundTrait(unpublishedStudy.getBackgroundTrait())
                 .cohort(unpublishedStudy.getCohort())
@@ -44,11 +47,13 @@ public class UnpublishedStudyDtoAssembler extends RepresentationModelAssemblerSu
                 .sampleDescription(unpublishedStudy.getSampleDescription())
                 .variantCount(unpublishedStudy.getVariantCount())
                 .fullSummaryStats(unpublishedStudy.getAccession() != null ? this.getSummaryStatsFTPDetails(unpublishedStudy.getAccession()) : "NA")
+                .firstAuthor(bodyOfWork != null ? bodyOfWork.getFirstAuthor() : null)
+                .title(bodyOfWork != null ? bodyOfWork.getTitle() : null)
                 .build();
         unpublishedStudyDTO.add(linkTo(methodOn(UnpublishedStudiesController.class).getUnpublishedStudy(unpublishedStudy.getAccession())).withSelfRel());
         unpublishedStudyDTO.add(linkTo(methodOn(UnpublishedAncestriesController.class).getUnpublishedAncestries(unpublishedStudy.getAccession())).withRel("ancestries"));
 
-        BodyOfWork bodyOfWork = unpublishedStudy.getBodiesOfWork().stream().findFirst().orElse(null);
+
         if (bodyOfWork != null) {
             unpublishedStudyDTO.add(linkTo(methodOn(BodyOfWorkController.class).getBodyOfWork(bodyOfWork.getId())).withRel("body_of_work"));
         }
@@ -68,6 +73,10 @@ public class UnpublishedStudyDtoAssembler extends RepresentationModelAssemblerSu
         String range = "GCST"+ StringUtils.leftPad(String.valueOf(lowerRange),6,"0")
                 +"-GCST"+StringUtils.leftPad(String.valueOf(upperRange),6,"0");
         return range;
+    }
+
+    private BodyOfWork getBodoyofWork(UnpublishedStudy unpublishedStudy) {
+       return  unpublishedStudy.getBodiesOfWork().stream().findFirst().orElse(null);
     }
 
 
