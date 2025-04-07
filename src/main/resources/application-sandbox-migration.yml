@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /gwas/rest/beta/api
+    context-path: /gwas/beta/rest/api
 
 
 
