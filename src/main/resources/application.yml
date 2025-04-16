@@ -41,6 +41,9 @@ sumstats:
 terms-of-use:
   link: https://www.ebi.ac.uk/about/terms-of-use/
 
+gwas-ui:
+  url: https://www.ebi.ac.uk/gwas
+
 
 cco:
   link: https://creativecommons.org/publicdomain/zero/1.0/

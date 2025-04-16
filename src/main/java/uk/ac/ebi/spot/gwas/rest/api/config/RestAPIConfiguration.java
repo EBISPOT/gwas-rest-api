@@ -28,4 +28,7 @@ public class RestAPIConfiguration {
 
     @Value("${cco.exception.readme-text:#{NULL}}")
     private String ccoReadmeText;
+
+    @Value("${gwas-ui.url}")
+    private String gwasUiUrl;
 }
