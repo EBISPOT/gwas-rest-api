@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import uk.ac.ebi.spot.gwas.rest.dto.UnpublishedStudyDTO;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_UNPUBLISHED_STUDIES)
+@Tag(name = "unpublished-studies")
 public class UnpublishedStudiesController {
 
     @Autowired

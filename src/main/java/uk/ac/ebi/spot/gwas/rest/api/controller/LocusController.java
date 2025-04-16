@@ -1,6 +1,7 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_ASSOCIATIONS)
+@Tag(name = "loci")
 public class LocusController {
 
     @Autowired
