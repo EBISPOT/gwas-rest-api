@@ -44,7 +44,7 @@ public class LocusDtoAssembler extends RepresentationModelAssemblerSupport<Locus
                                 .collect(Collectors.toList()) : null)
                 .authorReportedGenes(locus.getAuthorReportedGenes() != null ?
                         locus.getAuthorReportedGenes().stream()
-                                .map(geneDtoAssembler::assemble)
+                                .map(geneDtoAssembler::toModel)
                                 .collect(Collectors.toList()) : null)
                 .build();
         locusDTO.add(linkTo(methodOn(LocusController.class).getLocus(String.valueOf(associationId),

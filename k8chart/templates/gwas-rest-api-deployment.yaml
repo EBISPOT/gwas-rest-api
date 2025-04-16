@@ -50,6 +50,16 @@ spec:
             secretKeyRef:
               name: {{.Values.image.env.secretsName}}
               key: {{.Values.image.env.secretsKey}}
+        - name: HTTP_PROXY
+          value: {{.Values.image.env.http_proxy}}
+        - name: http_proxy
+          value: {{.Values.image.env.http_proxy}}
+        - name: HTTPS_PROXY
+          value: {{.Values.image.env.http_proxy}}
+        - name: https_proxy
+          value: {{.Values.image.env.http_proxy}}
+        - name: no_proxy
+          value: {{.Values.image.env.no_proxy}}
 
       volumes:
       - name: log

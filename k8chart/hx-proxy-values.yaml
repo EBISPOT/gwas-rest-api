@@ -1,0 +1,4 @@
+image:
+  env:
+    http_proxy: "http://hx-wwwcache.ebi.ac.uk:3128"
+    no_proxy: "localhost,.cluster.local"

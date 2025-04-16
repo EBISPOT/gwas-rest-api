@@ -41,7 +41,7 @@ public class GenomicContextDtoAssembler extends RepresentationModelAssemblerSupp
                 .isIntergenic(genomicContext.getIsIntergenic())
                 .isUpstream(genomicContext.getIsUpstream())
                 .geneDTO(genomicContext.getGene() != null ?
-                        geneDtoAssembler.assemble(genomicContext.getGene()) : null)
+                        geneDtoAssembler.toModel(genomicContext.getGene()) : null)
                 .locationDTO(genomicContext.getLocation() != null ?
                         locationDtoAssembler.assemble(genomicContext.getLocation()) : null)
                 .distance(genomicContext.getDistance())

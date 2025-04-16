@@ -8,6 +8,8 @@ import uk.ac.ebi.spot.gwas.model.BodyOfWork;
 import uk.ac.ebi.spot.gwas.rest.api.repository.BodyOfWorkRepository;
 import uk.ac.ebi.spot.gwas.rest.api.service.BodyOfWorkService;
 
+import java.util.Optional;
+
 @Service
 public class BodyOfWorkServiceImpl implements BodyOfWorkService {
 
@@ -31,7 +33,9 @@ public class BodyOfWorkServiceImpl implements BodyOfWorkService {
         return bodyOfWorkRepository.findAll(pageable);
     }
 
-   public BodyOfWork getBodyOfWork(String bowId) {
-       return bodyOfWorkRepository.findByPublicationId(bowId).orElse(null);
+
+   public Optional<BodyOfWork> getBodyOfWork(Long bowId) {
+       return bodyOfWorkRepository.findById(bowId);
    }
+
 }

@@ -9,12 +9,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.Querydsl;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.spot.gwas.model.*;
+import uk.ac.ebi.spot.gwas.rest.api.repository.GeneRepository;
 import uk.ac.ebi.spot.gwas.rest.api.repository.SingleNucleotidePolymorphismRepository;
 import uk.ac.ebi.spot.gwas.rest.api.service.SnpService;
 import uk.ac.ebi.spot.gwas.rest.dto.SearchSnpParams;
+import uk.ac.ebi.spot.gwas.rest.projection.GeneProjection;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,8 +33,11 @@ SnpServiceImpl implements SnpService {
 
     private SingleNucleotidePolymorphismRepository singleNucleotidePolymorphismRepository;
 
-    public SnpServiceImpl(SingleNucleotidePolymorphismRepository singleNucleotidePolymorphismRepository) {
+    private GeneRepository geneRepository;
+
+    public SnpServiceImpl(SingleNucleotidePolymorphismRepository singleNucleotidePolymorphismRepository, GeneRepository geneRepository) {
         this.singleNucleotidePolymorphismRepository = singleNucleotidePolymorphismRepository;
+        this.geneRepository = geneRepository;
     }
 
     public Page<SingleNucleotidePolymorphism> getSnps(SearchSnpParams searchSnpParams, Pageable pageable) {
@@ -105,11 +115,56 @@ SnpServiceImpl implements SnpService {
             log.error("Throwable in dsl query"+ex.getMessage(),ex);
         }
         log.info("Outside the QueryDSL condition");
-    return singleNucleotidePolymorphismRepository.findDistinctByStudiesHousekeepingIsPublishedAndStudiesHousekeepingCatalogPublishDateIsNotNull(true, pageable);
+        return singleNucleotidePolymorphismRepository.findDistinctByStudiesHousekeepingIsPublishedAndStudiesHousekeepingCatalogPublishDateIsNotNull(true, pageable);
 
     }
 
-    public SingleNucleotidePolymorphism getSnp(String rsId) {
-      return  singleNucleotidePolymorphismRepository.findByRsId(rsId).orElse(null);
+    public Optional<SingleNucleotidePolymorphism> getSnp(String rsId) {
+        return  singleNucleotidePolymorphismRepository.findByRsId(rsId);
+    }
+
+    public List<String> findMatchingGenes(Long snpId) {
+        List<GeneProjection> geneProjections = singleNucleotidePolymorphismRepository.findMatchingGenes(snpId, "Ensembl");
+        List<String> mappedGenes = geneProjections.stream()
+                .filter(geneProjection -> !geneProjection.getIsIntergenic())
+                .map(GeneProjection::getGeneName)
+                .distinct()
+                .collect(Collectors.toList());
+
+        if( mappedGenes.isEmpty()) {
+            Long minUpStreamDistance = findMinDistance(geneProjections, "up");
+            Long minDownStreamDistance = findMinDistance(geneProjections, "down");
+            List<String>  mappedUpstreamGenes =  geneProjections.stream()
+                    .filter(GeneProjection::getIsUpstream)
+                    .filter(geneProjection -> ( minUpStreamDistance.longValue() == geneProjection.getDistance().longValue()))
+                    .map(GeneProjection::getGeneName)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            List<String>  mappedDownStreamGenes =  geneProjections.stream()
+                    .filter(GeneProjection::getIsDownstream)
+                    .filter(geneProjection -> ( minDownStreamDistance.longValue() == geneProjection.getDistance().longValue()))
+                    .map(GeneProjection::getGeneName)
+                    .distinct()
+                    .collect(Collectors.toList());
+            mappedGenes.addAll(mappedUpstreamGenes);
+            mappedGenes.addAll(mappedDownStreamGenes);
+            mappedGenes  =  mappedGenes.stream().distinct().collect(Collectors.toList());
+        }
+
+        if( mappedGenes.isEmpty()) {
+            mappedGenes.add("intergenic");
+        }
+
+        return mappedGenes;
+    }
+
+    private Long findMinDistance(List<GeneProjection>  geneProjections, String whichStream) {
+        return geneProjections.stream()
+                .filter(whichStream.equals("up") ? GeneProjection::getIsUpstream : GeneProjection::getIsDownstream)
+                .map(GeneProjection::getDistance)
+                .filter(Objects::nonNull)
+                .min(Long::compareTo)
+                .orElse(null);
     }
 }

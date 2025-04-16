@@ -18,6 +18,8 @@ image:
     dbUser: ""
     secretsName: ""
     secretsKey: ""
+    http_proxy: "http://hh-wwwcache.ebi.ac.uk:3128"
+    no_proxy: "localhost,.cluster.local"
   volume:
     claimName: gwas-depo-logs
 

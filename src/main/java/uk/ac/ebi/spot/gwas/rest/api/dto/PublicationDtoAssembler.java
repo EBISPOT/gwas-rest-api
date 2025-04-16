@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.gwas.model.Publication;
+import uk.ac.ebi.spot.gwas.model.PublicationAuthors;
 import uk.ac.ebi.spot.gwas.rest.api.controller.PublicationsController;
 import uk.ac.ebi.spot.gwas.rest.dto.PublicationDto;
 import java.util.stream.Collectors;
@@ -23,7 +24,8 @@ public class PublicationDtoAssembler extends RepresentationModelAssemblerSupport
         PublicationDto publicationDto =  PublicationDto.builder()
                 .pubmedId(publication.getPubmedId())
                 .publicationDate(publication.getPublicationDate())
-                .authors(publication.getAuthors() != null ? publication.getAuthors().stream()
+                .authors(publication.getAuthors() != null ? publication.getPublicationAuthors().stream()
+                        .map(PublicationAuthors::getAuthor)
                         .map(publicationAuthorDtoAssembler::assemble)
                         .collect(Collectors.toList()) : null)
                 .firstAuthor(publication.getFirstAuthor() != null ?

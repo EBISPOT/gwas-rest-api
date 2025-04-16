@@ -14,6 +14,6 @@ public interface UnpublishedStudyRepository extends JpaRepository<UnpublishedStu
 
    Optional<UnpublishedStudy> findByAccession(String accession);
 
-  Page<UnpublishedStudy> findByBodiesOfWorkPublicationId(String bowId, Pageable pageable);
+  Page<UnpublishedStudy> findByBodiesOfWorkId(Long bowId, Pageable pageable);
 
 }

@@ -9,8 +9,10 @@ import uk.ac.ebi.spot.gwas.rest.api.config.RestAPIConfiguration;
 import uk.ac.ebi.spot.gwas.rest.api.controller.AncestryController;
 import uk.ac.ebi.spot.gwas.rest.api.controller.StudiesController;
 import uk.ac.ebi.spot.gwas.rest.dto.StudyDto;
+
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -24,6 +26,7 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
 
     @Autowired
     RestAPIConfiguration restAPIConfiguration;
+
 
     public StudyDtoAssembler() {
         super(StudiesController.class, StudyDto.class);
@@ -60,7 +63,10 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
                 .discoveryAncestry(study.getAncestries() != null ? this.getInitialAncestryLinks(study) : null)
                 .replicationAncestry(study.getAncestries() != null ? this.getReplicationAncestryLinks(study) : null)
                 .fullSummaryStats(study.getFullPvalueSet() && study.getAccessionId() != null ? this.getSummaryStatsFTPDetails(study.getAccessionId()) : "NA")
-                .termsOfLicense(study.isAgreedToCc0() != null && study.isAgreedToCc0() ? restAPIConfiguration.getTermsOfUseLink() : "NA")
+                .termsOfLicense(this.getTermsLicense(study))
+                .cohort(study.getStudyExtension() != null ? study.getStudyExtension().getCohort() : null)
+                .arrayManufacturer(study.getPlatforms() != null ? study.getPlatforms().stream().map(Platform::getManufacturer)
+                        .collect(Collectors.toList()) : null)
                 .build();
 
         //studyDto.add(linkTo(methodOn(StudiesController.class).getStudy(String.valueOf(study.getId()))).withSelfRel());
@@ -186,6 +192,19 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
                 .stream()
                 .map(GenotypingTechnology::getGenotypingTechnology)
                 .collect(Collectors.toSet());
+    }
+
+
+    private String getTermsLicense(Study study) {
+        String pmid = study.getPublicationId() != null ? study.getPublicationId().getPubmedId() : null;
+        if(study.isAgreedToCc0() != null && study.isAgreedToCc0()) {
+            return restAPIConfiguration.getCcoLink();
+        } else if(restAPIConfiguration.getCcoExceptionPmids().contains(pmid)) {
+            return restAPIConfiguration.getCcoReadmeText();
+        } else {
+            return restAPIConfiguration.getTermsOfUseLink();
+        }
+
     }
 
 

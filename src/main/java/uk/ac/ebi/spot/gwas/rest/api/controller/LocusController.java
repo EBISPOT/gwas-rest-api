@@ -1,15 +1,19 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ebi.spot.gwas.constants.GeneralCommon;
+import uk.ac.ebi.spot.gwas.exception.EntityNotFoundException;
 import uk.ac.ebi.spot.gwas.model.Locus;
+import uk.ac.ebi.spot.gwas.rest.api.constants.EntityType;
 import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
 import uk.ac.ebi.spot.gwas.rest.api.dto.LocusDtoAssembler;
 import uk.ac.ebi.spot.gwas.rest.api.service.LocusService;
@@ -19,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_ASSOCIATIONS)
+@Tag(name = "loci")
 public class LocusController {
 
     @Autowired
@@ -34,9 +39,12 @@ public class LocusController {
     }
 
     @GetMapping(value = "/{associationId}" + RestAPIConstants.API_LOCI + "/{locusId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public LocusDTO getLocus(@PathVariable String associationId, @PathVariable String locusId) {
-      Locus locus =  locusService.findByLocusId(Long.valueOf(locusId));
-      return locusDtoAssembler.toModel(locus, Long.valueOf(associationId));
+    public ResponseEntity<LocusDTO> getLocus(@PathVariable String associationId, @PathVariable String locusId) {
+        return locusService.findByLocusId(Long.valueOf(locusId))
+                .map(locusDtoAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new EntityNotFoundException(EntityType.LOCUS, "Locus id", locusId));
+
     }
 
 

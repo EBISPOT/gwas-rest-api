@@ -18,6 +18,7 @@ import uk.ac.ebi.spot.gwas.rest.dto.SearchAssociationParams;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -68,10 +69,20 @@ public class AssociationServiceImpl implements AssociationService {
                 associationJPQLQuery = associationJPQLQuery
                         .innerJoin(qAssociation.study, qStudy);
             }*/
-            if(searchAssociationParams.getEfoTrait() != null || searchAssociationParams.getShortForm() != null) {
+            if(searchAssociationParams.getShowChildTrait() != null && (searchAssociationParams.getEfoTrait() != null || searchAssociationParams.getShortForm() != null)) {
+                if(searchAssociationParams.getShowChildTrait()) {
+                    associationJPQLQuery = associationJPQLQuery
+                            .innerJoin(qAssociation.parentEfoTraits, qEfoTrait);
+                } else {
+                    associationJPQLQuery = associationJPQLQuery
+                            .innerJoin(qAssociation.efoTraits, qEfoTrait);
+                }
+            }
+            if(searchAssociationParams.getShowChildTrait() == null &&  (searchAssociationParams.getEfoTrait() != null || searchAssociationParams.getShortForm() != null)) {
                 associationJPQLQuery = associationJPQLQuery
                         .innerJoin(qAssociation.efoTraits, qEfoTrait);
             }
+
             if(searchAssociationParams.getRsId() != null) {
                 isExpressionNotEmpty = true;
                 associationJPQLQuery = associationJPQLQuery
@@ -104,6 +115,7 @@ public class AssociationServiceImpl implements AssociationService {
                 associationJPQLQuery = associationJPQLQuery
                         .where(qEfoTrait.shortForm.equalsIgnoreCase(searchAssociationParams.getShortForm()));
             }
+
             if(isExpressionNotEmpty) {
                 associationJPQLQuery = associationJPQLQuery
                         .innerJoin(qAssociation.study, qStudy)
@@ -124,8 +136,8 @@ public class AssociationServiceImpl implements AssociationService {
         return associationRepository.findByStudyHousekeepingIsPublishedAndStudyHousekeepingCatalogPublishDateIsNotNull(true, pageable);
     }
 
-    public Association getAssociation(Long associationId) {
-        return associationRepository.findById(associationId).orElse(null);
+    public Optional<Association> getAssociation(Long associationId) {
+        return associationRepository.findById(associationId);
     }
 
     public List<DiseaseTrait> getDiseaseTraits(Long associationId) {
