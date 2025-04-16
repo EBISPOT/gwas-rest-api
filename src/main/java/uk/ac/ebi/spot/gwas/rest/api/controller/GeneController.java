@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.gwas.constants.GeneralCommon;
@@ -14,6 +15,7 @@ import uk.ac.ebi.spot.gwas.rest.dto.GeneDTO;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_GENES)
+@Tag(name = "genes")
 public class GeneController {
 
     private final GeneService geneService;
@@ -24,8 +26,8 @@ public class GeneController {
         this.geneSolrDtoAssembler = geneSolrDtoAssembler;
     }
 
-    @GetMapping(value = "/{geneName}")
-    public GeneDTO getGeneByName(@PathVariable String geneName) {
+    @GetMapping(value = "/{gene_name}")
+    public GeneDTO getGeneByName(@PathVariable(name = "gene_name") String geneName) {
         GeneSolrDto geneSolrDto = geneService.getGeneByName(geneName);
         return geneSolrDtoAssembler.toModel(geneSolrDto);
     }

@@ -105,11 +105,11 @@ public class StudyServiceImpl implements StudyService {
             }
             if (searchStudyParams.getEfoTrait() != null) {
                 isExpressionNotEmpty = true;
-                studyJPQLQuery = studyJPQLQuery.where(qEfoTrait.trait.containsIgnoreCase(searchStudyParams.getEfoTrait()));
+                studyJPQLQuery = studyJPQLQuery.where(qEfoTrait.trait.equalsIgnoreCase(searchStudyParams.getEfoTrait()));
             }
             if (searchStudyParams.getDiseaseTrait() != null) {
                 isExpressionNotEmpty = true;
-                studyJPQLQuery  =  studyJPQLQuery.where(qDiseaseTrait.trait.containsIgnoreCase(searchStudyParams.getDiseaseTrait()));
+                studyJPQLQuery  =  studyJPQLQuery.where(qDiseaseTrait.trait.equalsIgnoreCase(searchStudyParams.getDiseaseTrait()));
             }
             if (searchStudyParams.getPubmedId() != null) {
                 isExpressionNotEmpty = true;

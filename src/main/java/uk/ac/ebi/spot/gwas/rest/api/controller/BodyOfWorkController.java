@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import uk.ac.ebi.spot.gwas.rest.dto.UnpublishedStudyDTO;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_BODY_OF_WORK)
+@Tag(name = "body-of-works")
 public class BodyOfWorkController {
 
     @Autowired
