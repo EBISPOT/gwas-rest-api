@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,9 @@ public class UnpublishedStudiesController {
     }
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UnpublishedStudyDTO> getUnpublishedStudy(@PathVariable String accessionId) {
+    public ResponseEntity<UnpublishedStudyDTO> getUnpublishedStudy(@PathVariable @Parameter(name = "accessionId",
+            description = "The study’s GWAS Catalog accession ID <br/> <br/>" +
+                    "<i> Example </i> : GCST000854") String accessionId) {
         return unpublishedStudyService.findByAccession(accessionId)
                 .map(unpublishedStudyDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

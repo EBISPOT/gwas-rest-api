@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -28,14 +29,20 @@ public class AncestryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}" + RestAPIConstants.API_ANCESTRIES, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<AncestryDTO> getAncestries(@PathVariable String accessionId) {
+    public CollectionModel<AncestryDTO> getAncestries(@PathVariable @Parameter(name = "accessionId",
+            description = "The study’s GWAS Catalog accession ID <br/> <br/>" +
+            "<i> Example </i> : GCST000854") String accessionId) {
         List<Ancestry> ancestries = ancestryService.getAncestriesForStudy(accessionId);
         return ancestryDtoAssembler.toCollectionModel(ancestries, accessionId);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}" + RestAPIConstants.API_ANCESTRIES +"/{ancestryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AncestryDTO getAncestry(@PathVariable String accessionId, @PathVariable String ancestryId) {
+    public AncestryDTO getAncestry(@PathVariable @Parameter(name = "accessionId",
+            description = "The study’s GWAS Catalog accession ID <br/> <br/>" +
+                    "<i> Example </i> : GCST000854") String accessionId, @PathVariable @Parameter(name = "ancestryId",
+            description = "primary identifier of ancestry table <br/> <br/>" +
+                    "<i> Example </i> : 123456")  String ancestryId) {
         Ancestry ancestry = ancestryService.getAncestry(Long.valueOf(ancestryId));
         return ancestryDtoAssembler.toModel(ancestry, accessionId);
     }

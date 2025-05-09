@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,9 @@ public class AssociationController {
     }
 
     @GetMapping(value = "/{associationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AssociationDTO> getAssociation(@PathVariable String associationId) {
+    public ResponseEntity<AssociationDTO> getAssociation(@PathVariable  @Parameter(name = "associationId",
+            description = "primary identifier of association table <br/> <br/>" +
+                    "<i> Example </i> : 123456")  String associationId) {
         return associationService.getAssociation(Long.valueOf(associationId))
                 .map(associationDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

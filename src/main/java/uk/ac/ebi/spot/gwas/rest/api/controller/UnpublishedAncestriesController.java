@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -30,14 +31,20 @@ public class UnpublishedAncestriesController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES)
-    public CollectionModel<UnpublishedAncestryDTO> getUnpublishedAncestries(@PathVariable String accessionId ) {
+    public CollectionModel<UnpublishedAncestryDTO> getUnpublishedAncestries(@PathVariable @Parameter(name = "accessionId",
+            description = "The study’s GWAS Catalog accession ID <br/> <br/>" +
+                    "<i> Example </i> : GCST000854") String accessionId ) {
         List<UnpublishedAncestry> unpublishedAncestries = unpublishedAncestryService.getAllUnpublishedAncestry(accessionId);
         return unpublishedAncestryDTOAssembler.toCollectionModel(unpublishedAncestries, accessionId);
     }
 
     @GetMapping(value = "/{accessionId}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES + "/{ancestryId}")
-    public ResponseEntity<UnpublishedAncestryDTO> getUnpublishedAncestry(@PathVariable String accessionId,
-                                                         @PathVariable String ancestryId) {
+    public ResponseEntity<UnpublishedAncestryDTO> getUnpublishedAncestry(@PathVariable @Parameter(name = "accessionId",
+            description = "The study’s GWAS Catalog accession ID <br/> <br/>" +
+                    "<i> Example </i> : GCST000854") String accessionId,
+                                                                         @PathVariable @Parameter(name = "ancestryId",
+                                                                                 description = "primary identifier of Ancestry table <br/> <br/>" +
+                                                                                         "<i> Example </i> : 123456") String ancestryId) {
         return unpublishedAncestryService.getAncestry(Long.valueOf(ancestryId))
                 .map(unpublishedAncestryDTOAssembler::toModel)
                 .map(ResponseEntity::ok)

@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,10 @@ public class SnpsController {
     }
 
     @GetMapping(value = "/{rsId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SingleNucleotidePolymorphismDTO> getSingleNucleotidePolymorphism(@PathVariable String rsId) {
+    public ResponseEntity<SingleNucleotidePolymorphismDTO> getSingleNucleotidePolymorphism(@PathVariable @Parameter(name = "rsId",
+            description = "Strongest SNP; if a haplotype it may include more than one" +
+            " rs number (multiple SNPs comprising the haplotype) <br/> <br/>" +
+            "<i> Example </i> : rs3093017 ") String rsId) {
         return snpService.getSnp(rsId)
                 .map(snpDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

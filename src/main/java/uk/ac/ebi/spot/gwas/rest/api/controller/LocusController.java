@@ -1,6 +1,7 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -33,13 +34,19 @@ public class LocusController {
     LocusDtoAssembler locusDtoAssembler;
 
     @GetMapping(value = "/{associationId}" + RestAPIConstants.API_LOCI, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<LocusDTO> getLoci(@PathVariable String associationId) {
+    public CollectionModel<LocusDTO> getLoci(@PathVariable @Parameter(name = "associationId",
+            description = "primary identifier of Association table <br/> <br/>" +
+                    "<i> Example </i> : 123456") String associationId) {
       List<Locus> loci = locusService.findLociByAssociationId(Long.valueOf(associationId));
       return locusDtoAssembler.toCollectionModel(loci, Long.valueOf(associationId));
     }
 
     @GetMapping(value = "/{associationId}" + RestAPIConstants.API_LOCI + "/{locusId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LocusDTO> getLocus(@PathVariable String associationId, @PathVariable String locusId) {
+    public ResponseEntity<LocusDTO> getLocus(@PathVariable @Parameter(name = "associationId",
+            description = "primary identifier of Association table <br/> <br/>" +
+                    "<i> Example </i> : 123456") String associationId, @PathVariable @Parameter(name = "locusId",
+            description = "primary identifier of Locus table <br/> <br/>" +
+                    "<i> Example </i> : 123456") String locusId) {
         return locusService.findByLocusId(Long.valueOf(locusId))
                 .map(locusDtoAssembler::toModel)
                 .map(ResponseEntity::ok)
