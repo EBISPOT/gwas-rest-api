@@ -23,7 +23,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_SNPS)
-@Tag(name = "genomic-contexts")
 public class GenomicContextController {
 
     @Autowired
@@ -33,19 +32,13 @@ public class GenomicContextController {
     GenomicContextDtoAssembler genomicContextDtoAssembler;
 
     @GetMapping(value = "/{rsId}" + RestAPIConstants.API_GENOMIC_CONTEXTS, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<GenomicContextDTO> getGenomicContexts(@PathVariable @Parameter(name = "rsId", description = "Strongest SNP; if a haplotype it may include more than one" +
-            " rs number (multiple SNPs comprising the haplotype) <br/> <br/>" +
-            "<i> Example </i> : rs3093017 ") String rsId) {
+    public CollectionModel<GenomicContextDTO> getGenomicContexts(@PathVariable @Parameter(name = "rsId") String rsId) {
        List<GenomicContext> genomicContexts = genomicContextService.findByRsid(rsId);
         return genomicContextDtoAssembler.toCollectionModel(genomicContexts, rsId);
     }
 
     @GetMapping(value = "/{rsId}" + RestAPIConstants.API_GENOMIC_CONTEXTS + "/{genomicContextId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GenomicContextDTO> getGenomicContext(@PathVariable @Parameter(name = "rsId", description = "Strongest SNP; if a haplotype it may include more than one" +
-            " rs number (multiple SNPs comprising the haplotype) <br/> <br/>" +
-            "<i> Example </i> : rs3093017 ") String rsId ,@PathVariable @Parameter(name = "genomicContextId",
-            description = "primary identifier of genomicContext table <br/> <br/>" +
-                    "<i> Example </i> : 123456") String genomicContextId) {
+    public ResponseEntity<GenomicContextDTO> getGenomicContext(@PathVariable @Parameter(name = "rsId") String rsId ,@PathVariable @Parameter(name = "genomicContextId") String genomicContextId) {
         return genomicContextService.findByGenomicContextId(genomicContextId)
                 .map(genomicContextDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

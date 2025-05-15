@@ -1,6 +1,11 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.gwas.constants.GeneralCommon;
 import uk.ac.ebi.spot.gwas.exception.EntityNotFoundException;
+import uk.ac.ebi.spot.gwas.exception.ErrorResponse;
 import uk.ac.ebi.spot.gwas.model.Association;
 import uk.ac.ebi.spot.gwas.rest.api.constants.EntityType;
 import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
@@ -26,7 +32,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.SearchAssociationParams;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_ASSOCIATIONS)
-@Tag(name = "associations")
 public class AssociationController {
 
     @Autowired
@@ -38,6 +43,7 @@ public class AssociationController {
     @Autowired
     PagedResourcesAssembler<Association> pagedResourcesAssembler;
 
+
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PagedModel<AssociationDTO> getAssociations(@RequestParam SearchAssociationParams searchAssociationParams,
@@ -47,9 +53,7 @@ public class AssociationController {
     }
 
     @GetMapping(value = "/{associationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AssociationDTO> getAssociation(@PathVariable  @Parameter(name = "associationId",
-            description = "primary identifier of association table <br/> <br/>" +
-                    "<i> Example </i> : 123456")  String associationId) {
+    public ResponseEntity<AssociationDTO> getAssociation(@PathVariable  @Parameter(name = "associationId")  String associationId) {
         return associationService.getAssociation(Long.valueOf(associationId))
                 .map(associationDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

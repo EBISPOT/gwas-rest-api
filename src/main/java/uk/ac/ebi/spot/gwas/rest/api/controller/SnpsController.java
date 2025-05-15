@@ -24,7 +24,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.SingleNucleotidePolymorphismDTO;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_SNPS)
-@Tag(name = "single-nucleotide-polymorphisms")
 public class SnpsController {
 
     @Autowired
@@ -44,10 +43,7 @@ public class SnpsController {
     }
 
     @GetMapping(value = "/{rsId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SingleNucleotidePolymorphismDTO> getSingleNucleotidePolymorphism(@PathVariable @Parameter(name = "rsId",
-            description = "Strongest SNP; if a haplotype it may include more than one" +
-            " rs number (multiple SNPs comprising the haplotype) <br/> <br/>" +
-            "<i> Example </i> : rs3093017 ") String rsId) {
+    public ResponseEntity<SingleNucleotidePolymorphismDTO> getSingleNucleotidePolymorphism(@PathVariable @Parameter(name = "rsId") String rsId) {
         return snpService.getSnp(rsId)
                 .map(snpDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

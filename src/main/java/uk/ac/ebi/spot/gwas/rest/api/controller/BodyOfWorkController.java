@@ -29,7 +29,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.UnpublishedStudyDTO;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_BODY_OF_WORK)
-@Tag(name = "body-of-works")
 public class BodyOfWorkController {
 
     @Autowired
@@ -52,22 +51,15 @@ public class BodyOfWorkController {
 
    @ResponseStatus(HttpStatus.OK)
    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-   public PagedModel<BodyOfWorkDTO> getBodiesOfWork(@RequestParam(value = "title", required = false)     @Parameter(name = "title",
-                                                    description = "Title of manuscript the GWAS is included in <br/> <br/>" +
-                                                    "<i> Example </i> : Genome-wide association study") String title,
-                                                    @RequestParam(value = "first_author", required = false) @Parameter(name = "first_author",
-                                                            description = "Last name and initials of first author <br/> <br/>" +
-                                                            "<i> Example </i> : Doe John") String firstAuthor,
+   public PagedModel<BodyOfWorkDTO> getBodiesOfWork(@RequestParam(value = "title", required = false)     @Parameter(name = "title") String title,
+                                                    @RequestParam(value = "first_author", required = false) @Parameter(name = "first_author") String firstAuthor,
                                                     @SortDefault(sort = "id", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
        Page<BodyOfWork> bodyOfWorks = bodyOfWorkService.getBodyOfWork(title, firstAuthor, pageable);
        return pagedResourcesAssembler.toModel(bodyOfWorks, bodyOfWorkDtoAssembler);
     }
 
     @GetMapping(value = "/{bowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-
-    public ResponseEntity<BodyOfWorkDTO> getBodyOfWork(@PathVariable  @Parameter(name = "bowId",
-            description = "primary identifier of Body of work table <br/> <br/>" +
-                    "<i> Example </i> : 123456") Long bowId) {
+    public ResponseEntity<BodyOfWorkDTO> getBodyOfWork(@PathVariable  @Parameter(name = "bowId") Long bowId) {
         return bodyOfWorkService.getBodyOfWork(bowId)
                 .map(bodyOfWorkDtoAssembler::toModel)
                 .map(ResponseEntity::ok)
@@ -75,9 +67,7 @@ public class BodyOfWorkController {
     }
 
     @GetMapping(value = "/{bowId}"+RestAPIConstants.API_UNPUBLISHED_STUDIES, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@PathVariable  @Parameter(name = "bowId",
-            description = "primary identifier of Body of work table <br/> <br/>" +
-                    "<i> Example </i> : 123456") Long bowId, @ParameterObject Pageable pageable) {
+    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@PathVariable  @Parameter(name = "bowId") Long bowId, @ParameterObject Pageable pageable) {
         Page<UnpublishedStudy> unpublishedStudies = unpublishedStudyService.findByBodyOfWork(bowId, pageable);
         return unpublishedStudyPagedResourcesAssembler.toModel(unpublishedStudies, unpublishedStudyDtoAssembler);
     }

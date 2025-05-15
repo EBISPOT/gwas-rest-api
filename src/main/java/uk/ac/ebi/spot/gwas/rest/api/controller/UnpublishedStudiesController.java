@@ -26,7 +26,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.UnpublishedStudyDTO;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_UNPUBLISHED_STUDIES)
-@Tag(name = "unpublished-studies")
 public class UnpublishedStudiesController {
 
     @Autowired
@@ -47,9 +46,7 @@ public class UnpublishedStudiesController {
     }
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UnpublishedStudyDTO> getUnpublishedStudy(@PathVariable @Parameter(name = "accessionId",
-            description = "The study’s GWAS Catalog accession ID <br/> <br/>" +
-                    "<i> Example </i> : GCST000854") String accessionId) {
+    public ResponseEntity<UnpublishedStudyDTO> getUnpublishedStudy(@PathVariable @Parameter(name = "accessionId") String accessionId) {
         return unpublishedStudyService.findByAccession(accessionId)
                 .map(unpublishedStudyDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

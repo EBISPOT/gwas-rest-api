@@ -24,7 +24,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.SearchEfoParams;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_EFO_TRAITS)
-@Tag(name = "efo-traits")
 public class EFOTraitsController {
 
     @Autowired
@@ -45,9 +44,7 @@ public class EFOTraitsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{efoId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EFOTraitDTO> getEFOTraitsDTO(@PathVariable  @Parameter(name = "efoId",
-            description = "primary identifier of EFo Traits table <br/> <br/>" +
-                    "<i> Example </i> : 123456") String efoId) {
+    public ResponseEntity<EFOTraitDTO> getEFOTraitsDTO(@PathVariable  @Parameter(name = "efoId") String efoId) {
         return efoTraitService.getEFOTrait(efoId)
                 .map(efoTraitDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

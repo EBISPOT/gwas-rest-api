@@ -20,7 +20,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_UNPUBLISHED_STUDIES)
-@Tag(name = "unpublished-ancestries")
 public class UnpublishedAncestriesController {
 
     @Autowired
@@ -31,20 +30,14 @@ public class UnpublishedAncestriesController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES)
-    public CollectionModel<UnpublishedAncestryDTO> getUnpublishedAncestries(@PathVariable @Parameter(name = "accessionId",
-            description = "The study’s GWAS Catalog accession ID <br/> <br/>" +
-                    "<i> Example </i> : GCST000854") String accessionId ) {
+    public CollectionModel<UnpublishedAncestryDTO> getUnpublishedAncestries(@PathVariable @Parameter(name = "accessionId") String accessionId ) {
         List<UnpublishedAncestry> unpublishedAncestries = unpublishedAncestryService.getAllUnpublishedAncestry(accessionId);
         return unpublishedAncestryDTOAssembler.toCollectionModel(unpublishedAncestries, accessionId);
     }
 
     @GetMapping(value = "/{accessionId}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES + "/{ancestryId}")
-    public ResponseEntity<UnpublishedAncestryDTO> getUnpublishedAncestry(@PathVariable @Parameter(name = "accessionId",
-            description = "The study’s GWAS Catalog accession ID <br/> <br/>" +
-                    "<i> Example </i> : GCST000854") String accessionId,
-                                                                         @PathVariable @Parameter(name = "ancestryId",
-                                                                                 description = "primary identifier of Ancestry table <br/> <br/>" +
-                                                                                         "<i> Example </i> : 123456") String ancestryId) {
+    public ResponseEntity<UnpublishedAncestryDTO> getUnpublishedAncestry(@PathVariable @Parameter(name = "accessionId") String accessionId,
+                                                                         @PathVariable @Parameter(name = "ancestryId") String ancestryId) {
         return unpublishedAncestryService.getAncestry(Long.valueOf(ancestryId))
                 .map(unpublishedAncestryDTOAssembler::toModel)
                 .map(ResponseEntity::ok)

@@ -24,7 +24,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_ASSOCIATIONS)
-@Tag(name = "loci")
 public class LocusController {
 
     @Autowired
@@ -34,19 +33,13 @@ public class LocusController {
     LocusDtoAssembler locusDtoAssembler;
 
     @GetMapping(value = "/{associationId}" + RestAPIConstants.API_LOCI, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<LocusDTO> getLoci(@PathVariable @Parameter(name = "associationId",
-            description = "primary identifier of Association table <br/> <br/>" +
-                    "<i> Example </i> : 123456") String associationId) {
+    public CollectionModel<LocusDTO> getLoci(@PathVariable @Parameter(name = "associationId") String associationId) {
       List<Locus> loci = locusService.findLociByAssociationId(Long.valueOf(associationId));
       return locusDtoAssembler.toCollectionModel(loci, Long.valueOf(associationId));
     }
 
     @GetMapping(value = "/{associationId}" + RestAPIConstants.API_LOCI + "/{locusId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LocusDTO> getLocus(@PathVariable @Parameter(name = "associationId",
-            description = "primary identifier of Association table <br/> <br/>" +
-                    "<i> Example </i> : 123456") String associationId, @PathVariable @Parameter(name = "locusId",
-            description = "primary identifier of Locus table <br/> <br/>" +
-                    "<i> Example </i> : 123456") String locusId) {
+    public ResponseEntity<LocusDTO> getLocus(@PathVariable @Parameter(name = "associationId") String associationId, @PathVariable @Parameter(name = "locusId") String locusId) {
         return locusService.findByLocusId(Long.valueOf(locusId))
                 .map(locusDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

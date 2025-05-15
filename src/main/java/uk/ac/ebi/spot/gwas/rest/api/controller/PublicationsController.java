@@ -23,7 +23,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.PublicationDto;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_PUBLICATIONS)
-@Tag(name = "publications")
 public class PublicationsController {
 
     @Autowired
@@ -37,15 +36,9 @@ public class PublicationsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<PublicationDto> getPublications(@RequestParam(value = "pubmed_id", required = false)  @Parameter(name = "pubmed_id",
-                                                        description = "pubmedId of the publication <br/> <br/>" +
-                                                        "<i> Example </i> : 35241825") String pubmedId,
-                                                      @RequestParam(value = "title", required = false)  @Parameter(name = "title",
-                                                              description = "Title of manuscript the GWAS is included in <br/> <br/>" +
-                                                              "<i> Example </i> : Genome-wide association study") String title,
-                                                      @RequestParam(value = "first_author", required = false) @Parameter(name = "first_author",
-                                                              description = "Last name and initials of first author <br/> <br/>" +
-                                                              "<i> Example </i> : Doe John") String firstAuthor,
+    public PagedModel<PublicationDto> getPublications(@RequestParam(value = "pubmed_id", required = false)  @Parameter(name = "pubmed_id") String pubmedId,
+                                                      @RequestParam(value = "title", required = false)  @Parameter(name = "title") String title,
+                                                      @RequestParam(value = "first_author", required = false) @Parameter(name = "first_author") String firstAuthor,
                                                       @ParameterObject Pageable pageable) {
         Page<Publication> publications = publicationService.findPublications(pubmedId, title, firstAuthor, pageable);
         return pagedResourcesAssembler.toModel(publications, publicationDtoAssembler);

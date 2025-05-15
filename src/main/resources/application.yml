@@ -26,12 +26,13 @@ ensembl:
 
 springdoc:
   swagger-ui:
-    url: /curation-doc.yaml
+    url: /rest-api-doc.yaml
     layout: BaseLayout
-    disable-swagger-default-url: true
+    #disable-swagger-default-url: true
     path: /documentation
   api-docs:
-    path: /curation-doc
+    enabled: true
+    #path: /rest-api-doc
 
 
 sumstats:
