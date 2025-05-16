@@ -30,13 +30,13 @@ tags:
   - name: efo-traits
     description: The efoTraits resources is used to list EFO traits in the GWAS Catalog
   - name: genes
-    description: The genes resources is used to list Egenes in the GWAS Catalog
+    description: The genes resources is used to list genes in the GWAS Catalog
   - name: genomic-contexts
     description: The genomic contexts resources is used to list genomic contexts in the GWAS Catalog
   - name: loci
     description: The loci resources is used to list linking of association & riskallleles in the GWAS Catalog
   - name: publications
-    description: The publications is used to list linking of publications in the GWAS Catalog
+    description: The publications is used to list publications in the GWAS Catalog
   - name: single-nucleotide-polymorphisms
     description: The SingleNucleotidePolymorphisms resources is used to list SNPs in the GWAS Catalog
   - name: studies
@@ -512,7 +512,7 @@ paths:
         description: |-
           Search for SNPs on a certain chromosome and within a given base pair location range
 
-          <i>Example</i> : 95000000
+          <i>Example</i> : 95000000 (To be used in combination with bp_start,bp_end & chromosome)
         required: false
         schema:
           type: integer
@@ -522,7 +522,7 @@ paths:
         description: |-
           Search for SNPs on a certain chromosome and within a given base pair location range
 
-          <i>Example</i> : 95000000
+          <i>Example</i> : 95000000 (To be used in combination with bp_start,bp_end & chromosome)
         required: false
         schema:
           type: integer
@@ -541,7 +541,7 @@ paths:
         description: |-
           Search for SNPs on a certain chromosome
 
-          <i>Example</i> : 13
+          <i>Example</i> : 13 (To be used in combination with bp_start,bp_end & chromosome)
         required: false
         schema:
           type: string
@@ -964,7 +964,7 @@ paths:
       parameters:
       - name: efoId
         in: path
-        description: "primary identifier of EFo Traits table <br/> <br/><i> Example\
+        description: "primary identifier of Efo Traits table <br/> <br/><i> Example\
           \ </i> : 123456"
         required: true
         schema:
