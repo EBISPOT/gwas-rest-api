@@ -31,7 +31,7 @@
         <url>https://github.com/EBISPOT/gwasdepo-curation-service.git</url>
     </scm>
 
-    <repositories>
+<!--    <repositories>
         <repository>
             <id>spot-releases</id>
             <name>Releases</name>
@@ -63,7 +63,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-    </repositories>
+    </repositories>-->
 
     <build>
         <pluginManagement>
