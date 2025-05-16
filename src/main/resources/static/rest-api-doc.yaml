@@ -1,0 +1,2057 @@
+openapi: 3.0.1
+info:
+  title: Gwas Catalog Rest API V2
+  description:  <p><img width="10%" alt="gwas_icon" src="../GWAS_Catalog_circle_178x178.png"></p>
+                <p>Welcome to the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">Gwas Catalog</a> Restful API.</p>
+                <p>This API is for facilitating a filtered request of Gwas Catalog data.</p>
+                <p> <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas/beta/rest/api/swagger-ui/index.html">Gwas Rest API V2</a> has been released with various enhancements & improvements over <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas/rest/docs/api">Gwas Rest API V1.</a> </p>
+                <p>The GWAS RESTful API V2 provides programmatic access to the GWAS Catalog, enables integration of the GWAS Catalog data into custom applications and services, allowing external bioinformatics developers to leverage the curated GWAS datasets, and create more extended solutions for the scientific community, such as the widely used gwasrapidd package.</p>
+                <p> The newer version of the GWAS Catalog RESTful API intends to facilitate a robust and resilient mechanism for delivering the growing volume of data. Requirements were gathered via an online user survey, feedback from helpdesk queries and bug reports, and one to one meetings with users. The ongoing design improvements to the API are tailored towards expanding the resource to capture all these user requests, and more.<p>
+                <p>We will maintain the previous API version alongside v2 for one year, allowing users adequate time to update their pipelines.
+                <ul>
+                <li>Microservices architecture model, reducing code complexity and increasing functionality and reuse</li>
+                <li>Elastic dockerized containers orchestrated via Kubernetes enhancing a faster software release cycle</li>
+                <li>Industry standard architectural standards such as HATEOAS (Hypermedia as the Engine of Application State) which increase computational efficiency</li>
+                </ul
+                </p>
+
+
+  version: "2.0"
+servers:
+- url: http://localhost:8087/gwas/rest/api
+  description: Generated server url
+tags:
+  - name: ancestries
+    description: The ancestries resources is used to list ancestries in the GWAS Catalog
+  - name: associations
+    description: The association resources is used to list associations in the GWAS Catalog
+  - name: body-of-works
+    description: The Body of work  resources is used to list unpublished literatures in the GWAS Catalog
+  - name: efo-traits
+    description: The efoTraits resources is used to list EFO traits in the GWAS Catalog
+  - name: genes
+    description: The genes resources is used to list Egenes in the GWAS Catalog
+  - name: genomic-contexts
+    description: The genomic contexts resources is used to list genomic contexts in the GWAS Catalog
+  - name: loci
+    description: The loci resources is used to list linking of association & riskallleles in the GWAS Catalog
+  - name: publications
+    description: The publications is used to list linking of publications in the GWAS Catalog
+  - name: single-nucleotide-polymorphisms
+    description: The SingleNucleotidePolymorphisms resources is used to list SNPs in the GWAS Catalog
+  - name: studies
+    description: The Studies resources is used to list studies in the GWAS Catalog
+  - name: unpublished-ancestries
+    description: The unpublished ancestries resources is used to list unpublished ancestries in the GWAS Catalog
+  - name: unpublished-studies
+    description: The Unpublished studies resources is used to list unpublished studies in the GWAS Catalog
+paths:
+  /v2/unpublished-studies:
+    get:
+      tags:
+      - unpublished-studies
+      operationId: getUnpublishedStudies
+      summary: A GET request will list all of the Catalog unpublished studies
+      parameters:
+      - name: disease_trait
+        in: query
+        description: |-
+          Free text description of the trait investigated in this study
+
+          <i>Example</i> : Early-onset Parkinson's disease
+        required: false
+        schema:
+          type: string
+      - name: accession_id
+        in: query
+        description: |-
+          The study’s GWAS Catalog accession ID
+
+          <i>Example</i> : GCST000854
+        required: false
+        schema:
+          type: string
+      - name: title
+        in: query
+        description: |-
+          Title of manuscript the GWAS is included in
+
+          <i>Example</i> : Genome-wide association study
+        required: false
+        schema:
+          type: string
+      - name: first_author
+        in: query
+        description: |-
+          Last name and initials of first author
+
+          <i>Example</i> : Doe John
+        required: false
+        schema:
+          type: string
+      - name: cohort
+        in: query
+        description: |-
+          Discovery stage cohorts used in this study
+
+          <i>Example</i> : BioImage
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "accession,DESC"
+      responses:
+        "500":
+            description: Internal Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModelUnpublishedStudyDTO'
+  /v2/unpublished-studies/{accessionId}:
+    get:
+      tags:
+      - unpublished-studies
+      operationId: getUnpublishedStudy
+      summary: A GET request to retreive an unpublished study
+      parameters:
+      - name: accessionId
+        in: path
+        description: "The study’s GWAS Catalog accession ID <br/> <br/><i> Example\
+          \ </i> : GCST000854"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnpublishedStudyDTO'
+  /v2/unpublished-studies/{accessionId}/unpublished-ancestries:
+    get:
+      tags:
+      - unpublished-ancestries
+      operationId: getUnpublishedAncestries
+      summary: A GET request to retrieve ancestries for an unpublished study
+      parameters:
+      - name: accessionId
+        in: path
+        description: "The study’s GWAS Catalog accession ID <br/> <br/><i> Example\
+          \ </i> : GCST000854"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CollectionModelUnpublishedAncestryDTO'
+  /v2/unpublished-studies/{accessionId}/unpublished-ancestries/{ancestryId}:
+    get:
+      tags:
+      - unpublished-ancestries
+      operationId: getUnpublishedAncestry
+      summary: A GET request to retrieve a single ancestry for an unpublished study
+      parameters:
+      - name: accessionId
+        in: path
+        description: "The study’s GWAS Catalog accession ID <br/> <br/><i> Example\
+          \ </i> : GCST000854"
+        required: true
+        schema:
+          type: string
+      - name: ancestryId
+        in: path
+        description: "primary identifier of Ancestry table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UnpublishedAncestryDTO'
+  /v2/studies:
+    get:
+      tags:
+      - studies
+      operationId: getStudies
+      summary: A GET request to retrieve all studies in Catalog
+      parameters:
+      - name: pubmed_id
+        in: query
+        description: |-
+          pubmedId of the publication
+
+          <i>Example</i> : 35241825
+        required: false
+        schema:
+          type: string
+      - name: disease_trait
+        in: query
+        description: |-
+          Free text description of the trait investigated in this study
+
+          <i>Example</i> : Early-onset Parkinson's disease
+        required: false
+        schema:
+          type: string
+      - name: full_pvalue_set
+        in: query
+        description: |-
+          Whether full summary statistics are available for this study
+
+          <i>Example</i> : true/false
+        required: false
+        schema:
+          type: boolean
+      - name: efo_id
+        in: query
+        description: |-
+          The trait URI shortform
+
+          <i>Example</i> : EFO_0001060
+        required: false
+        schema:
+          type: string
+      - name: efo_trait
+        in: query
+        description: |-
+          The trait name or label
+
+          <i>Example</i> : celiac disease
+        required: false
+        schema:
+          type: string
+      - name: accession_id
+        in: query
+        description: |-
+          The study’s GWAS Catalog accession ID
+
+          <i>Example</i> : GCST000854
+        required: false
+        schema:
+          type: string
+      - name: cohort
+        in: query
+        description: |-
+          Discovery stage cohorts used in this study
+
+          <i>Example</i> : BioImage
+        required: false
+        schema:
+          type: string
+      - name: gxe
+        in: query
+        description: "Whether the study investigates a gene-environment interaction\n\
+          \n<i>Example</i> : true/false "
+        required: false
+        schema:
+          type: boolean
+      - name: ancestral_group
+        in: query
+        description: |-
+          Ancestry category group label, assigned to reduce complexity within the data sets and place samples in context
+
+          <i>Example</i> : European
+        required: false
+        schema:
+          type: string
+      - name: no_of_individuals
+        in: query
+        description: |2-
+           Number of individuals in this sample
+
+          <i>Example</i> : 4390
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: show_child_trait
+        in: query
+        description: |-
+          display entities for descendants of a parent Efo Trait Term
+
+          <i>Example</i> : MONDO_0005180
+        required: false
+        schema:
+          type: boolean
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "accessionId,DESC"
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModelStudyDto'
+  /v2/studies/{accessionId}:
+    get:
+      tags:
+      - studies
+      operationId: getStudyByAccession
+      summary: A GET request to retrieve a study in Catalog
+      parameters:
+      - name: accessionId
+        in: path
+        description: "The study’s GWAS Catalog accession ID <br/> <br/><i> Example\
+          \ </i> : GCST000854"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyDto'
+  /v2/studies/{accessionId}/ancestries:
+    get:
+      tags:
+      - ancestries
+      operationId: getAncestries
+      summary: A GET request to retrieve all ancestries for a study in Catalog
+      parameters:
+      - name: accessionId
+        in: path
+        description: "The study’s GWAS Catalog accession ID <br/> <br/><i> Example\
+          \ </i> : GCST000854"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionModelAncestryDTO'
+  /v2/studies/{accessionId}/ancestries/{ancestryId}:
+    get:
+      tags:
+      - ancestries
+      operationId: getAncestry
+      summary: A GET request to retrieve a single ancestry for a study in Catalog
+      parameters:
+      - name: accessionId
+        in: path
+        description: "The study’s GWAS Catalog accession ID <br/> <br/><i> Example\
+          \ </i> : GCST000854"
+        required: true
+        schema:
+          type: string
+      - name: ancestryId
+        in: path
+        description: "primary identifier of ancestry table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AncestryDTO'
+  /v2/single-nucleotide-polymorphisms:
+    get:
+      tags:
+      - single-nucleotide-polymorphisms
+      operationId: getSnps
+      summary: A GET request to retrieve all snps in Catalog
+      parameters:
+      - name: rs_id
+        in: query
+        description: "Strongest SNP; if a haplotype it may include more than one rs\
+          \ number (multiple SNPs comprising the haplotype)\n\n<i>Example</i> : rs3093017 "
+        required: false
+        schema:
+          type: string
+      - name: bp_location
+        in: query
+        description: |-
+          search for SNPs via their base pair location
+
+          <i>Example</i> : 95000000
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - name: bp_start
+        in: query
+        description: |-
+          Search for SNPs on a certain chromosome and within a given base pair location range
+
+          <i>Example</i> : 95000000
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: bp_end
+        in: query
+        description: |-
+          Search for SNPs on a certain chromosome and within a given base pair location range
+
+          <i>Example</i> : 95000000
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: pubmed_id
+        in: query
+        description: |-
+          pubmedId of the publication
+
+          <i>Example</i> : 35241825
+        required: false
+        schema:
+          type: string
+      - name: chromosome
+        in: query
+        description: |-
+          Search for SNPs on a certain chromosome
+
+          <i>Example</i> : 13
+        required: false
+        schema:
+          type: string
+      - name: gene
+        in: query
+        description: |-
+          Search for SNPs via a gene using parameter geneName
+
+          <i>Example</i> : 13
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModelSingleNucleotidePolymorphismDTO'
+  /v2/single-nucleotide-polymorphisms/{rsId}:
+    get:
+      tags:
+      - single-nucleotide-polymorphisms
+      operationId: getSingleNucleotidePolymorphism
+      summary: A GET request to retrieve single snp
+      parameters:
+      - name: rsId
+        in: path
+        description: "Strongest SNP; if a haplotype it may include more than one rs\
+          \ number (multiple SNPs comprising the haplotype) <br/> <br/><i> Example\
+          \ </i> : rs3093017 "
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleNucleotidePolymorphismDTO'
+  /v2/single-nucleotide-polymorphisms/{rsId}/genomic-contexts:
+    get:
+      tags:
+      - genomic-contexts
+      operationId: getGenomicContexts
+      summary: A GET request to retrieve all genomic contexts for a snp
+      parameters:
+      - name: rsId
+        in: path
+        description: "Strongest SNP; if a haplotype it may include more than one rs\
+          \ number (multiple SNPs comprising the haplotype) <br/> <br/><i> Example\
+          \ </i> : rs3093017 "
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionModelGenomicContextDTO'
+  /v2/single-nucleotide-polymorphisms/{rsId}/genomic-contexts/{genomicContextId}:
+    get:
+      tags:
+      - genomic-contexts
+      operationId: getGenomicContext
+      summary: A GET request to retrieve single genomic context for a snp
+      parameters:
+      - name: rsId
+        in: path
+        description: "Strongest SNP; if a haplotype it may include more than one rs\
+          \ number (multiple SNPs comprising the haplotype) <br/> <br/><i> Example\
+          \ </i> : rs3093017 "
+        required: true
+        schema:
+          type: string
+      - name: genomicContextId
+        in: path
+        description: "primary identifier of genomicContext table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenomicContextDTO'
+  /v2/publications:
+    get:
+      tags:
+      - publications
+      operationId: getPublications
+      summary: A GET request to retrieve all publications in Catalog
+      parameters:
+      - name: pubmed_id
+        in: query
+        description: "pubmedId of the publication <br/> <br/><i> Example </i> : 35241825"
+        required: false
+        schema:
+          type: string
+      - name: title
+        in: query
+        description: "Title of manuscript the GWAS is included in <br/> <br/><i> Example\
+          \ </i> : Genome-wide association study"
+        required: false
+        schema:
+          type: string
+      - name: first_author
+        in: query
+        description: "Last name and initials of first author <br/> <br/><i> Example\
+          \ </i> : Doe John"
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModelPublicationDto'
+  /v2/publications/{pubmedId}:
+    get:
+      tags:
+      - publications
+      operationId: getPublication
+      summary: A GET request to retrieve single publication in Catalog
+      parameters:
+      - name: pubmedId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicationDto'
+  /v2/genes:
+    get:
+      tags:
+      - genes
+      operationId: getGenes
+      summary: A GET request to retrieve all genes in Catalog
+      parameters:
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PagedModelGeneDTO'
+  /v2/genes/{gene_name}:
+    get:
+      tags:
+      - genes
+      operationId: getGeneByName
+      summary: A GET request to retrieve a single genee
+      parameters:
+      - name: gene_name
+        in: path
+        description: "Gene Name  <br/> <br/><i> Example </i> : HBS1L"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/GeneDTO'
+  /v2/efo-traits:
+    get:
+      tags:
+      - efo-traits
+      operationId: getEFOTraits
+      summary: A GET request to retrieve all efotraits in Catalog
+      parameters:
+      - name: efo_trait
+        in: query
+        description: |-
+          The trait name or label
+
+          <i>Example</i> : celiac disease
+        required: false
+        schema:
+          type: string
+      - name: uri
+        in: query
+        description: |-
+          The trait URI or unique identifier
+
+          <i>Example</i> : http://www.ebi.ac.uk/efo/EFO_0001060
+        required: false
+        schema:
+          type: string
+      - name: efo_id
+        in: query
+        description: |-
+          The trait URI shortform
+
+          <i>Example</i> : EFO_0001060
+        required: false
+        schema:
+          type: string
+      - name: pubmed_id
+        in: query
+        description: |-
+          pubmedId of the publication
+
+          <i>Example</i> : 35241825
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModelEFOTraitDTO'
+  /v2/efo-traits/{efoId}:
+    get:
+      tags:
+      - efo-traits
+      operationId: getEFOTraitsDTO
+      summary: A GET request to retrieve a single efotrait
+      parameters:
+      - name: efoId
+        in: path
+        description: "primary identifier of EFo Traits table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EFOTraitDTO'
+  /v2/body-of-works:
+    get:
+      tags:
+      - body-of-works
+      operationId: getBodiesOfWork
+      summary: A GET request to retrieve all bod of works in Catalog
+      parameters:
+      - name: title
+        in: query
+        description: "Title of manuscript the GWAS is included in <br/> <br/><i> Example\
+          \ </i> : Genome-wide association study"
+        required: false
+        schema:
+          type: string
+      - name: first_author
+        in: query
+        description: "Last name and initials of first author <br/> <br/><i> Example\
+          \ </i> : Doe John"
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "id,DESC"
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModelBodyOfWorkDTO'
+  /v2/body-of-works/{bowId}:
+    get:
+      tags:
+      - body-of-works
+      operationId: getBodyOfWork
+      summary: A GET request to retrieve a single body of work
+      parameters:
+      - name: bowId
+        in: path
+        description: "primary identifier of Body of work table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BodyOfWorkDTO'
+  /v2/body-of-works/{bowId}/unpublished-studies:
+    get:
+      tags:
+      - body-of-works
+      operationId: getUnpublishedStudies_1
+      summary: A GET request to retrieve all unpublished studies for a body of work in Catalog
+      parameters:
+      - name: bowId
+        in: path
+        description: "primary identifier of Body of work table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModelUnpublishedStudyDTO'
+  /v2/associations:
+    get:
+      tags:
+      - associations
+      summary: A GET request will list all of the Catalog associations
+      operationId: getAssociations
+      parameters:
+      - name: pubmed_id
+        in: query
+        description: |-
+          pubmedId of the publication
+
+          <i>Example</i> : 35241825
+        required: false
+        schema:
+          type: string
+      - name: rs_id
+        in: query
+        description: "Strongest SNP; if a haplotype it may include more than one rs\
+          \ number (multiple SNPs comprising the haplotype)\n\n<i>Example</i> : rs3093017 "
+        required: false
+        schema:
+          type: string
+      - name: full_pvalue_set
+        in: query
+        description: |-
+          Whether full summary statistics are available for this study
+
+          <i>Example</i> : true/false
+        required: false
+        schema:
+          type: boolean
+      - name: accession_id
+        in: query
+        description: |-
+          The study’s GWAS Catalog accession ID
+
+          <i>Example</i> : GCST000854
+        required: false
+        schema:
+          type: string
+      - name: efo_trait
+        in: query
+        description: |-
+          The trait name or label
+
+          <i>Example</i> : celiac disease
+        required: false
+        schema:
+          type: string
+      - name: efo_id
+        in: query
+        description: |-
+          The trait URI shortform
+
+          <i>Example</i> : EFO_0001060
+        required: false
+        schema:
+          type: string
+      - name: show_child_trait
+        in: query
+        description: |-
+          display entities for descendants of a parent Efo Trait Term
+
+          <i>Example</i> : true/false
+        required: false
+        schema:
+          type: boolean
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+          default:
+          - "id,DESC"
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModelAssociationDTO'
+  /v2/associations/{associationId}:
+    get:
+      tags:
+      - associations
+      operationId: getAssociation
+      summary: A GET request to retrieve single association
+      parameters:
+      - name: associationId
+        in: path
+        description: "primary identifier of association table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssociationDTO'
+  /v2/associations/{associationId}/loci:
+    get:
+      tags:
+      - loci
+      operationId: getLoci
+      summary: A GET request to retrieve all loci for an association in Catalog
+      parameters:
+      - name: associationId
+        in: path
+        description: "primary identifier of Association table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionModelLocusDTO'
+  /v2/associations/{associationId}/loci/{locusId}:
+    get:
+      tags:
+      - loci
+      operationId: getLocus
+      summary: A GET request to retrieve a single locus for an association
+      parameters:
+      - name: associationId
+        in: path
+        description: "primary identifier of Association table <br/> <br/><i> Example\
+          \ </i> : 123456"
+        required: true
+        schema:
+          type: string
+      - name: locusId
+        in: path
+        description: "primary identifier of Locus table <br/> <br/><i> Example </i>\
+          \ : 123456"
+        required: true
+        schema:
+          type: string
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Entity Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocusDTO'
+components:
+  schemas:
+    Link:
+      type: object
+      properties:
+        rel:
+          type: string
+        href:
+          type: string
+        hreflang:
+          type: string
+        media:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+    PagedModelUnpublishedStudyDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnpublishedStudyDTO'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    UnpublishedStudyDTO:
+      type: object
+      properties:
+        genotyping_technology:
+          type: string
+        study_accession:
+          type: string
+        array_manufacturer:
+          type: string
+        imputation:
+          type: boolean
+        variant_count:
+          type: integer
+          format: int32
+        summary_statistics_assembly:
+          type: string
+        agreed_to_cc0:
+          type: boolean
+        full_summary_stats:
+          type: string
+        study_tag:
+          type: string
+        array_information:
+          type: string
+        sample_description:
+          type: string
+        statistical_model:
+          type: string
+        study_description:
+          type: string
+        disease_trait:
+          type: string
+        efo_trait:
+          type: string
+        background_trait:
+          type: string
+        background_efo_trait:
+          type: string
+        cohort:
+          type: string
+        cohort_id:
+          type: string
+        title:
+          type: string
+        first_Author:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    CollectionModelUnpublishedAncestryDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnpublishedAncestryDTO'
+    UnpublishedAncestryDTO:
+      type: object
+      properties:
+        study_tag:
+          type: string
+        stage:
+          type: string
+        sample_size:
+          type: integer
+          format: int32
+        cases:
+          type: integer
+          format: int32
+        controls:
+          type: integer
+          format: int32
+        sample_description:
+          type: string
+        ancestry_category:
+          type: string
+        ancestry:
+          type: string
+        ancestry_description:
+          type: string
+        country_recruitment:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    EFOWrapperDTO:
+      type: object
+      properties:
+        efo_id:
+          type: string
+        efo_trait:
+          type: string
+    PagedModelStudyDto:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudyDto'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    StudyDto:
+      type: object
+      properties:
+        initial_sample_size:
+          type: string
+        replication_sample_size:
+          type: string
+        study_id:
+          type: integer
+          format: int64
+        gxe:
+          type: boolean
+        gxg:
+          type: boolean
+        snp_count:
+          type: integer
+          format: int32
+        qualifier:
+          type: string
+        imputed:
+          type: boolean
+        pooled:
+          type: boolean
+        study_design_comment:
+          type: string
+        accession_id:
+          type: string
+        user_requested:
+          type: boolean
+        pubmed_id:
+          type: integer
+          format: int32
+        platforms:
+          type: string
+        disease_trait:
+          type: string
+        genotyping_technologies:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        efo_traits:
+          type: array
+          items:
+            $ref: '#/components/schemas/EFOWrapperDTO'
+        discovery_ancestry:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        replication_ancestry:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        full_summary_stats:
+          type: string
+        terms_of_license:
+          type: string
+        bg_efo_traits:
+          type: array
+          items:
+            $ref: '#/components/schemas/EFOWrapperDTO'
+        cohort:
+          type: string
+        array_manufacturer:
+          type: array
+          items:
+            type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        full_summary_stats_available:
+          type: boolean
+    AncestralGroupDTO:
+      type: object
+      properties:
+        ancestral_group:
+          type: string
+    AncestryDTO:
+      type: object
+      properties:
+        type:
+          type: string
+        number_of_individuals:
+          type: integer
+          format: int32
+        ancestral_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/AncestralGroupDTO'
+        country_of_origin:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryDTO'
+        country_of_recruitment:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryDTO'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    CollectionModelAncestryDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/AncestryDTO'
+    CountryDTO:
+      type: object
+      properties:
+        major_area:
+          type: string
+        region:
+          type: string
+        country_name:
+          type: string
+    LocationDTO:
+      type: object
+      properties:
+        chromosome_name:
+          type: string
+        chromosome_position:
+          type: integer
+          format: int32
+        region:
+          $ref: '#/components/schemas/RegionDTO'
+    PagedModelSingleNucleotidePolymorphismDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleNucleotidePolymorphismDTO'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    RegionDTO:
+      type: object
+      properties:
+        name:
+          type: string
+    SingleNucleotidePolymorphismDTO:
+      type: object
+      properties:
+        rs_id:
+          type: string
+        merged:
+          type: integer
+          format: int64
+        functional_class:
+          type: string
+        current_snp:
+          type: string
+        last_update_date:
+          type: string
+          format: date-time
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDTO'
+        maf:
+          type: number
+          format: double
+        minor_allele:
+          type: string
+        alleles:
+          type: string
+        most_severe_consequence:
+          type: string
+        mapped_genes:
+          type: array
+          items:
+            type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    CollectionModelGenomicContextDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenomicContextDTO'
+    GeneDTO:
+      type: object
+      properties:
+        gene_name:
+          type: string
+        gene_description:
+          type: string
+        location:
+          type: string
+        cytogenic_region:
+          type: string
+        biotype:
+          type: string
+        ensembl_gene_ids:
+          type: array
+          items:
+            type: string
+        entrez_gene_ids:
+          type: array
+          items:
+            type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    GenomicContextDTO:
+      type: object
+      properties:
+        is_intergenic:
+          type: boolean
+        is_upstream:
+          type: boolean
+        is_downstream:
+          type: boolean
+        distance:
+          type: integer
+          format: int64
+        gene:
+          $ref: '#/components/schemas/GeneDTO'
+        location:
+          $ref: '#/components/schemas/LocationDTO'
+        source:
+          type: string
+        mapping_method:
+          type: string
+        is_closest_gene:
+          type: boolean
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    PagedModelPublicationDto:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicationDto'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    PublicationAuthorDto:
+      type: object
+      properties:
+        full_name:
+          type: string
+        full_name_tandard:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        initials:
+          type: string
+        affiliation:
+          type: string
+        orcid:
+          type: string
+    PublicationDto:
+      type: object
+      properties:
+        pubmed_id:
+          type: string
+        publication_date:
+          type: string
+          format: date-time
+        journal:
+          type: string
+        title:
+          type: string
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicationAuthorDto'
+        first_author:
+          $ref: '#/components/schemas/PublicationAuthorDto'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    PagedModelGeneDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeneDTO'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    EFOTraitDTO:
+      type: object
+      properties:
+        efo_trait:
+          type: string
+        uri:
+          type: string
+        efo_id:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    PagedModelEFOTraitDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/EFOTraitDTO'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    BodyOfWorkDTO:
+      type: object
+      properties:
+        gcp_id:
+          type: string
+        title:
+          type: string
+        first_author:
+          type: string
+        publication_date:
+          type: string
+          format: date-time
+        doi:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    PagedModelBodyOfWorkDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/BodyOfWorkDTO'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+        error:
+          type: string
+        errorMessage:
+          type: string
+        servicePath:
+          type: string
+        timestamp:
+          type: string
+        report:
+          type: object
+          additionalProperties:
+            type: string
+    AssociationDTO:
+      type: object
+      properties:
+        association_id:
+          type: integer
+          format: int64
+        risk_frequency:
+          type: string
+        pvalue_description:
+          type: string
+        pvalue_mantissa:
+          type: integer
+          format: int32
+        pvalue_exponent:
+          type: integer
+          format: int32
+        multi_snp_haplotype:
+          type: boolean
+        snp_interaction:
+          type: boolean
+        snp_type:
+          type: string
+        standard_error:
+          type: number
+          format: float
+        range:
+          type: string
+        description:
+          type: string
+        or_per_copy_num:
+          type: number
+          format: float
+        or_value:
+          type: string
+        beta_num:
+          type: number
+          format: float
+        beta_unit:
+          type: string
+        beta_direction:
+          type: string
+        beta:
+          type: string
+        last_mapping_date:
+          type: string
+          format: date-time
+        last_update_date:
+          type: string
+          format: date-time
+        p_value:
+          type: number
+          format: double
+        efo_traits:
+          type: array
+          items:
+            $ref: '#/components/schemas/EFOWrapperDTO'
+        reported_trait:
+          type: array
+          items:
+            type: string
+        accession_id:
+          type: string
+        locations:
+          type: array
+          items:
+            type: string
+        mapped_genes:
+          type: array
+          items:
+            type: string
+        risk_allele:
+          type: array
+          items:
+            type: string
+        bg_efo_traits:
+          type: array
+          items:
+            $ref: '#/components/schemas/EFOWrapperDTO'
+        pubmed_id:
+          type: string
+        first_author:
+          type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    PagedModelAssociationDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssociationDTO'
+        page:
+          $ref: '#/components/schemas/PageMetadata'
+    CollectionModelLocusDTO:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocusDTO'
+    LocusDTO:
+      type: object
+      properties:
+        haplotype_snp_count:
+          type: integer
+          format: int32
+        description:
+          type: string
+        strongest_risk_alleles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RiskAlleleDTO'
+        author_reported_genes:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeneDTO'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    RiskAlleleDTO:
+      type: object
+      properties:
+        risk_allele_name:
+          type: string
+        risk_frequency:
+          type: string
+        genome_wide:
+          type: boolean
+        limited_list:
+          type: boolean
+        source:
+          type: string
+        mapping_method:
+          type: string
+        is_closest_gene:
+          type: boolean

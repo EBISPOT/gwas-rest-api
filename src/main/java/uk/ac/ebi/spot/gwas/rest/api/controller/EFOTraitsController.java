@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.SearchEfoParams;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_EFO_TRAITS)
-@Tag(name = "efo-traits")
 public class EFOTraitsController {
 
     @Autowired
@@ -44,7 +44,7 @@ public class EFOTraitsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{efoId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EFOTraitDTO> getEFOTraitsDTO(@PathVariable String efoId) {
+    public ResponseEntity<EFOTraitDTO> getEFOTraitsDTO(@PathVariable  @Parameter(name = "efoId") String efoId) {
         return efoTraitService.getEFOTrait(efoId)
                 .map(efoTraitDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

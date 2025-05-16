@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -22,7 +23,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_SNPS)
-@Tag(name = "genomic-contexts")
 public class GenomicContextController {
 
     @Autowired
@@ -32,13 +32,13 @@ public class GenomicContextController {
     GenomicContextDtoAssembler genomicContextDtoAssembler;
 
     @GetMapping(value = "/{rsId}" + RestAPIConstants.API_GENOMIC_CONTEXTS, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<GenomicContextDTO> getGenomicContexts(@PathVariable String rsId) {
+    public CollectionModel<GenomicContextDTO> getGenomicContexts(@PathVariable @Parameter(name = "rsId") String rsId) {
        List<GenomicContext> genomicContexts = genomicContextService.findByRsid(rsId);
         return genomicContextDtoAssembler.toCollectionModel(genomicContexts, rsId);
     }
 
     @GetMapping(value = "/{rsId}" + RestAPIConstants.API_GENOMIC_CONTEXTS + "/{genomicContextId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GenomicContextDTO> getGenomicContext(@PathVariable String rsId ,@PathVariable String genomicContextId) {
+    public ResponseEntity<GenomicContextDTO> getGenomicContext(@PathVariable @Parameter(name = "rsId") String rsId ,@PathVariable @Parameter(name = "genomicContextId") String genomicContextId) {
         return genomicContextService.findByGenomicContextId(genomicContextId)
                 .map(genomicContextDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

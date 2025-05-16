@@ -1,6 +1,7 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.GeneDTO;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_GENES)
-@Tag(name = "genes")
 public class GeneController {
 
     private final GeneService geneService;
@@ -38,7 +38,7 @@ public class GeneController {
     }
 
     @GetMapping(value = "/{gene_name}")
-    public GeneDTO getGeneByName(@PathVariable(name = "gene_name") String geneName) {
+    public GeneDTO getGeneByName(@PathVariable(name = "gene_name") @Parameter(name = "gene_name") String geneName) {
         GeneSolrDto geneSolrDto = geneService.getGeneByName(geneName);
         return geneSolrDtoAssembler.toModel(geneSolrDto);
     }
