@@ -2,12 +2,6 @@ image: docker:latest
 services:
   - docker:dind
 
-before_script:
-  - apt-get update && apt-get install -y gnupg
-  - echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-  - echo "use-agent" >> ~/.gnupg/gpg.conf
-  - echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-  - echo RELOADAGENT | gpg-connect-agent
 
 stages:
   - build
@@ -31,6 +25,11 @@ maven-build:
   image: maven:3-jdk-8
   stage: build
   script:
+    - apt-get update && apt-get install -y gnupg
+    - echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+    - echo "use-agent" >> ~/.gnupg/gpg.conf
+    - echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+    - echo RELOADAGENT | gpg-connect-agent
     - echo ${MAVEN_SETTINGS} | base64 -d > settings.xml
     - mvn -s settings.xml clean install -B -Dspring.profiles.active=test -Dmaven.test.error.ignore=true -Dmaven.test.failure.ignore=true
   artifacts:
