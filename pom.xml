@@ -116,6 +116,7 @@
                     <additionalJOptions>
                         <additionalJOption>-Xdoclint:none</additionalJOption>
                     </additionalJOptions>
+                    <finalName>javadocs-gwas-rest-api</finalName>
                 </configuration>
             </plugin>
             <plugin>
