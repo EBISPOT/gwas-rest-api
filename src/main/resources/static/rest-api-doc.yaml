@@ -1615,6 +1615,7 @@ components:
         qualifier:
           type: string
           description: Qualifier of number of SNPs passing QC (eg >)
+          example: NR
         imputed:
           type: boolean
           description: Whether SNPs were imputed
@@ -1626,6 +1627,7 @@ components:
         study_design_comment:
           type: string
           description: Any other relevant study design information
+          example: null
         accession_id:
           type: string
           description: The study’s GWAS Catalog accession ID
@@ -1638,10 +1640,11 @@ components:
           type: integer
           format: int32
           description: the pubmedId of the publication related to study
+          example: 39979475
         platforms:
           type: string
           description: Genotyping platform(s) used in this study
-          example: Affymetrix
+          example: Affymetrix [NR] (imputed)
         disease_trait:
           type: string
           description: The trait under investigation
@@ -1680,6 +1683,7 @@ components:
         terms_of_license:
           type: string
           description: Term of use based on whether CC0 license or not
+          example: https://creativecommons.org/publicdomain/zero/1.0/
         bg_efo_traits:
           type: array
           items:
@@ -1711,6 +1715,7 @@ components:
         ancestral_group:
           type: string
           description: Ancestry category group label
+          example: European
     ancestries:
       type: object
       properties:
@@ -1782,6 +1787,7 @@ components:
           type: integer
           format: int32
           description:  Chromosomal position associated with rs number
+          example: 40983974
         region:
           $ref: '#/components/schemas/regions'
     page-single-nucleotide-polymorphisms:
@@ -1802,6 +1808,8 @@ components:
       properties:
         name:
           type: string
+          description: Cytogenetic region associated with rs number
+          example: 2q37.2
     single-nucleotide-polymorphisms:
       type: object
       properties:
@@ -1826,6 +1834,7 @@ components:
           type: string
           format: date-time
           description: The last date this SNP’s mapping information was updated
+          example: 2021-10-19T22:22:55.015+0000
         locations:
           type: array
           items:
@@ -1850,10 +1859,9 @@ components:
           example: Intron variant
         mapped_genes:
           type: array
-          description: Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
-          example: CCR6
           items:
             type: string
+            description: Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
         links:
           type: array
           items:
@@ -1927,6 +1935,7 @@ components:
           type: integer
           format: int64
           description:  distance in kb for nearest upstream/downstream gene to rs number, if not within gene
+          example: 8805
         gene:
           $ref: '#/components/schemas/genes'
         location:
@@ -2115,17 +2124,22 @@ components:
           type: integer
           format: int32
           description: Error code
+          example: "ORA-500001"
         error:
           type: string
           description: Error header
+          example: "SQL Exception"
         errorMessage:
           type: string
           description: Error description
         servicePath:
           type: string
           description: Endpoint details
+          example: "/studies"
         timestamp:
           type: string
+          description: Error timestamp
+          example: 2021-10-19T22:22:55.015+0000
         report:
           type: object
           additionalProperties:
@@ -2206,6 +2220,7 @@ components:
         beta:
           type: string
           description: beta-coefficient associated with strongest SNP risk allele
+          example: null
         last_mapping_date:
           type: string
           format: date-time
@@ -2231,9 +2246,11 @@ components:
           items:
             type: string
             description: trait for this association
+            example: Coronary artery disease
         accession_id:
           type: string
           description: Accession ID linked to the association
+          example: GCST90566353
         locations:
           type: array
           items:
@@ -2298,17 +2315,24 @@ components:
         haplotype_snp_count:
           type: integer
           format: int32
+          description: multiple SNPs comprising the haplotype count
+          example: 2
         description:
           type: string
+          description: multiple SNPs comprising the haplotype
+          example: rs411045-?, rs12903821-?
         strongest_risk_alleles:
           type: array
           items:
             $ref: '#/components/schemas/riskalleles'
             description:  SNP(s) most strongly associated with trait
+            example: rs12903821-?
         author_reported_genes:
           type: array
           items:
             $ref: '#/components/schemas/genes'
+            description: Gene(s) reported by author
+            example: CCR6
         links:
           type: array
           items:
@@ -2319,6 +2343,7 @@ components:
         risk_allele_name:
           type: string
           description: SNP(s) most strongly associated with trait
+          example: rs411045-?
         risk_frequency:
           type: string
           description: Reported risk/effect allele frequency associated with strongest SNP in controls
