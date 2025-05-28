@@ -1459,6 +1459,7 @@ components:
         statistical_model:
           type: string
           description: Details of the statistical model used to determine association significance
+          example: PrecisionLife combinatorial SNP analysis
         study_description:
           type: string
           description: Additional information about the study
@@ -1790,6 +1791,7 @@ components:
           example: 40983974
         region:
           $ref: '#/components/schemas/regions'
+          description: Cytogenetic region associated with rs number
     page-single-nucleotide-polymorphisms:
       type: object
       properties:
@@ -1862,6 +1864,7 @@ components:
           items:
             type: string
             description: Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
+            example: CCR6,HBS1L
         links:
           type: array
           items:
@@ -1938,8 +1941,10 @@ components:
           example: 8805
         gene:
           $ref: '#/components/schemas/genes'
+          description: Gene overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
         location:
           $ref: '#/components/schemas/locations'
+          description: Chromosome and base pair location on the reference genome
         source:
           type: string
           description: the source of Snp mapping
@@ -1987,6 +1992,7 @@ components:
         last_name:
           type: string
           description: last name of author
+          example: Doe
         initials:
           type: string
           description: initials of author
@@ -2023,8 +2029,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/authors'
-            description: authors of the publication
-            example: John Doe, Jane Doe
+          description: authors of the publication
+          example: John Doe, Jane Doe
         first_author:
           $ref: '#/components/schemas/authors'
           description: first author of the publication
@@ -2238,9 +2244,9 @@ components:
           example: 3.0000000000000002E-18
         efo_traits:
           type: array
+          description: Experimental Factor Ontology trait for this association
           items:
             $ref: '#/components/schemas/efo-trait'
-            description: Experimental Factor Ontology trait for this association
         reported_trait:
           type: array
           items:
@@ -2256,6 +2262,7 @@ components:
           items:
             type: string
             description: The SNP’s genomic locations
+            example: 17:9020401
         mapped_genes:
           type: array
           items:
@@ -2270,9 +2277,9 @@ components:
             example: rs7329174
         bg_efo_traits:
           type: array
+          description: Any background trait(s) shared by all individuals in the GWAS (e.g. in both cases and controls)
           items:
             $ref: '#/components/schemas/efo-trait'
-            description: Any background trait(s) shared by all individuals in the GWAS (e.g. in both cases and controls)
         pubmed_id:
           type: string
           description: pubmedId of the publication
@@ -2323,16 +2330,16 @@ components:
           example: rs411045-?, rs12903821-?
         strongest_risk_alleles:
           type: array
+          description:  SNP(s) most strongly associated with trait
+          example: rs12903821-?
           items:
             $ref: '#/components/schemas/riskalleles'
-            description:  SNP(s) most strongly associated with trait
-            example: rs12903821-?
         author_reported_genes:
           type: array
+          description: Gene(s) reported by author
+          example: CCR6
           items:
             $ref: '#/components/schemas/genes'
-            description: Gene(s) reported by author
-            example: CCR6
         links:
           type: array
           items:
