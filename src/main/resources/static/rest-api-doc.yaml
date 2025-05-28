@@ -2,18 +2,11 @@ openapi: 3.0.1
 info:
   title: Gwas Catalog Rest API V2
   description:  <p><img width="10%" alt="gwas_icon" src="../GWAS_Catalog_circle_178x178.png"></p>
-                <p>Welcome to the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">Gwas Catalog</a> Restful API.</p>
-                <p>This API is for facilitating a filtered request of Gwas Catalog data.</p>
-                <p> <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas/beta/rest/api/swagger-ui/index.html">Gwas Rest API V2</a> has been released with various enhancements & improvements over <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas/rest/docs/api">Gwas Rest API V1.</a> </p>
-                <p>The GWAS RESTful API V2 provides programmatic access to the GWAS Catalog, enables integration of the GWAS Catalog data into custom applications and services, allowing external bioinformatics developers to leverage the curated GWAS datasets, and create more extended solutions for the scientific community, such as the widely used gwasrapidd package.</p>
-                <p> The newer version of the GWAS Catalog RESTful API intends to facilitate a robust and resilient mechanism for delivering the growing volume of data. Requirements were gathered via an online user survey, feedback from helpdesk queries and bug reports, and one to one meetings with users. The ongoing design improvements to the API are tailored towards expanding the resource to capture all these user requests, and more.<p>
-                <p>We will maintain the previous API version alongside v2 for one year, allowing users adequate time to update their pipelines.
-                <ul>
-                <li>Microservices architecture model, reducing code complexity and increasing functionality and reuse</li>
-                <li>Elastic dockerized containers orchestrated via Kubernetes enhancing a faster software release cycle</li>
-                <li>Industry standard architectural standards such as HATEOAS (Hypermedia as the Engine of Application State) which increase computational efficiency</li>
-                </ul
-                </p>
+                <p>Welcome to the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog</a> Restful API.</p>
+                <p>This API is for facilitating a filtered request of GWAS Catalog data.</p>
+                <p>The GWAS RESTful API provides programmatic access to the GWAS Catalog, enables integration of the GWAS Catalog data into custom applications and services, allowing external bioinformatics developers to leverage the curated GWAS datasets, and create more extended solutions for the scientific community.</p>
+                <p>GWAS RESTful API V2 has been released with various enhancements & improvements over GWAS RESTful API V1. V1 will be deprecated no later than May 2026.<p>
+                <p>Note that this API allows access to the literature-curated top associations & metadata (the same data that is available via the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog Website</a>. A second API enabling access to full genome-side summary statistics is under development.</p>
 
 
   version: "2.0"
@@ -21,30 +14,30 @@ servers:
 - url: http://localhost:8087/gwas/rest/api
   description: Generated server url
 tags:
-  - name: ancestries
-    description: The ancestries resources is used to list ancestries in the GWAS Catalog
+  - name: studies
+    description: The studies resource is used to list studies in the GWAS Catalog
   - name: associations
-    description: The association resources is used to list associations in the GWAS Catalog
-  - name: body-of-works
-    description: The Body of work  resources is used to list unpublished literatures in the GWAS Catalog
-  - name: efo-traits
-    description: The efoTraits resources is used to list EFO traits in the GWAS Catalog
-  - name: genes
-    description: The genes resources is used to list genes in the GWAS Catalog
-  - name: genomic-contexts
-    description: The genomic contexts resources is used to list genomic contexts in the GWAS Catalog
-  - name: loci
-    description: The loci resources is used to list linking of association & riskallleles in the GWAS Catalog
+    description: The association resource is used to list associations in the GWAS Catalog
+  - name: ancestries
+    description: The ancestries resource is used to list ancestries in the GWAS Catalog
   - name: publications
     description: The publications is used to list publications in the GWAS Catalog
+  - name: efo-traits
+    description: The efotraits resource is used to list EFO trait ontology annotations in the GWAS Catalog
   - name: single-nucleotide-polymorphisms
-    description: The SingleNucleotidePolymorphisms resources is used to list SNPs in the GWAS Catalog
-  - name: studies
-    description: The Studies resources is used to list studies in the GWAS Catalog
+    description: The singlenucleotidepolymorphisms resource is used to list SNPs in the GWAS Catalog
+  - name: genomic-contexts
+    description: The genomic contexts resource is used to list genomic contexts in the GWAS Catalog
+  - name: genes
+    description: The genes resource is used to list genes in the GWAS Catalog
+  - name: loci
+    description: The loci resource is used to list linking of association & riskallleles in the GWAS Catalog
+  - name: body-of-works
+    description: The body of work resource is used to list submissions to the GWAS Catalog that have not yet been published in a journal
   - name: unpublished-ancestries
-    description: The unpublished ancestries resources is used to list unpublished ancestries in the GWAS Catalog
+    description: The unpublished ancestries resource is used to list unpublished ancestries from unpublished studies in the GWAS Catalog
   - name: unpublished-studies
-    description: The Unpublished studies resources is used to list unpublished studies in the GWAS Catalog
+    description: The unpublished studies resource is used to list studies submitted to the GWAS Catalog that have not yet been published in a journal
 paths:
   /v2/unpublished-studies:
     get:
@@ -131,13 +124,13 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/ErrorResponse'
+                  $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelUnpublishedStudyDTO'
+                $ref: '#/components/schemas/page-unpublished-studies'
   /v2/unpublished-studies/{accessionId}:
     get:
       tags:
@@ -158,7 +151,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnpublishedStudyDTO'
+                $ref: '#/components/schemas/page-unpublished-studies'
   /v2/unpublished-studies/{accessionId}/unpublished-ancestries:
     get:
       tags:
@@ -179,19 +172,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/CollectionModelUnpublishedAncestryDTO'
+                $ref: '#/components/schemas/collection-unpublished-ancestries'
   /v2/unpublished-studies/{accessionId}/unpublished-ancestries/{ancestryId}:
     get:
       tags:
@@ -219,19 +212,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/UnpublishedAncestryDTO'
+                $ref: '#/components/schemas/unpublished-ancestries'
   /v2/studies:
     get:
       tags:
@@ -370,13 +363,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelStudyDto'
+                $ref: '#/components/schemas/page-studies'
   /v2/studies/{accessionId}:
     get:
       tags:
@@ -397,19 +390,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StudyDto'
+                $ref: '#/components/schemas/studies'
   /v2/studies/{accessionId}/ancestries:
     get:
       tags:
@@ -430,19 +423,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectionModelAncestryDTO'
+                $ref: '#/components/schemas/collection-ancestries'
   /v2/studies/{accessionId}/ancestries/{ancestryId}:
     get:
       tags:
@@ -470,19 +463,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AncestryDTO'
+                $ref: '#/components/schemas/ancestries'
   /v2/single-nucleotide-polymorphisms:
     get:
       tags:
@@ -492,7 +485,7 @@ paths:
       parameters:
       - name: rs_id
         in: query
-        description: "Strongest SNP; if a haplotype it may include more than one rs\
+        description: "SNP rsId; if a haplotype it may include more than one rs\
           \ number (multiple SNPs comprising the haplotype)\n\n<i>Example</i> : rs3093017 "
         required: false
         schema:
@@ -550,7 +543,7 @@ paths:
         description: |-
           Search for SNPs via a gene using parameter geneName
 
-          <i>Example</i> : 13
+          <i>Example</i> : HBS1L
         required: false
         schema:
           type: string
@@ -585,13 +578,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelSingleNucleotidePolymorphismDTO'
+                $ref: '#/components/schemas/page-single-nucleotide-polymorphisms'
   /v2/single-nucleotide-polymorphisms/{rsId}:
     get:
       tags:
@@ -613,19 +606,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SingleNucleotidePolymorphismDTO'
+                $ref: '#/components/schemas/single-nucleotide-polymorphisms'
   /v2/single-nucleotide-polymorphisms/{rsId}/genomic-contexts:
     get:
       tags:
@@ -635,7 +628,7 @@ paths:
       parameters:
       - name: rsId
         in: path
-        description: "Strongest SNP; if a haplotype it may include more than one rs\
+        description: "SNP rsId; if a haplotype it may include more than one rs\
           \ number (multiple SNPs comprising the haplotype) <br/> <br/><i> Example\
           \ </i> : rs3093017 "
         required: true
@@ -647,19 +640,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectionModelGenomicContextDTO'
+                $ref: '#/components/schemas/collection-genomic-contexts'
   /v2/single-nucleotide-polymorphisms/{rsId}/genomic-contexts/{genomicContextId}:
     get:
       tags:
@@ -669,7 +662,7 @@ paths:
       parameters:
       - name: rsId
         in: path
-        description: "Strongest SNP; if a haplotype it may include more than one rs\
+        description: "SNP rsId; if a haplotype it may include more than one rs\
           \ number (multiple SNPs comprising the haplotype) <br/> <br/><i> Example\
           \ </i> : rs3093017 "
         required: true
@@ -688,19 +681,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GenomicContextDTO'
+                $ref: '#/components/schemas/genomic-contexts'
   /v2/publications:
     get:
       tags:
@@ -753,19 +746,21 @@ paths:
           type: array
           items:
             type: string
+          default:
+            - "id,DESC"
       responses:
         "500":
           description: Internal Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelPublicationDto'
+                $ref: '#/components/schemas/page-publications'
   /v2/publications/{pubmedId}:
     get:
       tags:
@@ -784,19 +779,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PublicationDto'
+                $ref: '#/components/schemas/publications'
   /v2/genes:
     get:
       tags:
@@ -829,19 +824,21 @@ paths:
           type: array
           items:
             type: string
+          default:
+            - "id,DESC"
       responses:
         "500":
           description: Internal Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/PagedModelGeneDTO'
+                $ref: '#/components/schemas/page-genes'
   /v2/genes/{gene_name}:
     get:
       tags:
@@ -861,19 +858,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/GeneDTO'
+                $ref: '#/components/schemas/genes'
   /v2/efo-traits:
     get:
       tags:
@@ -942,19 +939,21 @@ paths:
           type: array
           items:
             type: string
+          default:
+            - "id,DESC"
       responses:
         "500":
           description: Internal Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelEFOTraitDTO'
+                $ref: '#/components/schemas/page-efo-traits'
   /v2/efo-traits/{efoId}:
     get:
       tags:
@@ -975,25 +974,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EFOTraitDTO'
+                $ref: '#/components/schemas/efo-traits'
   /v2/body-of-works:
     get:
       tags:
       - body-of-works
       operationId: getBodiesOfWork
-      summary: A GET request to retrieve all bod of works in Catalog
+      summary: A GET request to retrieve all body of works in Catalog
       parameters:
       - name: title
         in: query
@@ -1042,13 +1041,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelBodyOfWorkDTO'
+                $ref: '#/components/schemas/page-body-of-works'
   /v2/body-of-works/{bowId}:
     get:
       tags:
@@ -1070,19 +1069,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BodyOfWorkDTO'
+                $ref: '#/components/schemas/body-of-works'
   /v2/body-of-works/{bowId}/unpublished-studies:
     get:
       tags:
@@ -1123,25 +1122,27 @@ paths:
           type: array
           items:
             type: string
+          default:
+            - "id,DESC"
       responses:
         "500":
           description: Internal Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelUnpublishedStudyDTO'
+                $ref: '#/components/schemas/page-unpublished-studies'
   /v2/associations:
     get:
       tags:
@@ -1160,7 +1161,7 @@ paths:
           type: string
       - name: rs_id
         in: query
-        description: "Strongest SNP; if a haplotype it may include more than one rs\
+        description: "SNP rsId; if a haplotype it may include more than one rs\
           \ number (multiple SNPs comprising the haplotype)\n\n<i>Example</i> : rs3093017 "
         required: false
         schema:
@@ -1243,13 +1244,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelAssociationDTO'
+                $ref: '#/components/schemas/page-associations'
   /v2/associations/{associationId}:
     get:
       tags:
@@ -1270,19 +1271,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AssociationDTO'
+                $ref: '#/components/schemas/associations'
   /v2/associations/{associationId}/loci:
     get:
       tags:
@@ -1303,19 +1304,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CollectionModelLocusDTO'
+                $ref: '#/components/schemas/collection-loci'
   /v2/associations/{associationId}/loci/{locusId}:
     get:
       tags:
@@ -1343,22 +1344,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "404":
           description: Entity Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/errors'
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LocusDTO'
+                $ref: '#/components/schemas/loci'
 components:
   schemas:
-    Link:
+    link:
       type: object
       properties:
         rel:
@@ -1379,7 +1380,7 @@ components:
           type: string
         name:
           type: string
-    PageMetadata:
+    page:
       type: object
       properties:
         size:
@@ -1394,664 +1395,983 @@ components:
         number:
           type: integer
           format: int64
-    PagedModelUnpublishedStudyDTO:
+    page-unpublished-studies:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/UnpublishedStudyDTO'
+            $ref: '#/components/schemas/unpublished-studies'
         page:
-          $ref: '#/components/schemas/PageMetadata'
-    UnpublishedStudyDTO:
+          $ref: '#/components/schemas/page'
+    unpublished-studies:
       type: object
       properties:
         genotyping_technology:
           type: string
+          description: The method used to genotype variants in the discovery stage
+          example: Genome-wide genotyping array
         study_accession:
           type: string
+          description: The study’s GWAS Catalog accession ID
+          example: GCST90013684
         array_manufacturer:
           type: string
+          description: Genotyping platform manufacturer
+          example: Affymetrix
         imputation:
           type: boolean
+          description: Whether SNPs were imputed
+          example: true
         variant_count:
           type: integer
           format: int32
+          description: The number of variants analysed in the discovery stage
+          example: -1
         summary_statistics_assembly:
           type: string
+          description: Genome assembly for the summary statistics
+          example: GRCh38
         agreed_to_cc0:
           type: boolean
+          description: Agree to CC0 license or not
+          example: true
         full_summary_stats:
           type: string
+          description: Summary stats FTP file path
+          example: http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCST90566001-GCST90567000/GCST90566393
         study_tag:
           type: string
+          description: A unique free-text label for each genome-wide association study in the publication
+          example: white
         array_information:
           type: string
+          description: Additional information about the genotyping array
+          example: immunochip
         sample_description:
           type: string
+          description: Additional  relevant information required for the interpretation of results
+          example: sex (males/females), age (adults/children)
         statistical_model:
           type: string
+          description: Details of the statistical model used to determine association significance
+          example: PrecisionLife combinatorial SNP analysis
         study_description:
           type: string
+          description: Additional information about the study
         disease_trait:
           type: string
+          description: The trait under investigation
+          example: Coronary artery disease
         efo_trait:
           type: string
+          description: EFOs that best matching the trait
+          example: EFO_0001645
         background_trait:
           type: string
+          description: Any background trait(s) shared by all individuals in the GWAS (e.g. in both cases and controls)
+          example: Nicotine dependence
         background_efo_trait:
           type: string
+          description: EFOs that best match entered background trait
+          example: EFO_0003768
         cohort:
           type: string
+          description: Cohort(s) represented in the discovery sample
+          example: MVP|UKB|CARDIoGRAMplusC4D
         cohort_id:
           type: string
+          description: Cohort specific identifier(s) issued to this research study
+          example: UK Biobank ID
         title:
           type: string
+          description: Title of manuscript the GWAS is included in
+          example: Genome-wide association study on susceptibility genes associated with yang-deficiency constitution
         first_Author:
           type: string
+          description: Last name and initials of first author
+          example: John Doe
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    CollectionModelUnpublishedAncestryDTO:
+            $ref: '#/components/schemas/link'
+    collection-unpublished-ancestries:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/UnpublishedAncestryDTO'
-    UnpublishedAncestryDTO:
+            $ref: '#/components/schemas/unpublished-ancestries'
+    unpublished-ancestries:
       type: object
       properties:
         study_tag:
           type: string
+          description: A unique free-text label for each genome-wide association study in the publication
+          example: white
         stage:
           type: string
+          description: Stage of the experimental design
+          example: discovery, replication
         sample_size:
           type: integer
           format: int32
+          description: Number of individuals in this group
+          example: 3000
         cases:
           type: integer
           format: int32
+          description: Number of cases in this group
+          example: 2000
         controls:
           type: integer
           format: int32
+          description: Number of controls in this group
+          example: 3000
         sample_description:
           type: string
+          description: Additional  relevant information required for the interpretation of results
+          example:  sex (males/females), age (adults/children)
         ancestry_category:
           type: string
+          description: Broad ancestry category that best describes the sample
+          example: European
         ancestry:
           type: string
+          description: The most detailed ancestry descriptor
+          example: All populations
         ancestry_description:
           type: string
+          description: For founder or genetically isolated population, provide  description. If multiple founder/genetically isolated populations are included for the same ancestry category
         country_recruitment:
           type: string
+          description: List of country/countries where samples were recruited
+          example: U.S.|U.K.
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    EFOWrapperDTO:
+            $ref: '#/components/schemas/link'
+    efo-trait:
       type: object
+      description: EFO Response structure
       properties:
         efo_id:
           type: string
+          description: shortform of the EFO trait
+          example: MONDO_0005180
         efo_trait:
           type: string
-    PagedModelStudyDto:
+          description: Mapped Experimental Factor Ontology trait
+          example: Parkinson disease
+    page-studies:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/StudyDto'
+            $ref: '#/components/schemas/studies'
         page:
-          $ref: '#/components/schemas/PageMetadata'
-    StudyDto:
+          $ref: '#/components/schemas/page'
+    studies:
       type: object
       properties:
         initial_sample_size:
           type: string
+          description: Initial sample description
+          example: 3,117 European ancestry Bipolar disorder cases, 1,273 European ancestry Major depressive disorder cases
         replication_sample_size:
           type: string
+          description: Replication sample description
+          example: 3,117 European ancestry Bipolar disorder cases, 1,273 European ancestry Major depressive disorder cases
         study_id:
           type: integer
           format: int64
+          description: primary Id of study
+          example: 123456
         gxe:
           type: boolean
+          description: Whether the study investigates a gene-environment interaction
+          example: true/false
         gxg:
           type: boolean
+          description: Whether the study investigates a gene-gene interaction
+          example: true/false
         snp_count:
           type: integer
           format: int32
+          description: Number of SNPs passing QC
+          example: 1922309
         qualifier:
           type: string
+          description: Qualifier of number of SNPs passing QC (eg >)
+          example: NR
         imputed:
           type: boolean
+          description: Whether SNPs were imputed
+          example: true
         pooled:
           type: boolean
+          description: Whether samples were pooled
+          example: true
         study_design_comment:
           type: string
+          description: Any other relevant study design information
+          example: null
         accession_id:
           type: string
+          description: The study’s GWAS Catalog accession ID
+          example: GCST90013684
         user_requested:
           type: boolean
+          description: Whether the addition of this study to the Catalog was requested by a user
+          example: true/false
         pubmed_id:
           type: integer
           format: int32
+          description: the pubmedId of the publication related to study
+          example: 39979475
         platforms:
           type: string
+          description: Genotyping platform(s) used in this study
+          example: Affymetrix [NR] (imputed)
         disease_trait:
           type: string
+          description: The trait under investigation
+          example: Coronary artery disease
         genotyping_technologies:
           uniqueItems: true
           type: array
           items:
             type: string
+          description: The method used to genotype variants in the discovery stage
+          example: Genome-wide genotyping array
         efo_traits:
           type: array
           items:
-            $ref: '#/components/schemas/EFOWrapperDTO'
+            $ref: '#/components/schemas/efo-trait'
+          description: EFOs that best matching the trait
+          example: EFO_0001645
         discovery_ancestry:
           uniqueItems: true
           type: array
           items:
             type: string
+          description: A concatenated text containing study sample size along with ancestry category and country of recruitment with stage as discovery
+          example: 959 East Asian (China)
         replication_ancestry:
           uniqueItems: true
           type: array
           items:
             type: string
+          description: A concatenated text containing study sample size along with ancestry category and country of recruitment with stage as discovery
+          example: 1834 East Asian (China)
         full_summary_stats:
           type: string
+          description: summary stats file location
+          example: http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCST90551001-GCST90552000/GCST90551842
         terms_of_license:
           type: string
+          description: Term of use based on whether CC0 license or not
+          example: https://creativecommons.org/publicdomain/zero/1.0/
         bg_efo_traits:
           type: array
           items:
-            $ref: '#/components/schemas/EFOWrapperDTO'
+            $ref: '#/components/schemas/efo-trait'
+          description: Any background trait(s) shared by all individuals in the GWAS (e.g. in both cases and controls)
+          example: EFO_0003768
         cohort:
           type: string
+          description: Cohort(s) represented in the discovery sample
+          example: UKBB, FINRISK
         array_manufacturer:
           type: array
           items:
             type: string
+          description: Manufacturer of the genotyping array used for the discovery stage
+          example: Illumina
+        full_summary_stats_available:
+          type: boolean
+          description: Summary stats is resent or not
+          example: true/false
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-        full_summary_stats_available:
-          type: boolean
-    AncestralGroupDTO:
+            $ref: '#/components/schemas/link'
+
+    ancestry-groups:
       type: object
       properties:
         ancestral_group:
           type: string
-    AncestryDTO:
+          description: Ancestry category group label
+          example: European
+    ancestries:
       type: object
       properties:
         type:
           type: string
+          description: Stage of the experimental design
+          example: initial|replication
         number_of_individuals:
           type: integer
           format: int32
+          description: Number of individuals in this group
+          example: 10000
         ancestral_groups:
           type: array
           items:
-            $ref: '#/components/schemas/AncestralGroupDTO'
+            $ref: '#/components/schemas/ancestry-groups'
+          description: Ancestry category group label
+          example: European
         country_of_origin:
           type: array
           items:
-            $ref: '#/components/schemas/CountryDTO'
+            $ref: '#/components/schemas/countries'
+          description: Country of origin of the individuals in the sample
+          example: China
         country_of_recruitment:
           type: array
           items:
-            $ref: '#/components/schemas/CountryDTO'
+            $ref: '#/components/schemas/countries'
+          description: List of country/countries where samples were recruited
+          example: Japan
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    CollectionModelAncestryDTO:
+            $ref: '#/components/schemas/link'
+    collection-ancestries:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/AncestryDTO'
-    CountryDTO:
+            $ref: '#/components/schemas/ancestries'
+    countries:
       type: object
       properties:
         major_area:
           type: string
+          description: continent of the country of recruitment
+          example: Europe
         region:
           type: string
+          description: continent of the country of recruitment
+          example: North Europe
         country_name:
           type: string
-    LocationDTO:
+          description : country of recruitment
+          example: U.K.
+    locations:
       type: object
       properties:
         chromosome_name:
           type: string
+          description: Chromosome number associated with rs number
+          example: 13
         chromosome_position:
           type: integer
           format: int32
+          description:  Chromosomal position associated with rs number
+          example: 40983974
         region:
-          $ref: '#/components/schemas/RegionDTO'
-    PagedModelSingleNucleotidePolymorphismDTO:
+          $ref: '#/components/schemas/regions'
+          description: Cytogenetic region associated with rs number
+    page-single-nucleotide-polymorphisms:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/SingleNucleotidePolymorphismDTO'
+            $ref: '#/components/schemas/single-nucleotide-polymorphisms'
         page:
-          $ref: '#/components/schemas/PageMetadata'
-    RegionDTO:
+          $ref: '#/components/schemas/page'
+    regions:
       type: object
       properties:
         name:
           type: string
-    SingleNucleotidePolymorphismDTO:
+          description: Cytogenetic region associated with rs number
+          example: 2q37.2
+    single-nucleotide-polymorphisms:
       type: object
       properties:
         rs_id:
           type: string
+          description: The SNP’s rs Id
+          example: rs3093017
         merged:
           type: integer
           format: int64
+          description: Whether this SNP has been merged with another SNP in a newer genome build
+          example: 0
         functional_class:
           type: string
+          description: The SNP’s functional class
+          example: intron_variant
         current_snp:
           type: string
+          description: SNP the present SNP was merged with as part of a more recent genome build
+          example: rs3093017
         last_update_date:
           type: string
           format: date-time
+          description: The last date this SNP’s mapping information was updated
+          example: 2021-10-19T22:22:55.015+0000
         locations:
           type: array
           items:
-            $ref: '#/components/schemas/LocationDTO'
+            $ref: '#/components/schemas/locations'
+          description: The SNP’s genomic locations
         maf:
           type: number
           format: double
+          description: Minor allele frequency in the 1000 Genomes Phase 3 combined population
+          example: 0.39011
         minor_allele:
           type: string
+          description: Second most frequent allele in the 1000 Genomes Phase 3 combined population
+          example: C
         alleles:
           type: string
+          description: Reference allele / alternative allele(s)
+          example: C/A/G/T(forward strand)
         most_severe_consequence:
           type: string
+          description: Second most frequent allele in the 1000 Genomes Phase 3 combined population
+          example: Intron variant
         mapped_genes:
           type: array
           items:
             type: string
+            description: Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
+            example: CCR6,HBS1L
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    CollectionModelGenomicContextDTO:
+            $ref: '#/components/schemas/link'
+    collection-genomic-contexts:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/GenomicContextDTO'
-    GeneDTO:
+            $ref: '#/components/schemas/genomic-contexts'
+    genes:
       type: object
       properties:
         gene_name:
           type: string
+          description: Gene name
+          example: CCR6
         gene_description:
           type: string
+          description: Gene description as extracted from Ensembl
+          example: C-C motif chemokine receptor 6
         location:
           type: string
+          description: Chromosome and base pair location on the reference genome
+          example: 6:167111807-167139141
         cytogenic_region:
           type: string
+          description: Cytogenetic band corresponding to the genomic location
+          example: 6q27
         biotype:
           type: string
+          description: Biological significance of the gene, manually added by the HAVANA team
+          example: protein_coding
         ensembl_gene_ids:
           type: array
           items:
             type: string
+            description: Ensembl Gene ID, if rs number within gene; multiple genes denotes overlapping transcripts
+            example: ENSG00000059573
         entrez_gene_ids:
           type: array
           items:
             type: string
+            description: Entrez Gene ID, if rs number within gene; multiple genes denotes overlapping transcripts
+            example: 5832
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    GenomicContextDTO:
+            $ref: '#/components/schemas/link'
+    genomic-contexts:
       type: object
       properties:
         is_intergenic:
           type: boolean
+          description: denotes whether SNP is in intergenic region
+          example: true|false
         is_upstream:
           type: boolean
+          description: whether gene is upstream or not
+          example: true|false
         is_downstream:
           type: boolean
+          description: whether gene is downstream or not
+          example: true|false
         distance:
           type: integer
           format: int64
+          description:  distance in kb for nearest upstream/downstream gene to rs number, if not within gene
+          example: 8805
         gene:
-          $ref: '#/components/schemas/GeneDTO'
+          $ref: '#/components/schemas/genes'
+          description: Gene overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
         location:
-          $ref: '#/components/schemas/LocationDTO'
+          $ref: '#/components/schemas/locations'
+          description: Chromosome and base pair location on the reference genome
         source:
           type: string
+          description: the source of Snp mapping
+          example: Ensembl
         mapping_method:
           type: string
+          description: the method of Snp mapping
+          example: Ensembl_pipeline
         is_closest_gene:
           type: boolean
+          description: closest gene to SNP or not
+          example: true|false
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    PagedModelPublicationDto:
+            $ref: '#/components/schemas/link'
+    page-publications:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/PublicationDto'
+            $ref: '#/components/schemas/publications'
         page:
-          $ref: '#/components/schemas/PageMetadata'
-    PublicationAuthorDto:
+          $ref: '#/components/schemas/page'
+    authors:
       type: object
       properties:
         full_name:
           type: string
-        full_name_tandard:
+          description: full name of author
+          example: John Doe
+        full_name_standard:
           type: string
+          description: full name of author in ascii standard
+          example: John Doe
         first_name:
           type: string
+          description: first name of author
+          example: John
         last_name:
           type: string
+          description: last name of author
+          example: Doe
         initials:
           type: string
+          description: initials of author
+          example: M
         affiliation:
           type: string
+          description: the author's affiliation to institutions
+          example: Cambridge University
         orcid:
           type: string
-    PublicationDto:
+          description: the orcidId of the author
+          example: 0000-XXXX-XXXX-XXXX
+    publications:
       type: object
       properties:
         pubmed_id:
           type: string
+          description: pubmedId of the publication
+          example: 35241825
         publication_date:
           type: string
           format: date-time
+          description:  Publication date (online (epub) date if available)
+          example: 2022-03-03
         journal:
           type: string
+          description: journal of the publication
+          example: Nat Genet
         title:
           type: string
+          description: title of the publication
+          example: Genome-wide analysis provides genetic evidence that ACE2 influences COVID-19 risk and yields risk scores associated with severe disease
         authors:
           type: array
           items:
-            $ref: '#/components/schemas/PublicationAuthorDto'
+            $ref: '#/components/schemas/authors'
+          description: authors of the publication
+          example: John Doe, Jane Doe
         first_author:
-          $ref: '#/components/schemas/PublicationAuthorDto'
+          $ref: '#/components/schemas/authors'
+          description: first author of the publication
+          example: John Doe
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    PagedModelGeneDTO:
+            $ref: '#/components/schemas/link'
+    page-genes:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/GeneDTO'
+            $ref: '#/components/schemas/genes'
         page:
-          $ref: '#/components/schemas/PageMetadata'
-    EFOTraitDTO:
+          $ref: '#/components/schemas/page'
+    efo-traits:
       type: object
       properties:
         efo_trait:
           type: string
+          description: Mapped Experimental Factor Ontology trait
+          example: Parkinson disease
         uri:
           type: string
+          description: URI of the EFO trait
+          example: http://purl.obolibrary.org/obo/MONDO_0005180
         efo_id:
           type: string
+          description: shortform of the EFO trait
+          example: MONDO_0005180
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    PagedModelEFOTraitDTO:
+            $ref: '#/components/schemas/link'
+    page-efo-traits:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/EFOTraitDTO'
+            $ref: '#/components/schemas/efo-traits'
         page:
-          $ref: '#/components/schemas/PageMetadata'
-    BodyOfWorkDTO:
+          $ref: '#/components/schemas/page'
+    body-of-works:
       type: object
       properties:
         gcp_id:
           type: string
         title:
           type: string
+          description: Title of manuscript the GWAS is included in
+          example: Genome-wide association study on susceptibility genes associated with yang-deficiency constitution
         first_author:
           type: string
+          description: first author of the publication
+          example: John Doe
         publication_date:
           type: string
           format: date-time
+          description:  Publication date (online (epub) date if available)
+          example: 2022-03-03
         doi:
           type: string
+          description: doi for preprint
+          example: https://www.medrxiv.org/content/10.1101/2020.06.17.20134015v2
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    PagedModelBodyOfWorkDTO:
+            $ref: '#/components/schemas/link'
+    page-body-of-works:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/BodyOfWorkDTO'
+            $ref: '#/components/schemas/body-of-works'
         page:
-          $ref: '#/components/schemas/PageMetadata'
-    ErrorResponse:
+          $ref: '#/components/schemas/page'
+    errors:
       type: object
       properties:
         errorCode:
           type: integer
           format: int32
+          description: Error code
+          example: "ORA-500001"
         error:
           type: string
+          description: Error header
+          example: "SQL Exception"
         errorMessage:
           type: string
+          description: Error description
         servicePath:
           type: string
+          description: Endpoint details
+          example: "/studies"
         timestamp:
           type: string
+          description: Error timestamp
+          example: 2021-10-19T22:22:55.015+0000
         report:
           type: object
           additionalProperties:
             type: string
-    AssociationDTO:
+            description: Addition attributes for the error
+    associations:
       type: object
       properties:
         association_id:
           type: integer
           format: int64
+          description: primary id of Association table
         risk_frequency:
           type: string
+          description: Reported risk/effect allele frequency associated with strongest SNP in controls
+          example: 0.523756034
         pvalue_description:
           type: string
+          description: Information describing context of p-value
+          example:  females, smokers
         pvalue_mantissa:
           type: integer
           format: int32
+          description: Reported p-value for strongest SNP risk allele (Mantissa)
+          example: 3
         pvalue_exponent:
           type: integer
           format: int32
+          description: Reported p-value for strongest SNP risk allele (Exponent)
+          example: -18
         multi_snp_haplotype:
           type: boolean
+          description: Whether the association is for a multi-SNP haplotype
+          example: true|false
         snp_interaction:
           type: boolean
+          description: Whether the association is for a SNP-SNP interaction
+          example: true|false
         snp_type:
           type: string
+          description: Whether a SNP has previously been reported
+          example: known
         standard_error:
           type: number
           format: float
+          description: Standard error of the effect size
+          example: null
         range:
           type: string
+          description: 95% confidence interval
+          example: [12.41-19.61]
         description:
           type: string
+          description: Additional beta coefficient comment
+          example: null
         or_per_copy_num:
           type: number
           format: float
+          description: Odds ratio
+          example: 0.78137505
         or_value:
           type: string
+          description: Odds ratio text
+          example: null
         beta_num:
           type: number
           format: float
+          description: Beta coefficient
+          example: 16.01
         beta_unit:
           type: string
+          description: Beta coefficient unit
+          example: unit
         beta_direction:
           type: string
+          description: Beta coefficient direction
+          example: decrease
         beta:
           type: string
+          description: beta-coefficient associated with strongest SNP risk allele
+          example: null
         last_mapping_date:
           type: string
           format: date-time
+          description: Last time this association was mapped to Ensembl
+          example: 2021-06-24T18:32:58.000+0000
         last_update_date:
           type: string
           format: date-time
+          description: Last time this association was updated
+          example: 2021-06-24T18:32:58.000+0000
         p_value:
           type: number
           format: double
+          description: Information describing context of p-value
+          example: 3.0000000000000002E-18
         efo_traits:
           type: array
+          description: Experimental Factor Ontology trait for this association
           items:
-            $ref: '#/components/schemas/EFOWrapperDTO'
+            $ref: '#/components/schemas/efo-trait'
         reported_trait:
           type: array
           items:
             type: string
+            description: trait for this association
+            example: Coronary artery disease
         accession_id:
           type: string
+          description: Accession ID linked to the association
+          example: GCST90566353
         locations:
           type: array
           items:
             type: string
+            description: The SNP’s genomic locations
+            example: 17:9020401
         mapped_genes:
           type: array
           items:
             type: string
+            description: Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
+            example: CCR6
         risk_allele:
           type: array
           items:
             type: string
+            description: SNP(s) most strongly associated
+            example: rs7329174
         bg_efo_traits:
           type: array
+          description: Any background trait(s) shared by all individuals in the GWAS (e.g. in both cases and controls)
           items:
-            $ref: '#/components/schemas/EFOWrapperDTO'
+            $ref: '#/components/schemas/efo-trait'
         pubmed_id:
           type: string
+          description: pubmedId of the publication
+          example: 35241825
         first_author:
           type: string
+          description: first author of the publication
+          example: John Doe
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    PagedModelAssociationDTO:
+            $ref: '#/components/schemas/link'
+    page-associations:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/AssociationDTO'
+            $ref: '#/components/schemas/associations'
         page:
-          $ref: '#/components/schemas/PageMetadata'
-    CollectionModelLocusDTO:
+          $ref: '#/components/schemas/page'
+    collection-loci:
       type: object
       properties:
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
+            $ref: '#/components/schemas/link'
         content:
           type: array
           items:
-            $ref: '#/components/schemas/LocusDTO'
-    LocusDTO:
+            $ref: '#/components/schemas/loci'
+    loci:
       type: object
       properties:
         haplotype_snp_count:
           type: integer
           format: int32
+          description: multiple SNPs comprising the haplotype count
+          example: 2
         description:
           type: string
+          description: multiple SNPs comprising the haplotype
+          example: rs411045-?, rs12903821-?
         strongest_risk_alleles:
           type: array
+          description:  SNP(s) most strongly associated with trait
+          example: rs12903821-?
           items:
-            $ref: '#/components/schemas/RiskAlleleDTO'
+            $ref: '#/components/schemas/riskalleles'
         author_reported_genes:
           type: array
+          description: Gene(s) reported by author
+          example: CCR6
           items:
-            $ref: '#/components/schemas/GeneDTO'
+            $ref: '#/components/schemas/genes'
         links:
           type: array
           items:
-            $ref: '#/components/schemas/Link'
-    RiskAlleleDTO:
+            $ref: '#/components/schemas/link'
+    riskalleles:
       type: object
       properties:
         risk_allele_name:
           type: string
+          description: SNP(s) most strongly associated with trait
+          example: rs411045-?
         risk_frequency:
           type: string
+          description: Reported risk/effect allele frequency associated with strongest SNP in controls
+          example: 0.523756034
         genome_wide:
           type: boolean
+          description: SNPxSNP interaction assessed genomewide
+          example: true|false
         limited_list:
           type: boolean
+          description: SNPxSNP interaction assessed against a limited list of SNPs
+          example: true|false
         source:
           type: string
+          description: the source of Snp mapping
+          example: Ensembl
         mapping_method:
           type: string
+          description: the method of Snp mapping
+          example: Ensembl_pipeline
         is_closest_gene:
           type: boolean
+          description: closest gene to SNP or not
+          example: true|false
