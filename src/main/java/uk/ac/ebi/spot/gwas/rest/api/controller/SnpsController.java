@@ -6,7 +6,9 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.data.web.SortDefault;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,7 +39,7 @@ public class SnpsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<SingleNucleotidePolymorphismDTO> getSnps(@RequestParam SearchSnpParams searchParams, @ParameterObject Pageable pageable) {
+    public PagedModel<SingleNucleotidePolymorphismDTO> getSnps(@RequestParam SearchSnpParams searchParams,  @SortDefault(sort = "ID", direction = Sort.Direction.DESC)  @ParameterObject Pageable pageable) {
        Page<SingleNucleotidePolymorphism> snps = snpService.getSnps(searchParams, pageable);
        return pagedResourcesAssembler.toModel(snps, snpDtoAssembler);
     }

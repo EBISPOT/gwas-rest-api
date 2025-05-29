@@ -3,12 +3,9 @@ info:
   title: Gwas Catalog Rest API V2
   description:  <p><img width="10%" alt="gwas_icon" src="../GWAS_Catalog_circle_178x178.png"></p>
                 <p>Welcome to the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog</a> Restful API.</p>
-                <p>This API is for facilitating a filtered request of GWAS Catalog data.</p>
                 <p>The GWAS RESTful API provides programmatic access to the GWAS Catalog, enables integration of the GWAS Catalog data into custom applications and services, allowing external bioinformatics developers to leverage the curated GWAS datasets, and create more extended solutions for the scientific community.</p>
                 <p>GWAS RESTful API V2 has been released with various enhancements & improvements over GWAS RESTful API V1. V1 will be deprecated no later than May 2026.<p>
                 <p>Note that this API allows access to the literature-curated top associations & metadata (the same data that is available via the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog Website</a>. A second API enabling access to full genome-side summary statistics is under development.</p>
-
-
   version: "2.0"
 servers:
 - url: http://localhost:8087/gwas/rest/api
@@ -25,13 +22,13 @@ tags:
   - name: efo-traits
     description: The efotraits resource is used to list EFO trait ontology annotations in the GWAS Catalog
   - name: single-nucleotide-polymorphisms
-    description: The singlenucleotidepolymorphisms resource is used to list SNPs in the GWAS Catalog
+    description: The single nucleotide polymorphisms resource is used to list SNPs in the GWAS Catalog
   - name: genomic-contexts
     description: The genomic contexts resource is used to list genomic contexts in the GWAS Catalog
   - name: genes
     description: The genes resource is used to list genes in the GWAS Catalog
   - name: loci
-    description: The loci resource is used to list linking of association & riskallleles in the GWAS Catalog
+    description: The loci resource is used to list linking of association & risk allleles in the GWAS Catalog
   - name: body-of-works
     description: The body of work resource is used to list submissions to the GWAS Catalog that have not yet been published in a journal
   - name: unpublished-ancestries
@@ -326,7 +323,7 @@ paths:
         description: |-
           display entities for descendants of a parent Efo Trait Term
 
-          <i>Example</i> : MONDO_0005180
+          <i>Example</i> : true/false
         required: false
         schema:
           type: boolean
@@ -572,6 +569,8 @@ paths:
           type: array
           items:
             type: string
+          default:
+            - "ID,DESC"
       responses:
         "500":
           description: Internal Error
@@ -628,7 +627,7 @@ paths:
       parameters:
       - name: rsId
         in: path
-        description: "SNP rsId; if a haplotype it may include more than one rs\
+        description: "SNP rsID; if a haplotype it may include more than one rs\
           \ number (multiple SNPs comprising the haplotype) <br/> <br/><i> Example\
           \ </i> : rs3093017 "
         required: true
@@ -662,7 +661,7 @@ paths:
       parameters:
       - name: rsId
         in: path
-        description: "SNP rsId; if a haplotype it may include more than one rs\
+        description: "SNP rsID; if a haplotype it may include more than one rs\
           \ number (multiple SNPs comprising the haplotype) <br/> <br/><i> Example\
           \ </i> : rs3093017 "
         required: true
@@ -1161,7 +1160,7 @@ paths:
           type: string
       - name: rs_id
         in: query
-        description: "SNP rsId; if a haplotype it may include more than one rs\
+        description: "SNP rsID; if a haplotype it may include more than one rs\
           \ number (multiple SNPs comprising the haplotype)\n\n<i>Example</i> : rs3093017 "
         required: false
         schema:
