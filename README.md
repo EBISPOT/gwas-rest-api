@@ -19,7 +19,7 @@ Before you begin, ensure you have met the following requirements:
 
 ## Deploying this service locally
 1. Install Java and JDK8 
-2. Clone the application from https://github.com/EBISPOT/gwas-curation-service.git
+2. Clone the application from https://github.com/EBISPOT/gwas-rest-api.git
 3. Run `mvn clean install` to build the application and generate executable jar 
 4. The application uses default profile as `local`
 5. java -Dspring.datasource.username=**** -Dspring.datasource.password=****** -jar gwas-rest-api-*.jar
