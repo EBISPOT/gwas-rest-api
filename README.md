@@ -1,5 +1,5 @@
 <img width="10%" alt="gwas_icon" src="https://www.ebi.ac.uk/gwas/images/GWAS_Catalog_circle_178x178.png" 
-alt="GWAS logo" width="100" height="100" />
+alt="GWAS logo" />
 ## gwasdepo-rest-api
 Refactored repo for Goci rest api to move away from Spring Data rest to microservices which can be customized. API uses spring Jpa query DSL for
 filtering reducing the lines of code required with JPA repository methods . API has been documented using Open API Swagger. Api supports as new 
