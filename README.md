@@ -31,7 +31,7 @@ Before you begin, ensure you have met the following requirements:
 2. Go to Run > Edit Configurations 
 3. A dialog box will appear. 
 4. Insert in the VM Options text field: java -Dspring.datasource.username=**** -Dspring.datasource.password=******
-5. Access the app on url: localhost:<port>/gwas/rest/api/swagger-ui/index.html#
+5. Access the app on url: localhost:{port}/gwas/rest/api/swagger-ui/index.html#
 
 
 ### Contributing
