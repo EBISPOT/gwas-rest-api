@@ -6,10 +6,12 @@ filtering reducing the lines of code required with JPA repository methods . API 
 feature of filtering based on child traits for a parent efo term . This need prepopulating parent child efo mapping & assigning parent term for 
 association & studies . The pre-population logic is implemented using the below components
 
-![New-rest-api-architecture.drawio.png](../../../sajo/proj_files/New-rest-api-architecture.drawio.png)
-
 - [gwas-association-parent-trait-executor](https://github.com/EBISPOT/gwas-data-services/tree/master/gwas-association-parent-trait-executor)
 - [gwas-association-parent-trait-mapper](https://github.com/EBISPOT/gwas-data-services/tree/master/gwas-association-parent-trait-mapper)
+
+![New-rest-api-architecture.drawio.png](./src/main/resources/static/New-rest-api-architecture.drawio.png)
+
+
 
 
 ## Requirements
