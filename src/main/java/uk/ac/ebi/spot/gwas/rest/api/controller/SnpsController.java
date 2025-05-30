@@ -1,11 +1,14 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.data.web.SortDefault;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +26,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.SingleNucleotidePolymorphismDTO;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_SNPS)
-@Tag(name = "single-nucleotide-polymorphisms")
 public class SnpsController {
 
     @Autowired
@@ -37,13 +39,13 @@ public class SnpsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<SingleNucleotidePolymorphismDTO> getSnps(@RequestParam SearchSnpParams searchParams, @ParameterObject Pageable pageable) {
+    public PagedModel<SingleNucleotidePolymorphismDTO> getSnps(@RequestParam SearchSnpParams searchParams,  @SortDefault(sort = "ID", direction = Sort.Direction.DESC)  @ParameterObject Pageable pageable) {
        Page<SingleNucleotidePolymorphism> snps = snpService.getSnps(searchParams, pageable);
        return pagedResourcesAssembler.toModel(snps, snpDtoAssembler);
     }
 
     @GetMapping(value = "/{rsId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SingleNucleotidePolymorphismDTO> getSingleNucleotidePolymorphism(@PathVariable String rsId) {
+    public ResponseEntity<SingleNucleotidePolymorphismDTO> getSingleNucleotidePolymorphism(@PathVariable @Parameter(name = "rsId") String rsId) {
         return snpService.getSnp(rsId)
                 .map(snpDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

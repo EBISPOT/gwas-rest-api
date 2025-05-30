@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uk.ac.ebi.spot.gwasdepo</groupId>
+    <groupId>uk.ac.ebi.spot.gwas</groupId>
     <artifactId>gwas-rest-api</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -25,13 +25,22 @@
         <!--  <start-class>uk.ac.ebi.spot.gwas.curation.Application</start-class>-->
     </properties>
 
-    <scm>
-        <connection>scm:git:https://github.com/EBISPOT/gwasdepo-curation-service.git</connection>
-        <developerConnection>scm:git:https://github.com/EBISPOT/gwasdepo-curation-service.git</developerConnection>
-        <url>https://github.com/EBISPOT/gwasdepo-curation-service.git</url>
-    </scm>
 
     <repositories>
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+<!--    <repositories>
         <repository>
             <id>spot-releases</id>
             <name>Releases</name>
@@ -63,7 +72,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-    </repositories>
+    </repositories>-->
 
     <build>
         <pluginManagement>
@@ -81,7 +90,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -91,8 +99,6 @@
                     </includes>
                 </configuration>
             </plugin>
-
-
         </plugins>
     </build>
 

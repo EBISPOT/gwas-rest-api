@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ import uk.ac.ebi.spot.gwas.rest.dto.StudyDto;
 
 @RestController
 @RequestMapping(value = GeneralCommon.API_V2 + RestAPIConstants.API_STUDIES)
-@Tag(name = "studies")
 public class StudiesController {
 
     @Autowired
@@ -52,7 +52,7 @@ public class StudiesController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StudyDto> getStudyByAccession(@PathVariable String accessionId) {
+    public ResponseEntity<StudyDto> getStudyByAccession(@PathVariable @Parameter(name = "accessionId") String accessionId) {
         return studyService.getStudy(accessionId)
                 .map(studyDtoAssembler::toModel)
                 .map(ResponseEntity::ok)
