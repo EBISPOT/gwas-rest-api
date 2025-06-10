@@ -9,6 +9,10 @@ association & studies . The pre-population logic is implemented using the below 
 - [gwas-association-parent-trait-executor](https://github.com/EBISPOT/gwas-data-services/tree/master/gwas-association-parent-trait-executor)
 - [gwas-association-parent-trait-mapper](https://github.com/EBISPOT/gwas-data-services/tree/master/gwas-association-parent-trait-mapper)
 
+![New-rest-api-architecture.drawio.png](./src/main/resources/static/New-rest-api-architecture.drawio.png)
+
+
+
 
 ## Requirements
 
