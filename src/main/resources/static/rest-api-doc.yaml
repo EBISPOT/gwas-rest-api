@@ -570,7 +570,7 @@ paths:
           items:
             type: string
           default:
-            - "ID,DESC"
+            - "id,DESC"
       responses:
         "500":
           description: Internal Error
