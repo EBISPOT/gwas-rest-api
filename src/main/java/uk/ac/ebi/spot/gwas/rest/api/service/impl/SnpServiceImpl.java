@@ -25,8 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class
-SnpServiceImpl implements SnpService {
+public class SnpServiceImpl implements SnpService {
 
     @PersistenceContext
     private EntityManager em;
@@ -116,7 +115,6 @@ SnpServiceImpl implements SnpService {
         }
         log.info("Outside the QueryDSL condition");
         return singleNucleotidePolymorphismRepository.findDistinctByStudiesHousekeepingIsPublishedAndStudiesHousekeepingCatalogPublishDateIsNotNull(true, pageable);
-
     }
 
     public Optional<SingleNucleotidePolymorphism> getSnp(String rsId) {

@@ -5,15 +5,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import uk.ac.ebi.spot.gwas.model.Study;
 import uk.ac.ebi.spot.gwas.rest.dto.SearchStudyParams;
+import uk.ac.ebi.spot.gwas.rest.dto.StudiesSortParam;
 import uk.ac.ebi.spot.gwas.rest.projection.StudyProjection;
 
 import java.util.Optional;
 
 public interface StudyService {
 
-    Page<Study> getStudies(Pageable pageable, SearchStudyParams searchStudyParams);
+    Page<Study> getStudies(Pageable pageable, SearchStudyParams searchStudyParams, String sortParam, String direction);
 
     Study getStudy(Long studyId);
 
     Optional<Study> getStudy(String accessionId);
+
 }
