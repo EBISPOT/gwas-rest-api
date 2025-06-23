@@ -2,7 +2,12 @@ server:
   port: 8080
   servlet:
     context-path: /gwas/beta/rest/api
-
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: /var/log/gwas/restapi-access
+      pattern: combined
+      rotate: true
 
 
 spring:
