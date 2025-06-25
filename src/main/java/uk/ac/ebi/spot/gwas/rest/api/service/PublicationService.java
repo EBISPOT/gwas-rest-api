@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface PublicationService {
 
 
-   Page<Publication> findPublications(String pubmedId, String title, String firstAuthor, Pageable pageable);
+   Page<Publication> findPublications(String pubmedId, String title, String firstAuthor, Pageable pageable, String sortParam, String direction);
 
    Optional<Publication> findPublicationByPmid(String pmid);
 }

@@ -7,6 +7,7 @@ import uk.ac.ebi.spot.gwas.model.GenomicContext;
 import uk.ac.ebi.spot.gwas.rest.api.constants.EntityType;
 import uk.ac.ebi.spot.gwas.rest.api.repository.GenomicContextRepository;
 import uk.ac.ebi.spot.gwas.rest.api.service.GenomicContextService;
+import uk.ac.ebi.spot.gwas.rest.dto.GenomicContextParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +22,21 @@ public class GenomicContextServiceImpl implements GenomicContextService {
         this.genomicContextRepository = genomicContextRepository;
     }
 
-    public List<GenomicContext> findByRsid(String rsid) {
-        List<GenomicContext> genomicContexts = genomicContextRepository.findBySnpStudiesHousekeepingIsPublishedAndSnpStudiesHousekeepingCatalogPublishDateIsNotNullAndSnpRsId(true, rsid);
+    public List<GenomicContext> findByRsid(String rsid, String sortParam, String direction) {
+        List<GenomicContext> genomicContexts =  null;
+        if(sortParam != null ){
+            if(direction != null ){
+                if(sortParam.equals(GenomicContextParam.distance.name())) {
+                    genomicContexts =  direction.equals("asc")  ? genomicContextRepository.findBySnpStudiesHousekeepingIsPublishedAndSnpStudiesHousekeepingCatalogPublishDateIsNotNullAndSnpRsIdOrderByDistance(true, rsid) :
+                            genomicContextRepository.findBySnpStudiesHousekeepingIsPublishedAndSnpStudiesHousekeepingCatalogPublishDateIsNotNullAndSnpRsIdOrderByDistanceDesc(true, rsid);
+                }
+            } else {
+                genomicContexts =  genomicContextRepository.findBySnpStudiesHousekeepingIsPublishedAndSnpStudiesHousekeepingCatalogPublishDateIsNotNullAndSnpRsId(true, rsid);
+            }
+        } else {
+            genomicContexts =  genomicContextRepository.findBySnpStudiesHousekeepingIsPublishedAndSnpStudiesHousekeepingCatalogPublishDateIsNotNullAndSnpRsId(true, rsid);
+        }
+
         if (genomicContexts.isEmpty()) {
             throw new EntityNotFoundException(EntityType.GENOMIC_CONTEXT, "rs_id", rsid);
         }

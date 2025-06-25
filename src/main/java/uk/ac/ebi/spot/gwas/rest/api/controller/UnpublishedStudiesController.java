@@ -40,8 +40,10 @@ public class UnpublishedStudiesController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@RequestParam SearchUnpublishedStudyParams searchUnpublishedStudyParams,
-                                                                 @SortDefault(sort = "accession", direction = Sort.Direction.DESC)  @ParameterObject Pageable pageable) {
-        Page<UnpublishedStudy> unpublishedStudies = unpublishedStudyService.getUnpublishedStudies(searchUnpublishedStudyParams, pageable);
+                                                                 @RequestParam(required = false)  String sort,
+                                                                 @RequestParam(required = false)   String direction,
+                                                                  @ParameterObject Pageable pageable) {
+        Page<UnpublishedStudy> unpublishedStudies = unpublishedStudyService.getUnpublishedStudies(searchUnpublishedStudyParams, pageable, sort, direction);
         return pagedResourcesAssembler.toModel(unpublishedStudies, unpublishedStudyDtoAssembler);
     }
     @ResponseStatus(HttpStatus.OK)

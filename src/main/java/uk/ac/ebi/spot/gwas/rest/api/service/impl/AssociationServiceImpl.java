@@ -181,7 +181,7 @@ public class AssociationServiceImpl implements AssociationService {
                         .otherwise(0);
             }
         } else {
-             sortColumOrder = new CaseBuilder()
+            sortColumOrder = new CaseBuilder()
                     .when(qAssociation.id.isNull())
                     .then(1)
                     .otherwise(0);
@@ -208,7 +208,7 @@ public class AssociationServiceImpl implements AssociationService {
                 orderSpecifier = direction.equals("asc") ? qAssociation.orPerCopyNum.asc() : qAssociation.orPerCopyNum.desc();
             }
             if (sortParam.equals(AssociationSortParam.beta_num.name())) {
-                orderSpecifier = direction.equals("asc") ? qAssociation.betaNum.asc() : qAssociation.orPerCopyNum.desc();
+                orderSpecifier = direction.equals("asc") ? qAssociation.betaNum.asc() : qAssociation.betaNum.desc();
             }
         } else {
             orderSpecifier = qAssociation.id.desc();

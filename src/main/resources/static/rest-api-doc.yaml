@@ -89,6 +89,24 @@ paths:
         required: false
         schema:
           type: string
+      - name: sort
+        in: query
+        description: Fields to sort by
+        required: false
+        schema:
+          type: string
+          enum:
+            - study_accession
+            - variant_count
+      - name: direction
+        in: query
+        description: "Sort direction : asc or desc"
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc
       - name: page
         in: query
         description: Zero-based page index (0..N)
@@ -153,6 +171,25 @@ paths:
         required: true
         schema:
           type: string
+      - name: sort
+        in: query
+        description: Fields to sort by
+        required: false
+        schema:
+          type: string
+          enum:
+            - sample_size
+            - cases
+            - controls
+      - name: direction
+        in: query
+        description: "Sort direction : asc or desc"
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc
       responses:
         "500":
           description: Internal Error
@@ -413,6 +450,23 @@ paths:
         required: true
         schema:
           type: string
+      - name: sort
+        in: query
+        description: Fields to sort by
+        required: false
+        schema:
+          type: string
+          enum:
+            - number_of_individuals
+      - name: direction
+        in: query
+        description: "Sort direction : asc or desc"
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc
       responses:
         "500":
           description: Internal Error
@@ -543,6 +597,25 @@ paths:
         required: false
         schema:
           type: string
+      - name: sort
+        in: query
+        description: Fields to sort by
+        required: false
+        schema:
+          type: string
+          enum:
+            - location
+            - maf
+            - rs_id
+      - name: direction
+        in: query
+        description: "Sort direction : asc or desc"
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc
       - name: page
         in: query
         description: Zero-based page index (0..N)
@@ -559,17 +632,6 @@ paths:
           minimum: 1
           type: integer
           default: 20
-      - name: sort
-        in: query
-        description: "Sorting criteria in the format: property,(asc|desc). Default\
-          \ sort order is ascending. Multiple sort criteria are supported."
-        required: false
-        schema:
-          type: array
-          items:
-            type: string
-          default:
-            - "id,DESC"
       responses:
         "500":
           description: Internal Error
@@ -632,6 +694,23 @@ paths:
         required: true
         schema:
           type: string
+      - name: sort
+        in: query
+        description: Fields to sort by
+        required: false
+        schema:
+          type: string
+          enum:
+            - distance
+      - name: direction
+        in: query
+        description: "Sort direction : asc or desc"
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc
       responses:
         "500":
           description: Internal Error
@@ -719,6 +798,24 @@ paths:
         required: false
         schema:
           type: string
+      - name: sort
+        in: query
+        description: Fields to sort by
+        required: false
+        schema:
+          type: string
+          enum:
+            - pubmed_id
+            - publication_date
+      - name: direction
+        in: query
+        description: "Sort direction : asc or desc"
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc
       - name: page
         in: query
         description: Zero-based page index (0..N)
@@ -735,17 +832,6 @@ paths:
           minimum: 1
           type: integer
           default: 20
-      - name: sort
-        in: query
-        description: "Sorting criteria in the format: property,(asc|desc). Default\
-          \ sort order is ascending. Multiple sort criteria are supported."
-        required: false
-        schema:
-          type: array
-          items:
-            type: string
-          default:
-            - "id,DESC"
       responses:
         "500":
           description: Internal Error
@@ -912,6 +998,24 @@ paths:
         required: false
         schema:
           type: string
+      - name: sort
+        in: query
+        description: Fields to sort by
+        required: false
+        schema:
+          type: string
+          enum:
+            - efo_id
+            - efo_trait
+      - name: direction
+        in: query
+        description: "Sort direction : asc or desc"
+        required: false
+        schema:
+          type: string
+          enum:
+            - asc
+            - desc
       - name: page
         in: query
         description: Zero-based page index (0..N)
@@ -922,23 +1026,12 @@ paths:
           default: 0
       - name: size
         in: query
-        description: The size of the page to be returned
+        description: The size of the page to be returned (maximum 500)
         required: false
         schema:
           minimum: 1
           type: integer
           default: 20
-      - name: sort
-        in: query
-        description: "Sorting criteria in the format: property,(asc|desc). Default\
-          \ sort order is ascending. Multiple sort criteria are supported."
-        required: false
-        schema:
-          type: array
-          items:
-            type: string
-          default:
-            - "id,DESC"
       responses:
         "500":
           description: Internal Error

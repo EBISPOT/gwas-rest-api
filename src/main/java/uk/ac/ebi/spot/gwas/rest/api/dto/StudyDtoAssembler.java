@@ -71,7 +71,7 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
 
         //studyDto.add(linkTo(methodOn(StudiesController.class).getStudy(String.valueOf(study.getId()))).withSelfRel());
         studyDto.add(linkTo(methodOn(StudiesController.class).getStudyByAccession(study.getAccessionId())).withSelfRel());
-        studyDto.add(linkTo(methodOn(AncestryController.class).getAncestries(study.getAccessionId())).withRel("ancestries"));
+        studyDto.add(linkTo(methodOn(AncestryController.class).getAncestries(study.getAccessionId(), null , null)).withRel("ancestries"));
         return studyDto;
     }
 

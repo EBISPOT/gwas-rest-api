@@ -39,8 +39,10 @@ public class PublicationsController {
     public PagedModel<PublicationDto> getPublications(@RequestParam(value = "pubmed_id", required = false)  @Parameter(name = "pubmed_id") String pubmedId,
                                                       @RequestParam(value = "title", required = false)  @Parameter(name = "title") String title,
                                                       @RequestParam(value = "first_author", required = false) @Parameter(name = "first_author") String firstAuthor,
+                                                      @RequestParam(required = false)  String sort,
+                                                      @RequestParam(required = false)   String direction,
                                                       @ParameterObject Pageable pageable) {
-        Page<Publication> publications = publicationService.findPublications(pubmedId, title, firstAuthor, pageable);
+        Page<Publication> publications = publicationService.findPublications(pubmedId, title, firstAuthor, pageable, sort, direction);
         return pagedResourcesAssembler.toModel(publications, publicationDtoAssembler);
 
     }

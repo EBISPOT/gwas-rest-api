@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface UnpublishedStudyService {
 
-  Page<UnpublishedStudy> getUnpublishedStudies(SearchUnpublishedStudyParams searchUnpublishedStudyParams, Pageable pageable);
+  Page<UnpublishedStudy> getUnpublishedStudies(SearchUnpublishedStudyParams searchUnpublishedStudyParams, Pageable pageable, String sortParam , String direction);
 
   Optional<UnpublishedStudy> findByAccession(String accession);
 

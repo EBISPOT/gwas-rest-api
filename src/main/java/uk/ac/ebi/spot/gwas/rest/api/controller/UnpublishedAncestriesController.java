@@ -30,8 +30,10 @@ public class UnpublishedAncestriesController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES)
-    public CollectionModel<UnpublishedAncestryDTO> getUnpublishedAncestries(@PathVariable @Parameter(name = "accessionId") String accessionId ) {
-        List<UnpublishedAncestry> unpublishedAncestries = unpublishedAncestryService.getAllUnpublishedAncestry(accessionId);
+    public CollectionModel<UnpublishedAncestryDTO> getUnpublishedAncestries(@PathVariable @Parameter(name = "accessionId") String accessionId,
+                                                                            @RequestParam(required = false)  String sort,
+                                                                            @RequestParam(required = false)   String direction) {
+        List<UnpublishedAncestry> unpublishedAncestries = unpublishedAncestryService.getAllUnpublishedAncestry(accessionId, sort, direction);
         return unpublishedAncestryDTOAssembler.toCollectionModel(unpublishedAncestries, accessionId);
     }
 

@@ -6,6 +6,7 @@ import uk.ac.ebi.spot.gwas.model.Ancestry;
 import uk.ac.ebi.spot.gwas.rest.api.repository.AncestryRepository;
 import uk.ac.ebi.spot.gwas.rest.api.service.AncestryService;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -18,13 +19,25 @@ public class AncestryServiceImpl implements AncestryService {
         this.ancestryRepository = ancestryRepository;
     }
 
-    public List<Ancestry> getAncestriesForStudy(String accessionId) {
-        return ancestryRepository.findByStudyHousekeepingIsPublishedAndStudyHousekeepingCatalogPublishDateIsNotNullAndStudyAccessionIdEquals(true  , accessionId);
+    public List<Ancestry> getAncestriesForStudy(String accessionId, String sortParam, String direction) {
+        List<Ancestry> ancestries = ancestryRepository.findByStudyHousekeepingIsPublishedAndStudyHousekeepingCatalogPublishDateIsNotNullAndStudyAccessionIdEquals(true  , accessionId);
+        if(sortParam != null) {
+            if( direction != null) {
+                if (direction.equals("asc")) {
+                    ancestries.sort(Comparator.comparing(Ancestry::getNumberOfIndividuals));
+                } else {
+                    ancestries.sort(Comparator.comparing(Ancestry::getNumberOfIndividuals).reversed());
+                }
+            } else {
+                ancestries.sort(Comparator.comparing(Ancestry::getId));
+            }
+        }
+        return ancestries;
     }
 
 
-   public Ancestry getAncestry(Long ancestryId) {
+    public Ancestry getAncestry(Long ancestryId) {
         return ancestryRepository.findById(ancestryId).orElse(null);
-   }
+    }
 
 }

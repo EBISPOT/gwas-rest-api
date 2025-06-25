@@ -39,8 +39,11 @@ public class SnpsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<SingleNucleotidePolymorphismDTO> getSnps(@RequestParam SearchSnpParams searchParams,  @SortDefault(sort = "id", direction = Sort.Direction.DESC)  @ParameterObject Pageable pageable) {
-       Page<SingleNucleotidePolymorphism> snps = snpService.getSnps(searchParams, pageable);
+    public PagedModel<SingleNucleotidePolymorphismDTO> getSnps(@RequestParam SearchSnpParams searchParams,
+                                                               @RequestParam(required = false)  String sort,
+                                                               @RequestParam(required = false)   String direction,
+                                                               @ParameterObject Pageable pageable) {
+       Page<SingleNucleotidePolymorphism> snps = snpService.getSnps(searchParams, pageable, sort, direction);
        return pagedResourcesAssembler.toModel(snps, snpDtoAssembler);
     }
 

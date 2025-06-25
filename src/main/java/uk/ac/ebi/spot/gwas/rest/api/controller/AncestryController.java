@@ -28,8 +28,10 @@ public class AncestryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accessionId}" + RestAPIConstants.API_ANCESTRIES, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<AncestryDTO> getAncestries(@PathVariable @Parameter(name = "accessionId") String accessionId) {
-        List<Ancestry> ancestries = ancestryService.getAncestriesForStudy(accessionId);
+    public CollectionModel<AncestryDTO> getAncestries(@PathVariable @Parameter(name = "accessionId") String accessionId,
+                                                      @RequestParam(required = false)  String sort,
+                                                      @RequestParam(required = false)   String direction) {
+        List<Ancestry> ancestries = ancestryService.getAncestriesForStudy(accessionId, sort, direction);
         return ancestryDtoAssembler.toCollectionModel(ancestries, accessionId);
     }
 
