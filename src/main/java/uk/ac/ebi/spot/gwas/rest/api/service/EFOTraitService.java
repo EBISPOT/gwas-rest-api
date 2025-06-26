@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface EFOTraitService {
 
-    Page<EfoTrait> getEFOTraits(SearchEfoParams searchEfoParams, Pageable pageable);
+    Page<EfoTrait> getEFOTraits(SearchEfoParams searchEfoParams, Pageable pageable, String sort , String direction);
 
     Optional<EfoTrait> getEFOTrait(String shortForm);
 }

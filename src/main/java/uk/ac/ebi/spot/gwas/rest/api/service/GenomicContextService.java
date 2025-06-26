@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface GenomicContextService {
 
-    List<GenomicContext> findByRsid(String rsid);
+    List<GenomicContext> findByRsid(String rsid, String sortParam, String direction);
 
     Optional<GenomicContext> findByGenomicContextId(String genomicContextId);
 

@@ -83,7 +83,7 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
                 .mappedGenes(snpService.findMatchingGenes(snp.getId()))
                 .build();
         singleNucleotidePolymorphismDTO.add(linkTo(methodOn(SnpsController.class).getSingleNucleotidePolymorphism(snp.getRsId())).withSelfRel());
-        singleNucleotidePolymorphismDTO.add(linkTo(methodOn(GenomicContextController.class).getGenomicContexts(snp.getRsId())).withRel("genomic_contexts"));
+        singleNucleotidePolymorphismDTO.add(linkTo(methodOn(GenomicContextController.class).getGenomicContexts(snp.getRsId(),null, null)).withRel("genomic_contexts"));
         return singleNucleotidePolymorphismDTO;
     }
 
@@ -99,7 +99,7 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
 
         final Pattern pattern = Pattern.compile(ALLELE_PATTERN);
 
-        return variant.getMappings().stream().map(mapping -> {
+        return variant.getMappings() != null ? variant.getMappings().stream().map(mapping -> {
             Matcher matcher = pattern.matcher(mapping.getSeqRegionName());
             if(matcher.find()) {
                 String alleleString = mapping.getAlleleString();
@@ -107,7 +107,7 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
                 return String.format("%s %s%s%s", alleleString,"(",strand,")");
             }
             return null;
-        }).collect(Collectors.joining(" "));
+        }).collect(Collectors.joining(" ")) : "";
     }
 
 }

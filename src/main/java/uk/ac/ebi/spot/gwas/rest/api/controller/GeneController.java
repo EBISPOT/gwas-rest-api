@@ -38,7 +38,7 @@ public class GeneController {
     }
 
     @GetMapping(value = "/{gene_name}")
-    public GeneDTO getGeneByName(@PathVariable(name = "gene_name") @Parameter(name = "gene_name") String geneName) {
+    public GeneDTO getGeneByName(@PathVariable(name = "gene_name")  String geneName) {
         GeneSolrDto geneSolrDto = geneService.getGeneByName(geneName);
         return geneSolrDtoAssembler.toModel(geneSolrDto);
     }

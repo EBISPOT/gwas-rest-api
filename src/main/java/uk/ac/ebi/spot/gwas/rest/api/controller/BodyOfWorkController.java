@@ -51,23 +51,23 @@ public class BodyOfWorkController {
 
    @ResponseStatus(HttpStatus.OK)
    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-   public PagedModel<BodyOfWorkDTO> getBodiesOfWork(@RequestParam(value = "title", required = false)     @Parameter(name = "title") String title,
-                                                    @RequestParam(value = "first_author", required = false) @Parameter(name = "first_author") String firstAuthor,
+   public PagedModel<BodyOfWorkDTO> getBodiesOfWork(@RequestParam(value = "title", required = false)    String title,
+                                                    @RequestParam(value = "first_author", required = false) String firstAuthor,
                                                     @SortDefault(sort = "id", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
        Page<BodyOfWork> bodyOfWorks = bodyOfWorkService.getBodyOfWork(title, firstAuthor, pageable);
        return pagedResourcesAssembler.toModel(bodyOfWorks, bodyOfWorkDtoAssembler);
     }
 
-    @GetMapping(value = "/{bowId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BodyOfWorkDTO> getBodyOfWork(@PathVariable  @Parameter(name = "bowId") Long bowId) {
+    @GetMapping(value = "/{bow_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BodyOfWorkDTO> getBodyOfWork(@PathVariable (name = "bow_id") Long bowId) {
         return bodyOfWorkService.getBodyOfWork(bowId)
                 .map(bodyOfWorkDtoAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new EntityNotFoundException(EntityType.BODY_OF_WORKS, "Id", String.valueOf(bowId)));
     }
 
-    @GetMapping(value = "/{bowId}"+RestAPIConstants.API_UNPUBLISHED_STUDIES, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@PathVariable  @Parameter(name = "bowId") Long bowId, @ParameterObject Pageable pageable) {
+    @GetMapping(value = "/{bow_id}"+RestAPIConstants.API_UNPUBLISHED_STUDIES, produces = MediaType.APPLICATION_JSON_VALUE)
+    public PagedModel<UnpublishedStudyDTO> getUnpublishedStudies(@PathVariable (name = "bow_id") Long bowId, @ParameterObject Pageable pageable) {
         Page<UnpublishedStudy> unpublishedStudies = unpublishedStudyService.findByBodyOfWork(bowId, pageable);
         return unpublishedStudyPagedResourcesAssembler.toModel(unpublishedStudies, unpublishedStudyDtoAssembler);
     }

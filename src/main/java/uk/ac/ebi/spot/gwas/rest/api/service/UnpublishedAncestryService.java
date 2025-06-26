@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UnpublishedAncestryService {
 
-    List<UnpublishedAncestry> getAllUnpublishedAncestry(String accessionId);
+    List<UnpublishedAncestry> getAllUnpublishedAncestry(String accessionId, String sortParam , String direction);
 
     Optional<UnpublishedAncestry> getAncestry(Long id);
 }
