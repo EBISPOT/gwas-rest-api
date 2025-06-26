@@ -47,8 +47,8 @@ public class PublicationsController {
 
     }
 
-    @GetMapping(value = "/{pubmedId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PublicationDto> getPublication(@PathVariable String pubmedId) {
+    @GetMapping(value = "/{pubmed_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PublicationDto> getPublication(@PathVariable (name = "pubmed_id") String pubmedId) {
         return publicationService.findPublicationByPmid(pubmedId)
                 .map(publicationDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

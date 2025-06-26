@@ -57,8 +57,8 @@ public class StudiesController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{accessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StudyDto> getStudyByAccession(@PathVariable @Parameter(name = "accessionId") String accessionId) {
+    @GetMapping(value = "/{accession_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StudyDto> getStudyByAccession(@PathVariable (name = "accession_id") String accessionId) {
         return studyService.getStudy(accessionId)
                 .map(studyDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

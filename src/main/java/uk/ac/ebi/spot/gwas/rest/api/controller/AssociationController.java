@@ -54,8 +54,8 @@ public class AssociationController {
         return pagedResourcesAssembler.toModel(associations, associationDtoAssembler);
     }
 
-    @GetMapping(value = "/{associationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AssociationDTO> getAssociation(@PathVariable  @Parameter(name = "associationId")  String associationId) {
+    @GetMapping(value = "/{association_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AssociationDTO> getAssociation(@PathVariable  (name = "association_id")  String associationId) {
         return associationService.getAssociation(Long.valueOf(associationId))
                 .map(associationDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

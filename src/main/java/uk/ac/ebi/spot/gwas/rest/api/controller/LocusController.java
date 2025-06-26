@@ -32,14 +32,14 @@ public class LocusController {
     @Autowired
     LocusDtoAssembler locusDtoAssembler;
 
-    @GetMapping(value = "/{associationId}" + RestAPIConstants.API_LOCI, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<LocusDTO> getLoci(@PathVariable @Parameter(name = "associationId") String associationId) {
+    @GetMapping(value = "/{association_id}" + RestAPIConstants.API_LOCI, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CollectionModel<LocusDTO> getLoci(@PathVariable (name = "association_id") String associationId) {
       List<Locus> loci = locusService.findLociByAssociationId(Long.valueOf(associationId));
       return locusDtoAssembler.toCollectionModel(loci, Long.valueOf(associationId));
     }
 
-    @GetMapping(value = "/{associationId}" + RestAPIConstants.API_LOCI + "/{locusId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LocusDTO> getLocus(@PathVariable @Parameter(name = "associationId") String associationId, @PathVariable @Parameter(name = "locusId") String locusId) {
+    @GetMapping(value = "/{association_id}" + RestAPIConstants.API_LOCI + "/{locus_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LocusDTO> getLocus(@PathVariable (name = "association_id") String associationId, @PathVariable(name = "locus_id") String locusId) {
         return locusService.findByLocusId(Long.valueOf(locusId))
                 .map(locusDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

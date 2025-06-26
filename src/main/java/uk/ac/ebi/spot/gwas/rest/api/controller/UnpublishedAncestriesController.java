@@ -29,17 +29,17 @@ public class UnpublishedAncestriesController {
     UnpublishedAncestryDTOAssembler unpublishedAncestryDTOAssembler;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{accessionId}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES)
-    public CollectionModel<UnpublishedAncestryDTO> getUnpublishedAncestries(@PathVariable @Parameter(name = "accessionId") String accessionId,
+    @GetMapping(value = "/{accession_id}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES)
+    public CollectionModel<UnpublishedAncestryDTO> getUnpublishedAncestries(@PathVariable (name = "accession_id") String accessionId,
                                                                             @RequestParam(required = false)  String sort,
                                                                             @RequestParam(required = false)   String direction) {
         List<UnpublishedAncestry> unpublishedAncestries = unpublishedAncestryService.getAllUnpublishedAncestry(accessionId, sort, direction);
         return unpublishedAncestryDTOAssembler.toCollectionModel(unpublishedAncestries, accessionId);
     }
 
-    @GetMapping(value = "/{accessionId}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES + "/{ancestryId}")
-    public ResponseEntity<UnpublishedAncestryDTO> getUnpublishedAncestry(@PathVariable @Parameter(name = "accessionId") String accessionId,
-                                                                         @PathVariable @Parameter(name = "ancestryId") String ancestryId) {
+    @GetMapping(value = "/{accession_id}"+RestAPIConstants.API_UNPUBLISHED_ANCESTRIES + "/{ancestry_id}")
+    public ResponseEntity<UnpublishedAncestryDTO> getUnpublishedAncestry(@PathVariable (name = "accession_id") String accessionId,
+                                                                         @PathVariable (name = "ancestry_id") String ancestryId) {
         return unpublishedAncestryService.getAncestry(Long.valueOf(ancestryId))
                 .map(unpublishedAncestryDTOAssembler::toModel)
                 .map(ResponseEntity::ok)

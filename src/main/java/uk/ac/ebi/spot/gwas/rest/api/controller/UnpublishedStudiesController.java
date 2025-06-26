@@ -47,8 +47,8 @@ public class UnpublishedStudiesController {
         return pagedResourcesAssembler.toModel(unpublishedStudies, unpublishedStudyDtoAssembler);
     }
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{accessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UnpublishedStudyDTO> getUnpublishedStudy(@PathVariable @Parameter(name = "accessionId") String accessionId) {
+    @GetMapping(value = "/{accession_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UnpublishedStudyDTO> getUnpublishedStudy(@PathVariable (name = "accession_id") String accessionId) {
         return unpublishedStudyService.findByAccession(accessionId)
                 .map(unpublishedStudyDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

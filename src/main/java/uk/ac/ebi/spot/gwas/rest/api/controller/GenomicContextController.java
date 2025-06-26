@@ -28,16 +28,16 @@ public class GenomicContextController {
     @Autowired
     GenomicContextDtoAssembler genomicContextDtoAssembler;
 
-    @GetMapping(value = "/{rsId}" + RestAPIConstants.API_GENOMIC_CONTEXTS, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<GenomicContextDTO> getGenomicContexts(@PathVariable @Parameter(name = "rsId") String rsId,
+    @GetMapping(value = "/{rs_id}" + RestAPIConstants.API_GENOMIC_CONTEXTS, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CollectionModel<GenomicContextDTO> getGenomicContexts(@PathVariable (name = "rs_id") String rsId,
                                                                  @RequestParam(required = false)  String sort,
                                                                  @RequestParam(required = false)   String direction) {
        List<GenomicContext> genomicContexts = genomicContextService.findByRsid(rsId, sort, direction);
        return genomicContextDtoAssembler.toCollectionModel(genomicContexts, rsId);
     }
 
-    @GetMapping(value = "/{rsId}" + RestAPIConstants.API_GENOMIC_CONTEXTS + "/{genomicContextId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GenomicContextDTO> getGenomicContext(@PathVariable @Parameter(name = "rsId") String rsId ,@PathVariable @Parameter(name = "genomicContextId") String genomicContextId) {
+    @GetMapping(value = "/{rs_id}" + RestAPIConstants.API_GENOMIC_CONTEXTS + "/{genomicContext_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenomicContextDTO> getGenomicContext(@PathVariable (name = "rs_id") String rsId ,@PathVariable (name = "genomicContext_id") String genomicContextId) {
         return genomicContextService.findByGenomicContextId(genomicContextId)
                 .map(genomicContextDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

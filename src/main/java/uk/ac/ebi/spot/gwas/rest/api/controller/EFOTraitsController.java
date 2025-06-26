@@ -46,8 +46,8 @@ public class EFOTraitsController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{efoId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EFOTraitDTO> getEFOTraitsDTO(@PathVariable  @Parameter(name = "efoId") String efoId) {
+    @GetMapping(value = "/{efo_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EFOTraitDTO> getEFOTraitsDTO(@PathVariable (name = "efo_id") String efoId) {
         return efoTraitService.getEFOTrait(efoId)
                 .map(efoTraitDtoAssembler::toModel)
                 .map(ResponseEntity::ok)
