@@ -37,6 +37,9 @@ public class EFOTraitServiceImpl implements EFOTraitService {
         QEfoTrait qEfoTrait  = QEfoTrait.efoTrait;
         QStudy qStudy = QStudy.study;
         QPublication qPublication = QPublication.publication1;
+        QAssociation qAssociation = QAssociation.association;
+        QSingleNucleotidePolymorphism qSingleNucleotidePolymorphism = QSingleNucleotidePolymorphism.singleNucleotidePolymorphism;
+        QGene qGene = QGene.gene;
         QHousekeeping qHousekeeping = QHousekeeping.housekeeping;
         List<EfoTrait> efoTraits = null;
         Long totalElements = 0L;
@@ -49,9 +52,22 @@ public class EFOTraitServiceImpl implements EFOTraitService {
                         .innerJoin(qEfoTrait.studies, qStudy)
                         .innerJoin(qStudy.publicationId, qPublication);
             }
+            if(searchEfoParams.getMappedGene() != null) {
+                if(searchEfoParams.getExtendedGeneSet() != null && searchEfoParams.getExtendedGeneSet()){
+                    efoTraitJPQLQuery = efoTraitJPQLQuery
+                            .innerJoin(qEfoTrait.associations, qAssociation)
+                            .innerJoin(qAssociation.snps, qSingleNucleotidePolymorphism)
+                            .innerJoin(qSingleNucleotidePolymorphism.genes, qGene);
+                } else {
+                    efoTraitJPQLQuery = efoTraitJPQLQuery
+                            .innerJoin(qEfoTrait.associations, qAssociation)
+                            .innerJoin(qAssociation.mappedGenes, qGene);
+                }
+            }
+
             if(searchEfoParams.getTrait() != null) {
                 efoTraitJPQLQuery = efoTraitJPQLQuery
-                        .where(qEfoTrait.trait.equalsIgnoreCase(searchEfoParams.getTrait()));
+                        .where(qEfoTrait.trait.containsIgnoreCase(searchEfoParams.getTrait()));
             }
             if(searchEfoParams.getShortForm() != null) {
                 efoTraitJPQLQuery = efoTraitJPQLQuery
@@ -65,6 +81,12 @@ public class EFOTraitServiceImpl implements EFOTraitService {
                 efoTraitJPQLQuery = efoTraitJPQLQuery
                         .where(qPublication.pubmedId.equalsIgnoreCase(searchEfoParams.getPubmedId()));
             }
+
+            if(searchEfoParams.getMappedGene() != null) {
+                efoTraitJPQLQuery = efoTraitJPQLQuery
+                        .where(qGene.geneName.equalsIgnoreCase(searchEfoParams.getMappedGene()));
+            }
+
             efoTraitJPQLQuery = efoTraitJPQLQuery
                     .innerJoin(qEfoTrait.studies, qStudy)
                     .innerJoin(qStudy.housekeeping, qHousekeeping)

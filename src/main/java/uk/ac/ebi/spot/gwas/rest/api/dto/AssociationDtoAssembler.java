@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.dto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -7,9 +8,12 @@ import uk.ac.ebi.spot.gwas.model.*;
 import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
 import uk.ac.ebi.spot.gwas.rest.api.controller.AssociationController;
 import uk.ac.ebi.spot.gwas.rest.api.controller.LocusController;
+import uk.ac.ebi.spot.gwas.rest.api.controller.SnpsController;
 import uk.ac.ebi.spot.gwas.rest.api.service.AssociationService;
 import uk.ac.ebi.spot.gwas.rest.dto.AssociationDTO;
 import uk.ac.ebi.spot.gwas.rest.dto.EFOWrapperDTO;
+import uk.ac.ebi.spot.gwas.rest.dto.RiskAlleleWrapperDTO;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,21 +37,30 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
 
     @Override
     public AssociationDTO toModel(Association association) {
+
+        Pair<Float, Float> ciValues = Optional.ofNullable(association.getRange()).map(this::getCIValues).orElse(null);
+
+        List<Pair<RiskAlleleWrapperDTO, String>> pairList = getRiskAllele(association);
+
         AssociationDTO associationDTO =  AssociationDTO.builder()
                 .associationId(association.getId())
                 .accessionID(association.getStudy() != null ? association.getStudy().getAccessionId()
                         : null)
-                .riskAllele(this.getRiskAllele(association))
+                .riskAllele(this.getSnpRiskAlleles(pairList))
+                .effectAlleles(this.getEffectAlleles(pairList))
                 .pValue(getPValue(association))
                 .pvalueDescription(Optional.ofNullable(association.getDescription())
                         .map(this::tranformPValueAnnotation).orElse(""))
                 .riskFrequency(association.getRiskFrequency())
                 .orValue(Optional.ofNullable(association.getOrPerCopyNum()).map(orVal ->
                         this.transformOrValue(orVal, association.getDescription())).orElse(null))
+                .orPerCopyNum(association.getOrPerCopyNum())
                 .beta(Optional.ofNullable(association.getBetaNum()).map(betaNum ->
                         this.transformBeta(betaNum, association.getBetaUnit(), association.getBetaDirection()))
                         .orElse("-"))
                 .range(Optional.ofNullable(association.getRange()).orElse("-"))
+                .ciLower(Optional.ofNullable(association.getRange()).map(range -> ciValues.getLeft()).orElse(null))
+                .ciUpper(Optional.ofNullable(association.getRange()).map(range -> ciValues.getRight()).orElse(null))
                 .mappedGenes(this.getMappedGenes(association))
                 .reportedTrait(this.getReportedTrait(association.getId()))
                 .efoTraits(this.getEFOTraits(association))
@@ -61,6 +74,15 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
         if(association.getLoci() != null && !association.getLoci().isEmpty()) {
             associationDTO.add(linkTo(methodOn(LocusController.class).getLoci(String.valueOf(association.getId()))).withRel("loci"));
         }
+        for(Locus locus : association.getLoci()) {
+            for(RiskAllele  riskAllele : locus.getStrongestRiskAlleles() ) {
+                if(riskAllele.getSnp() != null) {
+                    associationDTO.add(linkTo(methodOn(SnpsController.class).getSingleNucleotidePolymorphism(riskAllele.getSnp().getRsId())).withRel("snp"));
+                }
+            }
+
+            }
+
         return associationDTO;
     }
 
@@ -126,7 +148,8 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
         return null;
     }
 
-    private List<String> getRiskAllele(Association association) {
+    private List<Pair<RiskAlleleWrapperDTO, String>> getRiskAllele(Association association) {
+
         String primary_delimiter = "";
         if(association.getSnpInteraction()) {
             primary_delimiter = " x ";
@@ -149,39 +172,47 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
                 int lastIndex = allele.lastIndexOf("-");
                 String allele_rsId = allele.substring(0, lastIndex).trim().replace(" ", "");
                 String allele_label = allele.substring(lastIndex + 1).trim();
-                return allele_rsId + "-" + allele_label;
+                RiskAlleleWrapperDTO riskAlleleWrapperDTO = RiskAlleleWrapperDTO.builder()
+                        .riskAllele(allele_label)
+                        .rsID(allele_rsId)
+                        .build();
+                return Pair.of(riskAlleleWrapperDTO,allele_rsId + "-" + allele_label);
             }
             return null;
         }).collect(Collectors.toList());
     }
 
+    private List<String> getSnpRiskAlleles(List<Pair<RiskAlleleWrapperDTO, String>> pairList) {
+       return pairList.stream().map(Pair::getRight).collect(Collectors.toList());
+    }
+
+    private List<RiskAlleleWrapperDTO> getEffectAlleles(List<Pair<RiskAlleleWrapperDTO, String>> pairList) {
+        return pairList.stream().map(Pair::getLeft).collect(Collectors.toList());
+    }
 
 
     private List<String> getMappedGenes(Association association) {
-        String primary_delimiter = "";
-        if(association.getSnpInteraction()) {
-            primary_delimiter = " x ";
-        }else {
-            primary_delimiter = "; ";
-        }
-        StringBuilder geneStringBuilder = new StringBuilder();
+        List<String> mappedGenes = new ArrayList<>();
         for(Locus locus : association.getLoci()) {
             for(RiskAllele  riskAllele : locus.getStrongestRiskAlleles() ) {
-                if(!geneStringBuilder.toString().isEmpty()) {
-                    geneStringBuilder.append(primary_delimiter);
-                    geneStringBuilder.append(getMappedGeneString(association, riskAllele.getSnp(), RestAPIConstants.ENSEMBL_SOURCE));
-                } else{
-                    geneStringBuilder.append(getMappedGeneString(association, riskAllele.getSnp(), RestAPIConstants.ENSEMBL_SOURCE));
-                }
+               List<String> snpMappedGenes = getMappedGeneString(riskAllele.getSnp(), RestAPIConstants.ENSEMBL_SOURCE);
+               if(snpMappedGenes !=  null ) {
+                   mappedGenes.addAll(snpMappedGenes);
+               }
             }
         }
-       return Collections.singletonList(geneStringBuilder.toString());
+       return mappedGenes;
     }
 
-    private String getMappedGeneString(Association association,
-                                                 SingleNucleotidePolymorphism snp,
+    private Pair<Float, Float> getCIValues(String range) {
+       String ciValues = range.substring(1, range.length() - 1);
+        String[] ci = ciValues.split("-");
+        return Pair.of(Float.valueOf(ci[0]), Float.valueOf(ci[1]));
+    }
+
+    private List<String> getMappedGeneString(SingleNucleotidePolymorphism snp,
                                                  String source) {
-        Set<String> allMappedGenes = new HashSet<>();
+        List<String> allMappedGenes = new ArrayList<>();
         List<Long> mappedGenesToLocation = new ArrayList<>();
         Map<Long, String> closestUpstreamGeneNamesMap = new HashMap<>();
         Map<Long, String> closestDownstreamGeneNamesMap = new HashMap<>();
@@ -198,7 +229,7 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
             allMappedGenes = gcs.stream()
                     .filter(context -> (context.getDistance() == 0))
                     .map(context -> context.getGene().getGeneName().trim())
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             mappedGenesToLocation = gcs.stream()
                     .filter(context -> (context.getDistance() == 0))
                     .map(context -> context.getLocation().getId())
@@ -227,29 +258,18 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
                     String upstreamGene = closestUpstreamGeneNamesMap.get(locationId);
                     String downStreamGene = closestDownstreamGeneNamesMap.get(locationId);
                     if (upstreamGene != null) {
-                        sbgeneUpDownStreamBuilder.append(upstreamGene);
-                    } else {
-                        sbgeneUpDownStreamBuilder.append("N/A");
+                        allUpstreamAndDownstreamGenes.add(upstreamGene);
                     }
                     if (downStreamGene != null) {
-                        sbgeneUpDownStreamBuilder.append(" - ");
-                        sbgeneUpDownStreamBuilder.append(downStreamGene);
-                    } else {
-                        sbgeneUpDownStreamBuilder.append(" - ");
-                        sbgeneUpDownStreamBuilder.append("N/A");
+                        allUpstreamAndDownstreamGenes.add(downStreamGene);
                     }
-                    allUpstreamAndDownstreamGenes.add(sbgeneUpDownStreamBuilder.toString());
                 }
-        String geneString = "";
         if(!allMappedGenes.isEmpty()) {
-            geneString = association.getMultiSnpHaplotype() ? String.join("; ", allMappedGenes)
-                    : String.join(", ", allMappedGenes);
+            return allMappedGenes;
         } else if(!allUpstreamAndDownstreamGenes.isEmpty()) {
-            geneString = association.getMultiSnpHaplotype() ? String.join("; ", allUpstreamAndDownstreamGenes)
-                    : String.join(", ", allUpstreamAndDownstreamGenes);
-
+            return allUpstreamAndDownstreamGenes;
         }
-        return geneString;
+        return null;
     }
 
     private Boolean filterLocationforGene(GenomicContext context) {
