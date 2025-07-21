@@ -10,6 +10,7 @@ import uk.ac.ebi.spot.gwas.rest.api.controller.AncestryController;
 import uk.ac.ebi.spot.gwas.rest.api.controller.StudiesController;
 import uk.ac.ebi.spot.gwas.rest.dto.StudyDto;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,6 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
         StudyDto studyDto = StudyDto.builder()
                 .accessionId(study.getAccessionId())
                 .diseaseTrait(study.getDiseaseTrait() != null ? study.getDiseaseTrait().getTrait() : null)
-                .studyDesignComment(study.getStudyDesignComment())
                 .fullPvalueSet(study.getFullPvalueSet())
                 .gxe(study.getGxe())
                 .efoTraits(study.getEfoTraits() != null ?  study.getEfoTraits().stream()
@@ -64,7 +64,7 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
                 .replicationAncestry(study.getAncestries() != null ? this.getReplicationAncestryLinks(study) : null)
                 .fullSummaryStats(study.getFullPvalueSet() && study.getAccessionId() != null ? this.getSummaryStatsFTPDetails(study.getAccessionId()) : "NA")
                 .termsOfLicense(this.getTermsLicense(study))
-                .cohort(study.getStudyExtension() != null ? study.getStudyExtension().getCohort() : null)
+                .cohort(study.getStudyExtension() != null ? Arrays.asList(study.getStudyExtension().getCohort().split("\\|")) : null)
                 .arrayManufacturer(study.getPlatforms() != null ? study.getPlatforms().stream().map(Platform::getManufacturer)
                         .collect(Collectors.toList()) : null)
                 .build();

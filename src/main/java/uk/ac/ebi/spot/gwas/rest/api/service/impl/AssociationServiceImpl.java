@@ -3,12 +3,12 @@ package uk.ac.ebi.spot.gwas.rest.api.service.impl;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.PathBuilderFactory;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.repository.support.Querydsl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.spot.gwas.model.*;
@@ -17,7 +17,6 @@ import uk.ac.ebi.spot.gwas.rest.api.repository.DiseaseTraitRepository;
 import uk.ac.ebi.spot.gwas.rest.api.service.AssociationService;
 import uk.ac.ebi.spot.gwas.rest.dto.AssociationSortParam;
 import uk.ac.ebi.spot.gwas.rest.dto.SearchAssociationParams;
-import uk.ac.ebi.spot.gwas.rest.dto.StudiesSortParam;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -50,6 +49,7 @@ public class AssociationServiceImpl implements AssociationService {
         QRiskAllele qiskAllele = QRiskAllele.riskAllele;
         QEfoTrait qEfoTrait = QEfoTrait.efoTrait;
         QSingleNucleotidePolymorphism qSingleNucleotidePolymorphism = QSingleNucleotidePolymorphism.singleNucleotidePolymorphism;
+        QGene qGene = QGene.gene;
         Long totalElements = 0L;
         List<Association> results= new ArrayList<>();
         JPAQueryFactory jpaQuery = new JPAQueryFactory(em);
@@ -84,6 +84,17 @@ public class AssociationServiceImpl implements AssociationService {
                         .innerJoin(qAssociation.efoTraits, qEfoTrait);
             }
 
+            if(searchAssociationParams.getMappedGene() != null) {
+                if(searchAssociationParams.getExtendedGeneSet() != null && searchAssociationParams.getExtendedGeneSet()){
+                    associationJPQLQuery = associationJPQLQuery
+                            .innerJoin(qAssociation.snps, qSingleNucleotidePolymorphism)
+                            .innerJoin(qSingleNucleotidePolymorphism.genes , qGene);
+                } else {
+                    associationJPQLQuery = associationJPQLQuery
+                            .innerJoin(qAssociation.mappedGenes, qGene);
+                }
+            }
+
             if(searchAssociationParams.getRsId() != null) {
                 associationJPQLQuery = associationJPQLQuery
                         .where(qSingleNucleotidePolymorphism.rsId
@@ -109,6 +120,11 @@ public class AssociationServiceImpl implements AssociationService {
             if(searchAssociationParams.getShortForm() != null) {
                 associationJPQLQuery = associationJPQLQuery
                         .where(qEfoTrait.shortForm.equalsIgnoreCase(searchAssociationParams.getShortForm()));
+            }
+
+            if(searchAssociationParams.getMappedGene() != null) {
+                associationJPQLQuery = associationJPQLQuery
+                        .where(qGene.geneName.equalsIgnoreCase(searchAssociationParams.getMappedGene()));
             }
 
             associationJPQLQuery = associationJPQLQuery

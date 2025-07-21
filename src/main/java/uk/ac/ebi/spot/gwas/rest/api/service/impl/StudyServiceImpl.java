@@ -1,14 +1,15 @@
 package uk.ac.ebi.spot.gwas.rest.api.service.impl;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.*;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.repository.support.Querydsl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.spot.gwas.model.*;
@@ -42,15 +43,17 @@ public class StudyServiceImpl implements StudyService {
         QStudyExtension qStudyExtension = QStudyExtension.studyExtension;
         QEfoTrait qEfoTrait = QEfoTrait.efoTrait;
         QDiseaseTrait qDiseaseTrait =  QDiseaseTrait.diseaseTrait;
+        QAssociation qAssociation = QAssociation.association;
         QPublication qPublication = QPublication.publication1;
         QHousekeeping qHousekeeping = QHousekeeping.housekeeping;
         QAncestry qAncestry  = QAncestry.ancestry;
         QAncestralGroup qAncestralGroup = QAncestralGroup.ancestralGroup1;
-       // Boolean isExpressionNotEmpty = false;
-        //Querydsl querydsl = new Querydsl(em , (new PathBuilderFactory()).create(Study.class));
+        QGene qGene =  QGene.gene;
+        QSingleNucleotidePolymorphism qSingleNucleotidePolymorphism = QSingleNucleotidePolymorphism.singleNucleotidePolymorphism;
         JPAQueryFactory jpaQuery = new JPAQueryFactory(em);
         JPQLQuery<Study> studyJPQLQuery = jpaQuery.select(qStudy).distinct()
                 .from(qStudy);
+
         JPQLQuery<Long> studySubQuery = jpaQuery.select(qStudy.id).from(qStudy)
                 .innerJoin(qStudy.ancestries, qAncestry).where(qAncestry.type.eq("initial"));
         List<Study> results = null;
@@ -95,6 +98,19 @@ public class StudyServiceImpl implements StudyService {
                         .innerJoin(qStudy.ancestries, qAncestry);
 
             }
+          if(searchStudyParams.getMappedGene() != null) {
+              if(searchStudyParams.getExtendedGeneSet() != null && searchStudyParams.getExtendedGeneSet() ) {
+                  studyJPQLQuery = studyJPQLQuery
+                          .innerJoin(qStudy.associations, qAssociation)
+                          .innerJoin(qAssociation.snps, qSingleNucleotidePolymorphism)
+                          .innerJoin(qSingleNucleotidePolymorphism.genes, qGene);
+              } else {
+                  studyJPQLQuery = studyJPQLQuery
+                          .innerJoin(qStudy.associations, qAssociation)
+                          .innerJoin(qAssociation.mappedGenes, qGene);
+              }
+            }
+
             if (searchStudyParams.getShortForm() != null) {
                 studyJPQLQuery = studyJPQLQuery.where(qEfoTrait.shortForm.equalsIgnoreCase(searchStudyParams.getShortForm()));
             }
@@ -130,6 +146,10 @@ public class StudyServiceImpl implements StudyService {
                         .groupBy(qStudy.id)
                         .having(qAncestry.numberOfIndividuals.sum().goe(searchStudyParams.getNoOfIndividuals()));
                 studyJPQLQuery = studyJPQLQuery.where(qStudy.id.in(studySubQuery));
+            }
+            if(searchStudyParams.getMappedGene() != null) {
+                studyJPQLQuery  =  studyJPQLQuery
+                        .where(qGene.geneName.equalsIgnoreCase(searchStudyParams.getMappedGene()));
             }
 
             //if (isExpressionNotEmpty) {

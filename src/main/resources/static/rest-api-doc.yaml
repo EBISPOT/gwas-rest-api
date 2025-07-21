@@ -4,7 +4,7 @@ info:
   description:  <p><img width="10%" alt="gwas_icon" src="../GWAS_Catalog_circle_178x178.png"></p>
                 <p>Welcome to the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog</a> Restful API.</p>
                 <p>The GWAS RESTful API provides programmatic access to the GWAS Catalog, enables integration of the GWAS Catalog data into custom applications and services, allowing external bioinformatics developers to leverage the curated GWAS datasets, and create more extended solutions for the scientific community.</p>
-                <p>GWAS RESTful API V2 has been released with various enhancements & improvements over GWAS RESTful API V1. V1 will be deprecated no later than May 2026.<p>
+                <p>GWAS RESTful API V2 has been released with various enhancements & improvements over GWAS RESTful API V1. V1 is deprecated and will be retired no later than May 2026.<p>
                 <p>Note that this API allows access to the literature-curated top associations & metadata (the same data that is available via the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog Website</a>. A second API enabling access to full genome-side summary statistics is under development.</p>
   version: "2.0"
 servers:
@@ -349,6 +349,24 @@ paths:
         in: query
         description: |-
           display entities for descendants of a parent Efo Trait Term
+
+          <i>Example</i> : true/false
+        required: false
+        schema:
+          type: boolean
+      - name: mapped_gene
+        in: query
+        description: |-
+          Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
+
+          <i>Example</i> : CCR6,HBS1L
+        required: false
+        schema:
+          type: string
+      - name: extended_geneset
+        in: query
+        description: |-
+          Show extended matching genes in addition to the mapped genes
 
           <i>Example</i> : true/false
         required: false
@@ -745,7 +763,7 @@ paths:
       - name: genomicContext_id
         in: path
         description: "primary identifier of genomicContext table <br/> <br/><i> Example\
-          \ </i> : 160861469"
+          \ </i> : 182748715"
         required: true
         schema:
           type: string
@@ -996,6 +1014,24 @@ paths:
         required: false
         schema:
           type: string
+      - name: mapped_gene
+        in: query
+        description: |-
+          Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
+
+          <i>Example</i> : CCR6,HBS1L
+        required: false
+        schema:
+          type: string
+      - name: extended_geneset
+        in: query
+        description: |-
+          Show extended matching genes in addition to the mapped genes
+
+          <i>Example</i> : true/false
+        required: false
+        schema:
+          type: boolean
       - name: sort
         in: query
         description: Fields to sort by
@@ -1042,7 +1078,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/page-efo-traits'
+                $ref: '#/components/schemas/page-trait-mappings'
   /v2/efo-traits/{efo_id}:
     get:
       tags:
@@ -1075,7 +1111,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/efo-traits'
+                $ref: '#/components/schemas/trait-mappings'
   /v2/body-of-works:
     get:
       tags:
@@ -1300,6 +1336,24 @@ paths:
         required: false
         schema:
           type: boolean
+      - name: mapped_gene
+        in: query
+        description: |-
+          Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
+
+          <i>Example</i> : CCR6,HBS1L
+        required: false
+        schema:
+          type: string
+      - name: extended_geneset
+        in: query
+        description: |-
+          Show extended matching genes in addition to the mapped genes
+
+          <i>Example</i> : true/false
+        required: false
+        schema:
+          type: boolean
       - name: sort
         in: query
         description: Fields to sort by
@@ -1519,9 +1573,10 @@ components:
           example: 2021-10-19T22:22:55.015+0000
         report:
           type: object
-          additionalProperties:
-            type: string
-            description: Addition attributes for the error
+          properties:
+            additional_properties:
+              type: string
+              description: Addition attributes for the error
 
     ancestries:
       type: object
@@ -1558,17 +1613,7 @@ components:
           items:
             $ref: '#/components/schemas/link'
 
-    collection-ancestries:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/ancestries'
+
 
     ancestry-groups:
       type: object
@@ -1615,44 +1660,39 @@ components:
           type: string
           description: Whether a SNP has previously been reported
           example: known
-        standard_error:
-          type: number
-          format: float
-          description: Standard error of the effect size
-          example: null
         range:
           type: string
           description: 95% confidence interval
           example: [12.41-19.61]
         description:
           type: string
-          description: Additional beta coefficient comment
-          example: null
+          description: Additional comment relating to beta or OR value
+          example: Discovery
         or_per_copy_num:
           type: number
           format: float
-          description: Odds ratio
+          description: Odds ratio numerical value
           example: 0.78137505
         or_value:
           type: string
-          description: Odds ratio text
+          description: Odds ratio
           example: null
         beta_num:
           type: number
           format: float
-          description: Beta coefficient
+          description:  Beta coefficient numerical value
           example: 16.01
         beta_unit:
           type: string
           description: Beta coefficient unit
-          example: unit
+          example: mg/ml
         beta_direction:
           type: string
           description: Beta coefficient direction
           example: decrease
         beta:
           type: string
-          description: beta-coefficient associated with strongest SNP risk allele
+          description: A concatenated text containing beta number, direction and unit
           example: null
         last_mapping_date:
           type: string
@@ -1668,7 +1708,7 @@ components:
           type: number
           format: double
           description: Information describing context of p-value
-          example: 3.0000000000000002E-18
+          example: 3.02e-18
         efo_traits:
           type: array
           description: Experimental Factor Ontology trait for this association
@@ -1696,12 +1736,17 @@ components:
             type: string
             description: Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
             example: CCR6
-        risk_allele:
+        snp_risk_allele:
           type: array
           items:
             type: string
-            description: SNP(s) most strongly associated
-            example: rs7329174
+            description: SNP(s) and risk allele most strongly associated within the locus
+            example: rs7329174-G
+        effect_allele:
+          type: array
+          description: SNP(s) and risk allele most strongly associated within the locus
+          items:
+            $ref: '#/components/schemas/allele'
         bg_efo_traits:
           type: array
           description: Any background trait(s) shared by all individuals in the GWAS (e.g. in both cases and controls)
@@ -1715,24 +1760,21 @@ components:
           type: string
           description: first author of the publication
           example: John Doe
+        ci_lower:
+          type: number
+          format: float
+          description:  lower confidence interval
+          example: 0.063
+        ci_upper:
+          type: number
+          format: float
+          description: upper confidence interval
+          example: 0.337
         links:
           type: array
           items:
             $ref: '#/components/schemas/link'
 
-    page-associations:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/associations'
-        page:
-          $ref: '#/components/schemas/page'
 
     authors:
       type: object
@@ -1793,19 +1835,7 @@ components:
           items:
             $ref: '#/components/schemas/link'
 
-    page-body-of-works:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/body-of-works'
-        page:
-          $ref: '#/components/schemas/page'
+
 
     countries:
       type: object
@@ -1823,39 +1853,6 @@ components:
           description : country of recruitment
           example: U.K.
 
-    efo-traits:
-      type: object
-      properties:
-        efo_trait:
-          type: string
-          description: Mapped Experimental Factor Ontology trait
-          example: Parkinson disease
-        uri:
-          type: string
-          description: URI of the EFO trait
-          example: http://purl.obolibrary.org/obo/MONDO_0005180
-        efo_id:
-          type: string
-          description: shortform of the EFO trait
-          example: MONDO_0005180
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-
-    page-efo-traits:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/efo-traits'
-        page:
-          $ref: '#/components/schemas/page'
 
     efo-trait:
       type: object
@@ -1910,20 +1907,6 @@ components:
           items:
             $ref: '#/components/schemas/link'
 
-    page-genes:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/genes'
-        page:
-          $ref: '#/components/schemas/page'
-
     genomic-contexts:
       type: object
       properties:
@@ -1967,18 +1950,6 @@ components:
           items:
             $ref: '#/components/schemas/link'
 
-    collection-genomic-contexts:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/genomic-contexts'
-
     locations:
       type: object
       properties:
@@ -1994,6 +1965,7 @@ components:
         region:
           $ref: '#/components/schemas/regions'
           description: Cytogenetic region associated with rs number
+
     loci:
       type: object
       properties:
@@ -2023,17 +1995,6 @@ components:
           items:
             $ref: '#/components/schemas/link'
 
-    collection-loci:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/loci'
 
     publications:
       type: object
@@ -2071,20 +2032,6 @@ components:
             $ref: '#/components/schemas/link'
 
 
-    page-publications:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/publications'
-        page:
-          $ref: '#/components/schemas/page'
-
     regions:
       type: object
       properties:
@@ -2093,12 +2040,24 @@ components:
           description: Cytogenetic region associated with rs number
           example: 2q37.2
 
+    allele:
+      type: object
+      properties:
+        rs_id:
+          type: string
+          description: The SNP’s rs Id
+          example: rs3093017
+        risk_allele:
+          type: string
+          description: risk allele label
+          example: C
+
     riskalleles:
       type: object
       properties:
         risk_allele_name:
           type: string
-          description: SNP(s) most strongly associated with trait
+          description: SNP(s) and risk allele most strongly associated within the locus
           example: rs411045-?
         risk_frequency:
           type: string
@@ -2183,19 +2142,6 @@ components:
           items:
             $ref: '#/components/schemas/link'
 
-    page-single-nucleotide-polymorphisms:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/single-nucleotide-polymorphisms'
-        page:
-          $ref: '#/components/schemas/page'
 
     studies:
       type: object
@@ -2274,29 +2220,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/efo-trait'
-          description: EFOs that best matching the trait
+          description: Ontology terms that best match the trait
           example: EFO_0001645
         discovery_ancestry:
           uniqueItems: true
           type: array
           items:
             type: string
-          description: A concatenated text containing study sample size along with ancestry category and country of recruitment with stage as discovery
+          description: A concatenated text containing discovery stage sample size along with ancestry category label and country of recruitment
           example: 959 East Asian (China)
         replication_ancestry:
           uniqueItems: true
           type: array
           items:
             type: string
-          description: A concatenated text containing study sample size along with ancestry category and country of recruitment with stage as discovery
+          description: A concatenated text containing replication stage sample size along with ancestry category label and country of recruitment
           example: 1834 East Asian (China)
         full_summary_stats:
           type: string
-          description: summary stats file location
+          description: Whether or not full genome-wide summary statistics are available for download
           example: http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCST90551001-GCST90552000/GCST90551842
         terms_of_license:
           type: string
-          description: Term of use based on whether CC0 license or not
+          description: Terms of use or license associated with the full genome-wide summary statistics
           example: https://creativecommons.org/publicdomain/zero/1.0/
         bg_efo_traits:
           type: array
@@ -2305,7 +2251,9 @@ components:
           description: Any background trait(s) shared by all individuals in the GWAS (e.g. in both cases and controls)
           example: EFO_0003768
         cohort:
-          type: string
+          type: array
+          items:
+            type: string
           description: Cohort(s) represented in the discovery sample
           example: UKBB, FINRISK
         array_manufacturer:
@@ -2323,29 +2271,30 @@ components:
           items:
             $ref: '#/components/schemas/link'
 
-
-    page-studies:
+    trait-mappings:
       type: object
       properties:
+        efo_trait:
+          type: string
+          description: Mapped Experimental Factor Ontology trait
+          example: Parkinson disease
+        uri:
+          type: string
+          description: URI of the EFO trait
+          example: http://purl.obolibrary.org/obo/MONDO_0005180
+        efo_id:
+          type: string
+          description: shortform of the EFO trait
+          example: MONDO_0005180
         links:
           type: array
           items:
             $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/studies'
-        page:
-          $ref: '#/components/schemas/page'
 
 
     unpublished-ancestries:
       type: object
       properties:
-        study_tag:
-          type: string
-          description: A unique free-text label for each genome-wide association study in the publication
-          example: white
         stage:
           type: string
           description: Stage of the experimental design
@@ -2371,15 +2320,16 @@ components:
           example:  sex (males/females), age (adults/children)
         ancestry_category:
           type: string
-          description: Broad ancestry category that best describes the sample
+          description: Ancestry category group label, assigned to reduce complexity within the data sets and place samples in context
           example: European
         ancestry:
           type: string
-          description: The most detailed ancestry descriptor
+          description: The most detailed ancestry descriptor provided by authors
           example: All populations
         ancestry_description:
           type: string
-          description: For founder or genetically isolated population, provide  description. If multiple founder/genetically isolated populations are included for the same ancestry category
+          description: Any additional ancestry descriptors relevant to the sample description
+          example: Pima Indian
         country_recruitment:
           type: string
           description: List of country/countries where samples were recruited
@@ -2388,19 +2338,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/link'
-
-    collection-unpublished-ancestries:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/unpublished-ancestries'
-
 
     unpublished-studies:
       type: object
@@ -2425,23 +2362,19 @@ components:
           type: integer
           format: int32
           description: The number of variants analysed in the discovery stage
-          example: -1
+          example: 180000
         summary_statistics_assembly:
           type: string
           description: Genome assembly for the summary statistics
           example: GRCh38
         agreed_to_cc0:
           type: boolean
-          description: Agree to CC0 license or not
+          description: Whether or not the summary statistics are available under the terms of CC0 license
           example: true
         full_summary_stats:
           type: string
           description: Summary stats FTP file path
           example: http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCST90566001-GCST90567000/GCST90566393
-        study_tag:
-          type: string
-          description: A unique free-text label for each genome-wide association study in the publication
-          example: white
         array_information:
           type: string
           description: Additional information about the genotyping array
@@ -2453,7 +2386,7 @@ components:
         statistical_model:
           type: string
           description: Details of the statistical model used to determine association significance
-          example: PrecisionLife combinatorial SNP analysis
+          example: linear regression
         study_description:
           type: string
           description: Additional information about the study
@@ -2483,7 +2416,7 @@ components:
           example: UK Biobank ID
         title:
           type: string
-          description: Title of manuscript the GWAS is included in
+          description: Title of the draft manuscript, preprint, or project that the study is included in
           example: Genome-wide association study on susceptibility genes associated with yang-deficiency constitution
         first_Author:
           type: string
@@ -2493,6 +2426,153 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/link'
+
+    collection-ancestries:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ancestries'
+
+    page-associations:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/associations'
+        page:
+          $ref: '#/components/schemas/page'
+
+    page-body-of-works:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/body-of-works'
+        page:
+          $ref: '#/components/schemas/page'
+
+    page-trait-mappings:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/trait-mappings'
+        page:
+          $ref: '#/components/schemas/page'
+
+    page-genes:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/genes'
+        page:
+          $ref: '#/components/schemas/page'
+
+    collection-genomic-contexts:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/genomic-contexts'
+
+    collection-loci:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/loci'
+
+
+    page-publications:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/publications'
+        page:
+          $ref: '#/components/schemas/page'
+
+    page-single-nucleotide-polymorphisms:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/single-nucleotide-polymorphisms'
+        page:
+          $ref: '#/components/schemas/page'
+
+    page-studies:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/studies'
+        page:
+          $ref: '#/components/schemas/page'
+
+    collection-unpublished-ancestries:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/unpublished-ancestries'
 
     page-unpublished-studies:
       type: object
@@ -2507,14 +2587,3 @@ components:
             $ref: '#/components/schemas/unpublished-studies'
         page:
           $ref: '#/components/schemas/page'
-
-
-
-
-
-
-
-
-
-
-
