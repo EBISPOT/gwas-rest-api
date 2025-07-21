@@ -8,8 +8,8 @@ info:
                 <p>Note that this API allows access to the literature-curated top associations & metadata (the same data that is available via the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog Website</a>. A second API enabling access to full genome-side summary statistics is under development.</p>
   version: "2.0"
 servers:
-- url: https://wwwdev.ebi.ac.uk/gwas/beta/rest/api
-  #url: http://localhost:8087/gwas/rest/api
+- #url: https://wwwdev.ebi.ac.uk/gwas/beta/rest/api
+  url: http://localhost:8087/gwas/rest/api
   description: Generated server url
 tags:
   - name: studies
@@ -944,7 +944,7 @@ paths:
       tags:
       - genes
       operationId: getGeneByName
-      summary: A GET request to retrieve a single genee
+      summary: A GET request to retrieve a single gene
       parameters:
       - name: gene_name
         in: path
@@ -1578,6 +1578,18 @@ components:
               type: string
               description: Addition attributes for the error
 
+    allele:
+      type: object
+      properties:
+        rs_id:
+          type: string
+          description: The SNP’s rs Id
+          example: rs3093017
+        risk_allele:
+          type: string
+          description: risk allele label
+          example: C
+
     ancestries:
       type: object
       properties:
@@ -1707,7 +1719,7 @@ components:
         p_value:
           type: number
           format: double
-          description: Information describing context of p-value
+          description: Reported p-value for the association
           example: 3.02e-18
         efo_traits:
           type: array
@@ -2040,18 +2052,6 @@ components:
           description: Cytogenetic region associated with rs number
           example: 2q37.2
 
-    allele:
-      type: object
-      properties:
-        rs_id:
-          type: string
-          description: The SNP’s rs Id
-          example: rs3093017
-        risk_allele:
-          type: string
-          description: risk allele label
-          example: C
-
     riskalleles:
       type: object
       properties:
@@ -2184,10 +2184,6 @@ components:
           type: boolean
           description: Whether samples were pooled
           example: true
-        study_design_comment:
-          type: string
-          description: Any other relevant study design information
-          example: null
         accession_id:
           type: string
           description: The study’s GWAS Catalog accession ID
@@ -2264,7 +2260,7 @@ components:
           example: Illumina
         full_summary_stats_available:
           type: boolean
-          description: Summary stats is resent or not
+          description: Whether or not full genome-wide summary statistics are available for download
           example: true/false
         links:
           type: array
@@ -2439,6 +2435,42 @@ components:
           items:
             $ref: '#/components/schemas/ancestries'
 
+    collection-genomic-contexts:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/genomic-contexts'
+
+    collection-loci:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/loci'
+
+    collection-unpublished-ancestries:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/unpublished-ancestries'
+
     page-associations:
       type: object
       properties:
@@ -2495,31 +2527,6 @@ components:
         page:
           $ref: '#/components/schemas/page'
 
-    collection-genomic-contexts:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/genomic-contexts'
-
-    collection-loci:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/loci'
-
-
     page-publications:
       type: object
       properties:
@@ -2561,18 +2568,6 @@ components:
             $ref: '#/components/schemas/studies'
         page:
           $ref: '#/components/schemas/page'
-
-    collection-unpublished-ancestries:
-      type: object
-      properties:
-        links:
-          type: array
-          items:
-            $ref: '#/components/schemas/link'
-        content:
-          type: array
-          items:
-            $ref: '#/components/schemas/unpublished-ancestries'
 
     page-unpublished-studies:
       type: object
