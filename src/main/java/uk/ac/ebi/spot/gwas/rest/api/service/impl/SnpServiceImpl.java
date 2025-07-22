@@ -49,6 +49,7 @@ public class SnpServiceImpl implements SnpService {
         QStudy qStudy = QStudy.study;
         QPublication qPublication =  QPublication.publication1;
         QHousekeeping qHousekeeping =  QHousekeeping.housekeeping;
+        QAssociation qAssociation =  QAssociation.association;
         List<Tuple> tuples = null;
         Long totalElements = 0L;
         JPAQueryFactory jpaQuery = new JPAQueryFactory(em);
@@ -65,9 +66,15 @@ public class SnpServiceImpl implements SnpService {
 /*                snpJPQLQuery = snpJPQLQuery
                         .innerJoin(qSingleNucleotidePolymorphism.locations, qLocation);*/
             //}
-            if(searchSnpParams.getGene() != null) {
-                snpJPQLQuery = snpJPQLQuery
-                        .innerJoin(qSingleNucleotidePolymorphism.genes, qGene);
+            if(searchSnpParams.getMappedGene() != null) {
+                if(searchSnpParams.getExtendedGeneSet() != null && searchSnpParams.getExtendedGeneSet()) {
+                    snpJPQLQuery = snpJPQLQuery
+                            .innerJoin(qSingleNucleotidePolymorphism.genes, qGene);
+                } else {
+                    snpJPQLQuery = snpJPQLQuery
+                            .innerJoin(qSingleNucleotidePolymorphism.associations, qAssociation)
+                            .innerJoin(qAssociation.mappedGenes , qGene);
+                }
             }
             if(searchSnpParams.getPubmedId() != null) {
                 snpJPQLQuery =  snpJPQLQuery
@@ -88,9 +95,9 @@ public class SnpServiceImpl implements SnpService {
                         .where(qLocation.chromosomeName.eq(searchSnpParams.getChromosome()))
                         .where(qLocation.chromosomePosition.between(searchSnpParams.getBpStart(), searchSnpParams.getBpEnd()));
             }
-            if(searchSnpParams.getGene() != null) {
+            if(searchSnpParams.getMappedGene() != null) {
                 snpJPQLQuery = snpJPQLQuery
-                        .where(qGene.geneName.equalsIgnoreCase(searchSnpParams.getGene()));
+                        .where(qGene.geneName.equalsIgnoreCase(searchSnpParams.getMappedGene()));
             }
             if(searchSnpParams.getPubmedId() != null) {
                 snpJPQLQuery = snpJPQLQuery

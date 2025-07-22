@@ -604,15 +604,24 @@ paths:
         required: false
         schema:
           type: string
-      - name: gene
+      - name: mapped_gene
         in: query
         description: |-
-          Search for SNPs via a gene using parameter geneName
+          Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
 
-          <i>Example</i> : HBS1L
+          <i>Example</i> : CCR6,HBS1L
         required: false
         schema:
           type: string
+      - name: extended_geneset
+        in: query
+        description: |-
+          Show extended matching genes in addition to the mapped genes
+
+          <i>Example</i> : true/false
+        required: false
+        schema:
+          type: boolean
       - name: sort
         in: query
         description: Fields to sort by
