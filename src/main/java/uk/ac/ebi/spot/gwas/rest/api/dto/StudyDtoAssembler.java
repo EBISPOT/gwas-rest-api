@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.gwas.rest.api.dto;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -18,7 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
-
+@Slf4j
 @Component
 public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study, StudyDto> {
 
@@ -36,8 +37,6 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
 
     @Override
     public StudyDto toModel(Study study) {
-
-
         StudyDto studyDto = StudyDto.builder()
                 .accessionId(study.getAccessionId())
                 .diseaseTrait(study.getDiseaseTrait() != null ? study.getDiseaseTrait().getTrait() : null)
@@ -64,7 +63,7 @@ public class StudyDtoAssembler extends RepresentationModelAssemblerSupport<Study
                 .replicationAncestry(study.getAncestries() != null ? this.getReplicationAncestryLinks(study) : null)
                 .fullSummaryStats(study.getFullPvalueSet() && study.getAccessionId() != null ? this.getSummaryStatsFTPDetails(study.getAccessionId()) : "NA")
                 .termsOfLicense(this.getTermsLicense(study))
-                .cohort(study.getStudyExtension() != null ? Arrays.asList(study.getStudyExtension().getCohort().split("\\|")) : null)
+                .cohort((study.getStudyExtension() != null && study.getStudyExtension().getCohort() != null) ? Arrays.asList(study.getStudyExtension().getCohort().split("\\|")) : null)
                 .arrayManufacturer(study.getPlatforms() != null ? study.getPlatforms().stream().map(Platform::getManufacturer)
                         .collect(Collectors.toList()) : null)
                 .build();

@@ -1,4 +1,5 @@
 package uk.ac.ebi.spot.gwas.rest.api.dto;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -31,17 +33,16 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
     @Autowired
     EFOWrapperDtoAssembler efoWrapperDtoAssembler;
 
+    private final String RANGE_PATTERN_REGEX = "\\[([+-]?\\d+.?\\d+)-([+-]?\\d+.\\d+)\\]";
+
     public AssociationDtoAssembler() {
         super(AssociationController.class, AssociationDTO.class);
     }
 
     @Override
     public AssociationDTO toModel(Association association) {
-
         Pair<Float, Float> ciValues = Optional.ofNullable(association.getRange()).map(this::getCIValues).orElse(null);
-
         List<Pair<RiskAlleleWrapperDTO, String>> pairList = getRiskAllele(association);
-
         AssociationDTO associationDTO =  AssociationDTO.builder()
                 .associationId(association.getId())
                 .accessionID(association.getStudy() != null ? association.getStudy().getAccessionId()
@@ -205,9 +206,12 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
     }
 
     private Pair<Float, Float> getCIValues(String range) {
-       String ciValues = range.substring(1, range.length() - 1);
-        String[] ci = ciValues.split("-");
-        return Pair.of(Float.valueOf(ci[0]), Float.valueOf(ci[1]));
+        Pattern pattern = Pattern.compile(RANGE_PATTERN_REGEX, Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(range);
+        if(matcher.find()) {
+            return Pair.of(Float.valueOf(matcher.group(1)), Float.valueOf(matcher.group(2)));
+        }
+        return null;
     }
 
     private List<String> getMappedGeneString(SingleNucleotidePolymorphism snp,
