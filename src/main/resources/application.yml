@@ -22,7 +22,7 @@ ensembl:
   server:
     url: https://rest.ensembl.org/variation/human
   mapping:
-    version: 113
+    version: 114
 
 springdoc:
   swagger-ui:

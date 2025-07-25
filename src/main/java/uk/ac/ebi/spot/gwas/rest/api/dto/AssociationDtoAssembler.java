@@ -41,7 +41,6 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
 
     @Override
     public AssociationDTO toModel(Association association) {
-        log.info("Assciation id {}", association.getId());
         Pair<Float, Float> ciValues = Optional.ofNullable(association.getRange()).map(this::getCIValues).orElse(null);
         List<Pair<RiskAlleleWrapperDTO, String>> pairList = getRiskAllele(association);
         AssociationDTO associationDTO =  AssociationDTO.builder()
