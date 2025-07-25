@@ -107,7 +107,9 @@ public class StudyServiceImpl implements StudyService {
               } else {
                   studyJPQLQuery = studyJPQLQuery
                           .innerJoin(qStudy.associations, qAssociation)
-                          .innerJoin(qAssociation.mappedGenes, qGene);
+                          .innerJoin(qAssociation.snps, qSingleNucleotidePolymorphism)
+                          .innerJoin(qSingleNucleotidePolymorphism.mappedSnpGenes, qGene);
+
               }
             }
 

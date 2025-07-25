@@ -91,7 +91,8 @@ public class AssociationServiceImpl implements AssociationService {
                             .innerJoin(qSingleNucleotidePolymorphism.genes , qGene);
                 } else {
                     associationJPQLQuery = associationJPQLQuery
-                            .innerJoin(qAssociation.mappedGenes, qGene);
+                            .innerJoin(qAssociation.snps, qSingleNucleotidePolymorphism)
+                            .innerJoin(qSingleNucleotidePolymorphism.mappedSnpGenes , qGene);
                 }
             }
 

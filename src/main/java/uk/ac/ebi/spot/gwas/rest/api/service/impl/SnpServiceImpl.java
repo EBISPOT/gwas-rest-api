@@ -72,8 +72,8 @@ public class SnpServiceImpl implements SnpService {
                             .innerJoin(qSingleNucleotidePolymorphism.genes, qGene);
                 } else {
                     snpJPQLQuery = snpJPQLQuery
-                            .innerJoin(qSingleNucleotidePolymorphism.associations, qAssociation)
-                            .innerJoin(qAssociation.mappedGenes , qGene);
+                            .innerJoin(qSingleNucleotidePolymorphism.mappedSnpGenes, qGene)
+                    ;
                 }
             }
             if(searchSnpParams.getPubmedId() != null) {
@@ -143,50 +143,6 @@ public class SnpServiceImpl implements SnpService {
         return  singleNucleotidePolymorphismRepository.findByRsId(rsId);
     }
 
-    public List<String> findMatchingGenes(Long snpId) {
-        List<GeneProjection> geneProjections = singleNucleotidePolymorphismRepository.findMatchingGenes(snpId, "Ensembl");
-        List<String> mappedGenes = geneProjections.stream()
-                .filter(geneProjection -> !geneProjection.getIsIntergenic())
-                .map(GeneProjection::getGeneName)
-                .distinct()
-                .collect(Collectors.toList());
-
-        if( mappedGenes.isEmpty()) {
-            Long minUpStreamDistance = findMinDistance(geneProjections, "up");
-            Long minDownStreamDistance = findMinDistance(geneProjections, "down");
-            List<String>  mappedUpstreamGenes =  geneProjections.stream()
-                    .filter(GeneProjection::getIsUpstream)
-                    .filter(geneProjection -> ( minUpStreamDistance.longValue() == geneProjection.getDistance().longValue()))
-                    .map(GeneProjection::getGeneName)
-                    .distinct()
-                    .collect(Collectors.toList());
-
-            List<String>  mappedDownStreamGenes =  geneProjections.stream()
-                    .filter(GeneProjection::getIsDownstream)
-                    .filter(geneProjection -> ( minDownStreamDistance.longValue() == geneProjection.getDistance().longValue()))
-                    .map(GeneProjection::getGeneName)
-                    .distinct()
-                    .collect(Collectors.toList());
-            mappedGenes.addAll(mappedUpstreamGenes);
-            mappedGenes.addAll(mappedDownStreamGenes);
-            mappedGenes  =  mappedGenes.stream().distinct().collect(Collectors.toList());
-        }
-
-        if( mappedGenes.isEmpty()) {
-            mappedGenes.add("intergenic");
-        }
-
-        return mappedGenes;
-    }
-
-    private Long findMinDistance(List<GeneProjection>  geneProjections, String whichStream) {
-        return geneProjections.stream()
-                .filter(whichStream.equals("up") ? GeneProjection::getIsUpstream : GeneProjection::getIsDownstream)
-                .map(GeneProjection::getDistance)
-                .filter(Objects::nonNull)
-                .min(Long::compareTo)
-                .orElse(null);
-    }
 
     private NumberExpression<Integer> buildSortParams(String sortParam) {
         QSingleNucleotidePolymorphism  qSingleNucleotidePolymorphism = QSingleNucleotidePolymorphism.singleNucleotidePolymorphism;

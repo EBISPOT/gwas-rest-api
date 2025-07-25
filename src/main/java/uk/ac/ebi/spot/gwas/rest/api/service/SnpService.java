@@ -14,5 +14,4 @@ public interface SnpService {
 
    Optional<SingleNucleotidePolymorphism> getSnp(String rsId);
 
-   List<String> findMatchingGenes(Long snpId);
 }
