@@ -61,7 +61,8 @@ public class EFOTraitServiceImpl implements EFOTraitService {
                 } else {
                     efoTraitJPQLQuery = efoTraitJPQLQuery
                             .innerJoin(qEfoTrait.associations, qAssociation)
-                            .innerJoin(qAssociation.mappedGenes, qGene);
+                            .innerJoin(qAssociation.snps, qSingleNucleotidePolymorphism)
+                            .innerJoin(qSingleNucleotidePolymorphism.mappedSnpGenes, qGene);
                 }
             }
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.gwas.ensembl.Variant;
+import uk.ac.ebi.spot.gwas.model.Gene;
 import uk.ac.ebi.spot.gwas.model.SingleNucleotidePolymorphism;
 import uk.ac.ebi.spot.gwas.rest.api.config.RestAPIConfiguration;
 import uk.ac.ebi.spot.gwas.rest.api.controller.GenomicContextController;
@@ -80,7 +81,7 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
                 .minorAllele(variant != null ? variant.getMinorAllele() : "NA")
                 .alleles(variant != null ? this.getAlleles(variant) : null)
                 .mostSevereConsequence(variant != null ? variant.getMostSevereConsequence() : null)
-                .mappedGenes(snpService.findMatchingGenes(snp.getId()))
+                .mappedGenes(this.getMappedGenes(snp))
                 .build();
         singleNucleotidePolymorphismDTO.add(linkTo(methodOn(SnpsController.class).getSingleNucleotidePolymorphism(snp.getRsId())).withSelfRel());
         singleNucleotidePolymorphismDTO.add(linkTo(methodOn(GenomicContextController.class).getGenomicContexts(snp.getRsId(),null, null)).withRel("genomic_contexts"));
@@ -92,6 +93,11 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
         return snp.getLocations().stream()
                 .map(locationDtoAssembler::assemble)
                 .collect(Collectors.toList());
+    }
+
+
+    private List<String> getMappedGenes(SingleNucleotidePolymorphism snp) {
+        return snp.getMappedSnpGenes().stream().map(Gene::getGeneName).collect(Collectors.toList());
     }
 
 

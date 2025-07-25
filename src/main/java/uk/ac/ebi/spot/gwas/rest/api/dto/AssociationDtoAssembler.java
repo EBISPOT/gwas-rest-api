@@ -41,6 +41,7 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
 
     @Override
     public AssociationDTO toModel(Association association) {
+        log.info("Assciation id {}", association.getId());
         Pair<Float, Float> ciValues = Optional.ofNullable(association.getRange()).map(this::getCIValues).orElse(null);
         List<Pair<RiskAlleleWrapperDTO, String>> pairList = getRiskAllele(association);
         AssociationDTO associationDTO =  AssociationDTO.builder()
@@ -60,8 +61,8 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
                         this.transformBeta(betaNum, association.getBetaUnit(), association.getBetaDirection()))
                         .orElse("-"))
                 .range(Optional.ofNullable(association.getRange()).orElse("-"))
-                .ciLower(Optional.ofNullable(association.getRange()).map(range -> ciValues.getLeft()).orElse(null))
-                .ciUpper(Optional.ofNullable(association.getRange()).map(range -> ciValues.getRight()).orElse(null))
+                .ciLower(Optional.ofNullable(association.getRange()).filter(range -> !range.contains("NR")).map(range -> ciValues.getLeft()).orElse(null))
+                .ciUpper(Optional.ofNullable(association.getRange()).filter(range -> !range.contains("NR")).map(range -> ciValues.getRight()).orElse(null))
                 .mappedGenes(this.getMappedGenes(association))
                 .reportedTrait(this.getReportedTrait(association.getId()))
                 .efoTraits(this.getEFOTraits(association))
@@ -196,7 +197,7 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
         List<String> mappedGenes = new ArrayList<>();
         for(Locus locus : association.getLoci()) {
             for(RiskAllele  riskAllele : locus.getStrongestRiskAlleles() ) {
-               List<String> snpMappedGenes = getMappedGeneString(riskAllele.getSnp(), RestAPIConstants.ENSEMBL_SOURCE);
+               List<String> snpMappedGenes = getMappedGenes(riskAllele.getSnp());
                if(snpMappedGenes !=  null ) {
                    mappedGenes.addAll(snpMappedGenes);
                }
@@ -214,75 +215,10 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
         return null;
     }
 
-    private List<String> getMappedGeneString(SingleNucleotidePolymorphism snp,
-                                                 String source) {
-        List<String> allMappedGenes = new ArrayList<>();
-        List<Long> mappedGenesToLocation = new ArrayList<>();
-        Map<Long, String> closestUpstreamGeneNamesMap = new HashMap<>();
-        Map<Long, String> closestDownstreamGeneNamesMap = new HashMap<>();
-        Set<Long> locationUpDownStream = new HashSet<>();
-        if (snp.getGenomicContexts().isEmpty()) {
-            allMappedGenes.add("No mapped genes");
-        } else {
-            List<GenomicContext> gcs = snp.getGenomicContexts().stream()
-                    .filter(context -> context.getGene() != null && context.getGene().getGeneName() != null
-                            && context.getSource() != null)
-                    .filter(context -> source.equalsIgnoreCase(context.getSource()))
-                    .filter(this::filterLocationforGene)
-                    .collect(Collectors.toList());
-            allMappedGenes = gcs.stream()
-                    .filter(context -> (context.getDistance() == 0))
-                    .map(context -> context.getGene().getGeneName().trim())
-                    .collect(Collectors.toList());
-            mappedGenesToLocation = gcs.stream()
-                    .filter(context -> (context.getDistance() == 0))
-                    .map(context -> context.getLocation().getId())
-                    .collect(Collectors.toList());
-            closestUpstreamGeneNamesMap = gcs.stream()
-                    .filter(context -> (context.getDistance() != 0))
-                    .filter(context -> context.getIsClosestGene() != null && context.getIsClosestGene())
-                    .filter(GenomicContext::getIsUpstream)
-                    .collect(Collectors.toMap(context -> context.getLocation().getId(),
-                            context -> context.getGene().getGeneName().trim(), (existing, replacement) -> existing));
-            closestDownstreamGeneNamesMap = gcs.stream()
-                    .filter(context -> (context.getDistance() != 0))
-                    .filter(context -> context.getIsClosestGene() != null && context.getIsClosestGene())
-                    .filter(GenomicContext::getIsDownstream)
-                    .collect(Collectors.toMap(context -> context.getLocation().getId(),
-                            context -> context.getGene().getGeneName().trim(), (existing, replacement) -> existing));
-        }
-
-        mappedGenesToLocation.forEach(closestUpstreamGeneNamesMap::remove);
-        mappedGenesToLocation.forEach(closestDownstreamGeneNamesMap::remove);
-        closestUpstreamGeneNamesMap.keySet().forEach(locId -> locationUpDownStream.add(locId));
-        closestDownstreamGeneNamesMap.keySet().forEach(locId -> locationUpDownStream.add(locId));
-        List<String> allUpstreamAndDownstreamGenes = new ArrayList<>();
-        for(Long locationId : locationUpDownStream) {
-                    StringBuilder sbgeneUpDownStreamBuilder = new StringBuilder();
-                    String upstreamGene = closestUpstreamGeneNamesMap.get(locationId);
-                    String downStreamGene = closestDownstreamGeneNamesMap.get(locationId);
-                    if (upstreamGene != null) {
-                        allUpstreamAndDownstreamGenes.add(upstreamGene);
-                    }
-                    if (downStreamGene != null) {
-                        allUpstreamAndDownstreamGenes.add(downStreamGene);
-                    }
-                }
-        if(!allMappedGenes.isEmpty()) {
-            return allMappedGenes;
-        } else if(!allUpstreamAndDownstreamGenes.isEmpty()) {
-            return allUpstreamAndDownstreamGenes;
-        }
-        return null;
+    private List<String> getMappedGenes(SingleNucleotidePolymorphism snp) {
+       return snp.getMappedSnpGenes().stream().map(Gene::getGeneName).collect(Collectors.toList());
     }
 
-    private Boolean filterLocationforGene(GenomicContext context) {
-        String location = context.getLocation().getChromosomeName();
-        String pattern = "^\\d+$";
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(location);
-        return (m.find() || location.equals("X") || location.equals("Y"));
-    }
 
     private List<String> getLocationDetails(Association association) {
       return association.getLoci().stream()
