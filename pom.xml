@@ -25,7 +25,6 @@
         <!--  <start-class>uk.ac.ebi.spot.gwas.curation.Application</start-class>-->
     </properties>
 
-
     <repositories>
         <repository>
             <name>Central Portal Snapshots</name>
@@ -39,40 +38,6 @@
             </snapshots>
         </repository>
     </repositories>
-
-<!--    <repositories>
-        <repository>
-            <id>spot-releases</id>
-            <name>Releases</name>
-            <url>http://gwas-gromit.ebi.ac.uk:8081/gwas/nexus/repository/maven-releases//</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>spot-snapshots</id>
-            <name>Snapshot</name>
-            <url>http://gwas-gromit.ebi.ac.uk:8081/gwas/nexus/repository/maven-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>central</id>
-            <name>Maven Central</name>
-            <layout>default</layout>
-            <url>https://repo1.maven.org/maven2</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>-->
 
     <build>
         <pluginManagement>
@@ -98,6 +63,18 @@
                         <include>**/*Documentation.java</include>
                     </includes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.9.10</version> <!-- use latest -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -146,7 +123,7 @@
             <groupId>org.springframework.hateoas</groupId>
             <artifactId>spring-hateoas</artifactId>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.7.0</version>
