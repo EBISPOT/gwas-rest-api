@@ -150,16 +150,14 @@
             <p>
                 If you prefer to first identify a wider range of relevant traits and query for a list, the best place to start
                 is the <code>efo_trait</code> endpoint. Searching here for a free text term will return any traits including the term.
-            </p>
-            <blockquote style="border-left: 4px solid #ccc; padding-left: 1rem; margin-left: 0; font-style: italic;">
                 For example, searching for "COVID-19" could return "COVID-19", "COVID-19 symptoms measurement", "long COVID-19", "response to
                 COVID-19 vaccine", and "time to remission of COVID-19 symptoms". You can then query your desired endpoint using the
                 list of traits.
-            </blockquote>
+            </p>
             <p>
-                <small>Note, trait examples are shown here with their <code>efo_trait</code> name for readability, but it’s often better to use
-                    the <code>efo_id</code> (e.g. <code>MONDO_0004979</code>) for precision. There’s more information about how we annotate traits
-                    in the <a href="https://www.ebi.ac.uk/gwas/docs/ontology" target="_blank">ontology documentation</a>.</small>
+                Note, trait examples are shown here with their <code>efo_trait</code> name for readability, but it’s often better to use
+                the <code>efo_id</code> (e.g. <code>MONDO_0004979</code>) for precision. There’s more information about how we annotate traits
+                in the <a href="https://www.ebi.ac.uk/gwas/docs/ontology" target="_blank">ontology documentation</a>.
             </p>
 
             <h3>Gene filter</h3>
@@ -185,6 +183,11 @@
             <h2>🧑‍💻 Examples of a few key ways you can use the GWAS API</h2>
             <p>
                 For hands-on, executable examples, please explore our collection of <a href="https://github.com/EBISPOT/gwas-rest-api/blob/3c2cb9093873400e3ca2f90bf3f3e304ed3269f7/docs/jupyter-notebooks/sample.ipynb" target="_blank">Jupyter Notebooks</a>.
+            </p>
+            <p>
+                For example, answering scientific questions like "what variants are associated with a particular disease?",
+                "Which studies of a trait have full summary statistics available?", "Which SNP has the strongest effect
+                size for a particular disease?" and many more. This is a great place to start if you are new to the REST API.
             </p>
         </section>
 
