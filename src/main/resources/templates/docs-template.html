@@ -27,6 +27,16 @@
     <link rel="stylesheet" href="../css/goci-ui.css" th:href="@{../css/goci-ui.css}"/>
     <link rel="stylesheet" href="../css/icons/flaticon.css" th:href="@{../css/icons/flaticon.css}"/>
     <link rel="stylesheet" href="../css/goci-color-palette-1.css" th:href="@{../css/goci-color-palette-1.css}"/>
+    <style>
+        code {
+            background-color: #f1f1f1;
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 3px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,18 +55,6 @@
 
 <div class="container">
     <div id="docs-content" style="overflow: hidden; padding: 1em;">
-
-        <style>
-            /* A single, simple style for code blocks for readability */
-            code {
-                background-color: #f1f1f1;
-                padding: 0.2em 0.4em;
-                margin: 0;
-                font-size: 85%;
-                border-radius: 3px;
-                font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-            }
-        </style>
 
         <h1>Welcome to the GWAS Catalog RESTful API!</h1>
 
@@ -89,7 +87,7 @@
             <h2>🛠️ Where can I find a technical reference for the API?</h2>
             <p>
                 You can find a detailed reference manual containing endpoints, schemas, parameters, syntax, definitions, and
-                response codes <a href="/gwas/beta/rest/api/swagger-ui/index.html">here</a>. The page includes a visual, interactive interface for exploring and testing the endpoints.
+                response codes <a th:href="@{/docs/reference}">here</a>. The page includes a visual, interactive interface for exploring and testing the endpoints.
             </p>
             <p>
                 For more documentation about the extensive controlled vocabularies in use in the Catalog, including the API,
