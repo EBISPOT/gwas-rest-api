@@ -1,0 +1,197 @@
+<!DOCTYPE html> <html lang="en"
+                      xmlns:th="http://www.thymeleaf.org"
+                      xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description"
+          content="The NHGRI-EBI GWAS Catalog: a curated collection of all published genome-wide association studies, produced by a collaboration between EMBL-EBI and NHGRI"/>
+    <meta name="keywords" content="GWAS Catalog, GWAS, NHGRI, EBI, EMBL-EBI, SPOT"/>
+    <meta name="author" content="Tony Burdett, Emma Hastings, Dani Welter, SPOT, EMBL-EBI, NHGRI"/>
+    <link rel="icon" href="../icons/favicon.ico" th:href="@{../icons/favicon.ico}"/>
+
+    <title>GWAS Catalog REST API</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.css" th:href="@{../css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../css/bootstrap-table.css" th:href="@{../css/bootstrap-table.css}" rel="stylesheet"/>
+    <link href="../css/bootstrap-theme.css" th:href="@{../css/bootstrap-theme.min.css}" rel="stylesheet"/>
+
+    <!-- Custom styles for this template -->
+    <!--<link href="../css/jumbotron.css" th:href="@{../css/jumbotron.css}" rel="stylesheet"/>-->
+    <link href="../css/sticky-footer-navbar.css" th:href="@{../css/sticky-footer-navbar.css}" rel="stylesheet"/>
+
+    <!-- Additional styling on top of bootstrap -->
+    <link rel="stylesheet" href="../css/goci-ui.css" th:href="@{../css/goci-ui.css}"/>
+    <link rel="stylesheet" href="../css/icons/flaticon.css" th:href="@{../css/icons/flaticon.css}"/>
+    <link rel="stylesheet" href="../css/goci-color-palette-1.css" th:href="@{../css/goci-color-palette-1.css}"/>
+</head>
+
+<body>
+
+
+<div th:include="fragments/header :: navbar"></div>
+
+
+<div class="container-fluid">
+    <ol class="breadcrumb background-color-complementary-accent">
+        <li><a href="../home">Home</a></li>
+        <li id="docs-crumb"><a href="../docs">Documentation</a></li>
+        <li id="current-page" class="active">Current page</li>
+    </ol>
+</div>
+
+<div class="container">
+    <div id="docs-content" style="overflow: hidden; padding: 1em;">
+
+        <style>
+            /* A single, simple style for code blocks for readability */
+            code {
+                background-color: #f1f1f1;
+                padding: 0.2em 0.4em;
+                margin: 0;
+                font-size: 85%;
+                border-radius: 3px;
+                font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            }
+        </style>
+
+        <h1>Welcome to the GWAS Catalog RESTful API!</h1>
+
+        <p>
+            This documentation provides detailed guidance on effectively integrating GWAS Catalog data services into
+            your applications (scientific pipelines, scripts, web applications, etc). It's designed with developers in
+            mind and includes plenty of helpful examples. If you have any questions, feel free to reach out to our helpdesk
+            <a href="mailto:gwas-info@ebi.ac.uk">gwas-info@ebi.ac.uk</a>.
+        </p>
+
+        <p>
+            The GWAS Catalog API platform provides all the tools you need to search for and identify variants linked to
+            your disease of interest. Whether you're building a simple platform to ascertain disease-specific associations,
+            searching across phenotypes for a specific variant, summarising associations within a population group, or
+            identifying studies with full-genomewide summary statistics available for download, we provide you with all
+            the resources needed to achieve your goal.
+        </p>
+
+        <section>
+            <h2>🤔 What data can I find in the API?</h2>
+            <p>
+                This API allows access to the literature-curated top associations & metadata (the same data that is available
+                via the GWAS Catalog website, eligibility criteria described <a href="https://www.ebi.ac.uk/gwas/docs/methods/criteria" target="_blank">elsewhere</a>).
+                <br> <i> A second API enabling access to data from the <a href="https://www.ebi.ac.uk/gwas/downloads/summary-statistics" target="_blank">
+                full genome-wide summary statistics collection</a> is under development.</i>
+            </p>
+        </section>
+
+        <section>
+            <h2>🛠️ Where can I find a technical reference for the API?</h2>
+            <p>
+                You can find a detailed reference manual containing endpoints, schemas, parameters, syntax, definitions, and
+                response codes <a href="/gwas/beta/rest/api/swagger-ui/index.html">here</a>. The page includes a visual, interactive interface for exploring and testing the endpoints.
+            </p>
+            <p>
+                For more documentation about the extensive controlled vocabularies in use in the Catalog, including the API,
+                we refer you to lists available for:
+            </p>
+            <ul>
+                <li>
+                    Ontology trait mappings: <a href="https://www.ebi.ac.uk/gwas/api/search/downloads/trait_mappings">https://www.ebi.ac.uk/gwas/api/search/downloads/trait_mappings</a>
+                </li>
+                <li>
+                    Countries of recruitment: <a href="https://www.ebi.ac.uk/gwas/docs/countries">https://www.ebi.ac.uk/gwas/docs/countries</a>
+                </li>
+                <li>
+                    Cohorts: <a href="https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_cohorts.csv">https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_cohorts.csv</a>
+                </li>
+                <li>
+                    Variant consequences: <a href="https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html">https://www.ensembl.org/info/genome/variation/prediction/predicted_data.html</a>
+                </li>
+                <li>
+                    Ancestry labels: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5815218/table/Tab1/?report=objectonly">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5815218/table/Tab1/</a>
+                </li>
+            </ul>
+            <p>More documentation about population descriptors, including methods of assigning ancestry labels, is available here: <a href="https://www.ebi.ac.uk/gwas/population-descriptors">https://www.ebi.ac.uk/gwas/population-descriptors</a></p>
+        </section>
+
+        <section>
+            <h2>🚀 Help me get started!</h2>
+            <p> Here are some features of the API that it’s useful to know about before you start:</p>
+
+            <h3>Pagination</h3>
+            <p>
+                API responses are paginated to manage performance, scalability, and usability. The default
+                page size is 20 records. If there are many results returned, you'll need to handle <code>next</code> links in the response.
+            </p>
+
+            <h3>Throttling</h3>
+            <p>
+                Users of the API are limited to 15 queries per second to prevent server overload and ensure
+                fair usage. If the limit is exceeded, the API will slow down subsequent calls.
+            </p>
+
+            <h3>Trait search</h3>
+            <p>
+                When querying by <code>efo_trait</code> (ontology trait mapping), you have two options:
+            </p>
+            <ol>
+                <li>
+                    To retrieve only data annotated directly with the query term (e.g. querying for “asthma” returns data
+                    annotated with “asthma” but not “status asthmaticus”) - set <code>show_child_traits=false</code>.
+                </li>
+                <li>
+                    To retrieve data annotated directly with the query term AND any more specific child traits (e.g. querying
+                    for “asthma” returns data annotated with “asthma”, plus “status asthmaticus” and other subtypes) - set
+                    <code>show_child_traits=true</code>. This is the default setting on the
+                    <a href="https://www.ebi.ac.uk/gwas/efotraits/MONDO_0004979" target="_blank">GWAS Catalog trait pages</a>.
+                </li>
+            </ol>
+            <p>
+                If you prefer to first identify a wider range of relevant traits and query for a list, the best place to start
+                is the <code>efo_trait</code> endpoint. Searching here for a free text term will return any traits including the term.
+            </p>
+            <blockquote style="border-left: 4px solid #ccc; padding-left: 1rem; margin-left: 0; font-style: italic;">
+                For example, searching for "COVID-19" could return "COVID-19", "COVID-19 symptoms measurement", "long COVID-19", "response to
+                COVID-19 vaccine", and "time to remission of COVID-19 symptoms". You can then query your desired endpoint using the
+                list of traits.
+            </blockquote>
+            <p>
+                <small>Note, trait examples are shown here with their <code>efo_trait</code> name for readability, but it’s often better to use
+                    the <code>efo_id</code> (e.g. <code>MONDO_0004979</code>) for precision. There’s more information about how we annotate traits
+                    in the <a href="https://www.ebi.ac.uk/gwas/docs/ontology" target="_blank">ontology documentation</a>.</small>
+            </p>
+
+            <h3>Gene filter</h3>
+            <p>
+                When querying associations or single-nucleotide-polymorphisms by gene, you have two options:
+            </p>
+            <ol>
+                <li>
+                    To use the set of genes defined as the gene(s) in which a GWAS catalog variant maps, or the nearest upstream
+                    and downstream genes within 50kb, according to Ensembl’s annotation - apply the option <code>extended_geneset=false</code>.
+                    This is the same annotation that’s shown in the GWAS Catalog web interface.
+                </li>
+                <li>
+                    To use an extended set of genes, defined as all Ensembl and RefSeq genes mapping within 50kb upstream and
+                    downstream of each GWAS Catalog variant - apply the option <code>extended_geneset=true</code>. This is the annotation
+                    that was used in the V1 API.
+                </li>
+            </ol>
+            <p>By default, the query uses option 1.</p>
+        </section>
+
+        <section>
+            <h2>🧑‍💻 Examples of a few key ways you can use the GWAS API</h2>
+            <p>
+                For hands-on, executable examples, please explore our collection of <a href="https://github.com/EBISPOT/gwas-rest-api/blob/3c2cb9093873400e3ca2f90bf3f3e304ed3269f7/docs/jupyter-notebooks/sample.ipynb" target="_blank">Jupyter Notebooks</a>.
+            </p>
+        </section>
+
+    </div>
+</div>
+
+<div th:include="fragments/footer :: page_footer"></div>
+
+</body>
+</html>
