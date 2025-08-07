@@ -47,13 +47,15 @@ public class AssociationController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PagedModel<AssociationDTO> getAssociations(@RequestParam SearchAssociationParams searchAssociationParams,
+                                                      @RequestParam(required = false)  String sort,
+                                                      @RequestParam(required = false)   String direction,
                                                       @SortDefault(sort = "id", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable) {
-      Page<Association> associations = associationService.getAssociations(pageable, searchAssociationParams);
-      return pagedResourcesAssembler.toModel(associations, associationDtoAssembler);
+        Page<Association> associations = associationService.getAssociations(pageable, searchAssociationParams, sort, direction);
+        return pagedResourcesAssembler.toModel(associations, associationDtoAssembler);
     }
 
-    @GetMapping(value = "/{associationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AssociationDTO> getAssociation(@PathVariable  @Parameter(name = "associationId")  String associationId) {
+    @GetMapping(value = "/{association_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AssociationDTO> getAssociation(@PathVariable  (name = "association_id")  String associationId) {
         return associationService.getAssociation(Long.valueOf(associationId))
                 .map(associationDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

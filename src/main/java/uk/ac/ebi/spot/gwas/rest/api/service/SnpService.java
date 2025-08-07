@@ -10,9 +10,8 @@ import java.util.Optional;
 
 public interface SnpService {
 
-   Page<SingleNucleotidePolymorphism> getSnps(SearchSnpParams searchSnpParams, Pageable pageable);
+   Page<SingleNucleotidePolymorphism> getSnps(SearchSnpParams searchSnpParams, Pageable pageable, String sortParam, String direction);
 
    Optional<SingleNucleotidePolymorphism> getSnp(String rsId);
 
-   List<String> findMatchingGenes(Long snpId);
 }

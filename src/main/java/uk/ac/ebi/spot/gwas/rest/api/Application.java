@@ -6,12 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import uk.ac.ebi.spot.gwas.rest.api.config.ApiMetadataConfig;
 
+@Slf4j
+@EntityScan("uk.ac.ebi.spot.gwas.model")
+@EnableConfigurationProperties(ApiMetadataConfig.class)
 @SpringBootApplication(scanBasePackages = "uk.ac.ebi.spot.gwas")
 @EnableJpaRepositories("uk.ac.ebi.spot.gwas.rest.api.repository")
-@EntityScan("uk.ac.ebi.spot.gwas.model")
-@Slf4j
 @OpenAPIDefinition(info = @Info(title = "Rest API V2", version = "2.0", description = "Version 2.0 Rest API"))
 public class Application {
 

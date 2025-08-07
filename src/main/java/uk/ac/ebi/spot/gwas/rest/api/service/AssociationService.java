@@ -11,9 +11,10 @@ import java.util.Optional;
 
 public interface AssociationService {
 
-   Page<Association> getAssociations(Pageable pageable, SearchAssociationParams searchAssociationParams);
+   Page<Association> getAssociations(Pageable pageable, SearchAssociationParams searchAssociationParams, String sortParam, String direction);
 
    List<DiseaseTrait> getDiseaseTraits(Long associationId);
 
    Optional<Association> getAssociation(Long associationId);
+
 }

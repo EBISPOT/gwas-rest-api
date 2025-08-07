@@ -27,15 +27,17 @@ public class AncestryController {
     AncestryDtoAssembler ancestryDtoAssembler;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{accessionId}" + RestAPIConstants.API_ANCESTRIES, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CollectionModel<AncestryDTO> getAncestries(@PathVariable @Parameter(name = "accessionId") String accessionId) {
-        List<Ancestry> ancestries = ancestryService.getAncestriesForStudy(accessionId);
+    @GetMapping(value = "/{accession_id}" + RestAPIConstants.API_ANCESTRIES, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CollectionModel<AncestryDTO> getAncestries(@PathVariable (name = "accession_id") String accessionId,
+                                                      @RequestParam(required = false)  String sort,
+                                                      @RequestParam(required = false)   String direction) {
+        List<Ancestry> ancestries = ancestryService.getAncestriesForStudy(accessionId, sort, direction);
         return ancestryDtoAssembler.toCollectionModel(ancestries, accessionId);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{accessionId}" + RestAPIConstants.API_ANCESTRIES +"/{ancestryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AncestryDTO getAncestry(@PathVariable @Parameter(name = "accessionId") String accessionId, @PathVariable @Parameter(name = "ancestryId")  String ancestryId) {
+    @GetMapping(value = "/{accession_id}" + RestAPIConstants.API_ANCESTRIES +"/{ancestry_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AncestryDTO getAncestry(@PathVariable (name = "accession_id") String accessionId, @PathVariable (name = "ancestry_id")  String ancestryId) {
         Ancestry ancestry = ancestryService.getAncestry(Long.valueOf(ancestryId));
         return ancestryDtoAssembler.toModel(ancestry, accessionId);
     }

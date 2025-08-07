@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AncestryService {
 
-    List<Ancestry> getAncestriesForStudy(String accessionId);
+    List<Ancestry> getAncestriesForStudy(String accessionId, String sortParam, String direction);
 
     Ancestry getAncestry(Long ancestryId);
 }

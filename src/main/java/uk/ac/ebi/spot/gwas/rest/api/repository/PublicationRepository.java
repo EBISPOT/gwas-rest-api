@@ -3,11 +3,14 @@ package uk.ac.ebi.spot.gwas.rest.api.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.security.core.parameters.P;
+import uk.ac.ebi.spot.gwas.model.Association;
 import uk.ac.ebi.spot.gwas.model.Publication;
 
 import java.util.Optional;
 
-public interface PublicationRepository extends JpaRepository<Publication, Long> {
+public interface PublicationRepository extends JpaRepository<Publication, Long>, QuerydslPredicateExecutor<Publication> {
 
   Page<Publication> findByPubmedIdEquals(String pubmedId, Pageable pageable);
 

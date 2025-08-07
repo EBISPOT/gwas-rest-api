@@ -51,7 +51,7 @@ public class UnpublishedStudyDtoAssembler extends RepresentationModelAssemblerSu
                 .title(bodyOfWork != null ? bodyOfWork.getTitle() : null)
                 .build();
         unpublishedStudyDTO.add(linkTo(methodOn(UnpublishedStudiesController.class).getUnpublishedStudy(unpublishedStudy.getAccession())).withSelfRel());
-        unpublishedStudyDTO.add(linkTo(methodOn(UnpublishedAncestriesController.class).getUnpublishedAncestries(unpublishedStudy.getAccession())).withRel("ancestries"));
+        unpublishedStudyDTO.add(linkTo(methodOn(UnpublishedAncestriesController.class).getUnpublishedAncestries(unpublishedStudy.getAccession(), null, null)).withRel("ancestries"));
 
 
         if (bodyOfWork != null) {

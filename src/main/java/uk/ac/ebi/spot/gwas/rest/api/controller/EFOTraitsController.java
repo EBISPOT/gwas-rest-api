@@ -37,14 +37,17 @@ public class EFOTraitsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<EFOTraitDTO> getEFOTraits(@RequestParam SearchEfoParams searchEfoParams, @ParameterObject Pageable pageable) {
-      Page<EfoTrait> efoTraits = efoTraitService.getEFOTraits(searchEfoParams, pageable);
+    public PagedModel<EFOTraitDTO> getEFOTraits(@RequestParam SearchEfoParams searchEfoParams,
+                                                @RequestParam(required = false)  String sort,
+                                                @RequestParam(required = false)   String direction,
+                                                @ParameterObject Pageable pageable) {
+      Page<EfoTrait> efoTraits = efoTraitService.getEFOTraits(searchEfoParams, pageable, sort, direction);
       return pagedResourcesAssembler.toModel(efoTraits, efoTraitDtoAssembler);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{efoId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EFOTraitDTO> getEFOTraitsDTO(@PathVariable  @Parameter(name = "efoId") String efoId) {
+    @GetMapping(value = "/{efo_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EFOTraitDTO> getEFOTraitsDTO(@PathVariable (name = "efo_id") String efoId) {
         return efoTraitService.getEFOTrait(efoId)
                 .map(efoTraitDtoAssembler::toModel)
                 .map(ResponseEntity::ok)

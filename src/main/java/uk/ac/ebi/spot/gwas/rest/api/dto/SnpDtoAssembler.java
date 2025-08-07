@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.gwas.ensembl.Variant;
+import uk.ac.ebi.spot.gwas.model.Gene;
 import uk.ac.ebi.spot.gwas.model.SingleNucleotidePolymorphism;
 import uk.ac.ebi.spot.gwas.rest.api.config.RestAPIConfiguration;
 import uk.ac.ebi.spot.gwas.rest.api.controller.GenomicContextController;
@@ -80,10 +81,10 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
                 .minorAllele(variant != null ? variant.getMinorAllele() : "NA")
                 .alleles(variant != null ? this.getAlleles(variant) : null)
                 .mostSevereConsequence(variant != null ? variant.getMostSevereConsequence() : null)
-                .mappedGenes(snpService.findMatchingGenes(snp.getId()))
+                .mappedGenes(this.getMappedGenes(snp))
                 .build();
         singleNucleotidePolymorphismDTO.add(linkTo(methodOn(SnpsController.class).getSingleNucleotidePolymorphism(snp.getRsId())).withSelfRel());
-        singleNucleotidePolymorphismDTO.add(linkTo(methodOn(GenomicContextController.class).getGenomicContexts(snp.getRsId())).withRel("genomic_contexts"));
+        singleNucleotidePolymorphismDTO.add(linkTo(methodOn(GenomicContextController.class).getGenomicContexts(snp.getRsId(),null, null)).withRel("genomic_contexts"));
         return singleNucleotidePolymorphismDTO;
     }
 
@@ -95,11 +96,16 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
     }
 
 
+    private List<String> getMappedGenes(SingleNucleotidePolymorphism snp) {
+        return snp.getMappedSnpGenes().stream().map(Gene::getGeneName).collect(Collectors.toList());
+    }
+
+
     private String getAlleles(Variant variant) {
 
         final Pattern pattern = Pattern.compile(ALLELE_PATTERN);
 
-        return variant.getMappings().stream().map(mapping -> {
+        return variant.getMappings() != null ? variant.getMappings().stream().map(mapping -> {
             Matcher matcher = pattern.matcher(mapping.getSeqRegionName());
             if(matcher.find()) {
                 String alleleString = mapping.getAlleleString();
@@ -107,7 +113,7 @@ public class SnpDtoAssembler extends RepresentationModelAssemblerSupport<SingleN
                 return String.format("%s %s%s%s", alleleString,"(",strand,")");
             }
             return null;
-        }).collect(Collectors.joining(" "));
+        }).collect(Collectors.joining(" ")) : "";
     }
 
 }

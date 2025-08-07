@@ -1,18 +1,19 @@
 package uk.ac.ebi.spot.gwas.rest.api.service.impl;
 
-import com.querydsl.core.types.dsl.PathBuilderFactory;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.Querydsl;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.spot.gwas.model.*;
 import uk.ac.ebi.spot.gwas.rest.api.repository.EFOTraitRepository;
 import uk.ac.ebi.spot.gwas.rest.api.service.EFOTraitService;
+import uk.ac.ebi.spot.gwas.rest.dto.EfoSortParam;
 import uk.ac.ebi.spot.gwas.rest.dto.SearchEfoParams;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -32,53 +33,72 @@ public class EFOTraitServiceImpl implements EFOTraitService {
         this.efoTraitRepository = efoTraitRepository;
     }
 
-    public Page<EfoTrait> getEFOTraits(SearchEfoParams searchEfoParams, Pageable pageable) {
+    public Page<EfoTrait> getEFOTraits(SearchEfoParams searchEfoParams, Pageable pageable, String sort , String direction) {
         QEfoTrait qEfoTrait  = QEfoTrait.efoTrait;
         QStudy qStudy = QStudy.study;
         QPublication qPublication = QPublication.publication1;
+        QAssociation qAssociation = QAssociation.association;
+        QSingleNucleotidePolymorphism qSingleNucleotidePolymorphism = QSingleNucleotidePolymorphism.singleNucleotidePolymorphism;
+        QGene qGene = QGene.gene;
         QHousekeeping qHousekeeping = QHousekeeping.housekeeping;
-        Boolean isExpressionNotEmpty = false;
-        Querydsl querydsl = new Querydsl(em , (new PathBuilderFactory()).create(SingleNucleotidePolymorphism.class));
+        List<EfoTrait> efoTraits = null;
+        Long totalElements = 0L;
         JPAQueryFactory jpaQuery = new JPAQueryFactory(em);
         JPQLQuery<EfoTrait> efoTraitJPQLQuery = jpaQuery.select(qEfoTrait).distinct()
                 .from(qEfoTrait);
         try {
             if(searchEfoParams.getPubmedId() != null) {
-                isExpressionNotEmpty = true;
                 efoTraitJPQLQuery = efoTraitJPQLQuery
                         .innerJoin(qEfoTrait.studies, qStudy)
                         .innerJoin(qStudy.publicationId, qPublication);
             }
+            if(searchEfoParams.getMappedGene() != null) {
+                if(searchEfoParams.getExtendedGeneSet() != null && searchEfoParams.getExtendedGeneSet()){
+                    efoTraitJPQLQuery = efoTraitJPQLQuery
+                            .innerJoin(qEfoTrait.associations, qAssociation)
+                            .innerJoin(qAssociation.snps, qSingleNucleotidePolymorphism)
+                            .innerJoin(qSingleNucleotidePolymorphism.genes, qGene);
+                } else {
+                    efoTraitJPQLQuery = efoTraitJPQLQuery
+                            .innerJoin(qEfoTrait.associations, qAssociation)
+                            .innerJoin(qAssociation.snps, qSingleNucleotidePolymorphism)
+                            .innerJoin(qSingleNucleotidePolymorphism.mappedSnpGenes, qGene);
+                }
+            }
+
             if(searchEfoParams.getTrait() != null) {
-                isExpressionNotEmpty = true;
                 efoTraitJPQLQuery = efoTraitJPQLQuery
-                        .where(qEfoTrait.trait.equalsIgnoreCase(searchEfoParams.getTrait()));
+                        .where(qEfoTrait.trait.containsIgnoreCase(searchEfoParams.getTrait()));
             }
             if(searchEfoParams.getShortForm() != null) {
-                isExpressionNotEmpty = true;
                 efoTraitJPQLQuery = efoTraitJPQLQuery
                         .where(qEfoTrait.shortForm.equalsIgnoreCase(searchEfoParams.getShortForm()));
             }
             if(searchEfoParams.getUri() != null) {
-                isExpressionNotEmpty = true;
                 efoTraitJPQLQuery = efoTraitJPQLQuery
                         .where(qEfoTrait.uri.equalsIgnoreCase(searchEfoParams.getUri()));
             }
             if(searchEfoParams.getPubmedId() != null) {
-                isExpressionNotEmpty = true;
                 efoTraitJPQLQuery = efoTraitJPQLQuery
                         .where(qPublication.pubmedId.equalsIgnoreCase(searchEfoParams.getPubmedId()));
             }
-            if(isExpressionNotEmpty) {
+
+            if(searchEfoParams.getMappedGene() != null) {
                 efoTraitJPQLQuery = efoTraitJPQLQuery
-                        .innerJoin(qEfoTrait.studies, qStudy)
-                        .innerJoin(qStudy.housekeeping, qHousekeeping)
-                        .where(qHousekeeping.isPublished.eq(true))
-                        .where(qHousekeeping.catalogPublishDate.isNotNull());
-                Long totalElements = efoTraitJPQLQuery.fetchCount();
-                List<EfoTrait> efoTraits = querydsl.applyPagination(pageable, efoTraitJPQLQuery).fetch();
-                return new PageImpl<>(efoTraits, pageable, totalElements);
+                        .where(qGene.geneName.equalsIgnoreCase(searchEfoParams.getMappedGene()));
             }
+
+            efoTraitJPQLQuery = efoTraitJPQLQuery
+                    .innerJoin(qEfoTrait.studies, qStudy)
+                    .innerJoin(qStudy.housekeeping, qHousekeeping)
+                    .where(qHousekeeping.isPublished.eq(true))
+                    .where(qHousekeeping.catalogPublishDate.isNotNull());
+            totalElements = efoTraitJPQLQuery.fetchCount();
+            efoTraits = efoTraitJPQLQuery
+                    .orderBy(buildOrderSpecifier(direction, sort))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
         }catch(Exception ex) {
             log.info("Inside Exception in dsl query");
             log.error("Exception in dsl query"+ex.getMessage(),ex);
@@ -87,10 +107,30 @@ public class EFOTraitServiceImpl implements EFOTraitService {
             log.error("Throwable in dsl query"+ex.getMessage(),ex);
         }
         log.info("Outside the QueryDSL condition");
-        return efoTraitRepository.findDistinctByStudiesHousekeepingIsPublishedAndStudiesHousekeepingCatalogPublishDateIsNotNull(true, pageable);
+        return new PageImpl<>(efoTraits, pageable, totalElements);
     }
 
     public Optional<EfoTrait> getEFOTrait(String shortForm) {
         return efoTraitRepository.findByShortForm(shortForm);
+    }
+
+    private OrderSpecifier<?> buildOrderSpecifier(String direction, String sortParam) {
+        QEfoTrait qEfoTrait = QEfoTrait.efoTrait;
+        OrderSpecifier<?> orderSpecifier = null;
+        if(sortParam != null) {
+            if(direction != null) {
+                if(sortParam.equals(EfoSortParam.efo_id.name())) {
+                    orderSpecifier = direction.equals("asc") ? qEfoTrait.shortForm.asc() : qEfoTrait.shortForm.desc();
+                }
+                if(sortParam.equals(EfoSortParam.efo_trait.name())) {
+                    orderSpecifier = direction.equals("asc") ? qEfoTrait.trait.asc() : qEfoTrait.trait.desc();
+                }
+            } else {
+                orderSpecifier = qEfoTrait.id.desc();
+            }
+        }  else {
+            orderSpecifier = qEfoTrait.id.desc();
+        }
+        return orderSpecifier;
     }
 }

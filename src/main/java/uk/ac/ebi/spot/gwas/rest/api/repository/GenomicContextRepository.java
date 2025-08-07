@@ -7,5 +7,9 @@ import java.util.List;
 
 public interface GenomicContextRepository extends JpaRepository<GenomicContext, Long> {
 
+   List<GenomicContext> findBySnpStudiesHousekeepingIsPublishedAndSnpStudiesHousekeepingCatalogPublishDateIsNotNullAndSnpRsIdOrderByDistance(Boolean published, String rsId);
+
+   List<GenomicContext> findBySnpStudiesHousekeepingIsPublishedAndSnpStudiesHousekeepingCatalogPublishDateIsNotNullAndSnpRsIdOrderByDistanceDesc(Boolean published, String rsId);
+
    List<GenomicContext> findBySnpStudiesHousekeepingIsPublishedAndSnpStudiesHousekeepingCatalogPublishDateIsNotNullAndSnpRsId(Boolean published, String rsId);
 }
