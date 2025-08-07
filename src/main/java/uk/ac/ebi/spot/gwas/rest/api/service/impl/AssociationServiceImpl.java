@@ -2,6 +2,7 @@ package uk.ac.ebi.spot.gwas.rest.api.service.impl;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -219,7 +220,8 @@ public class AssociationServiceImpl implements AssociationService {
                 orderSpecifier = direction.equals("asc") ? qAssociation.pvalueExponent.asc() : qAssociation.pvalueExponent.desc();
             }
             if (sortParam.equals(AssociationSortParam.risk_frequency.name())) {
-                orderSpecifier = direction.equals("asc") ? qAssociation.riskFrequency.asc() : qAssociation.riskFrequency.desc();
+                orderSpecifier = direction.equals("asc") ? Expressions.stringTemplate("function('to_binary_double', {0})", qAssociation.riskFrequency).asc() :
+                        Expressions.stringTemplate("function('to_binary_double', {0})", qAssociation.riskFrequency).desc();
             }
             if (sortParam.equals(AssociationSortParam.or_value.name())) {
                 orderSpecifier = direction.equals("asc") ? qAssociation.orPerCopyNum.asc() : qAssociation.orPerCopyNum.desc();

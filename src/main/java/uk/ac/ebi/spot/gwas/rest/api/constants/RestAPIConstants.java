@@ -28,5 +28,7 @@ public class RestAPIConstants {
 
     public static final String API_UNPUBLISHED_ANCESTRIES = "/unpublished-ancestries";
 
+    public static final String API_VERSION = "/metadata";
+
 
 }
