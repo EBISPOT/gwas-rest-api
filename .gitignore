@@ -56,3 +56,6 @@ hs_err_pid*
 /.idea/
 *.iml
 *.DS_Store
+
+# Python virtual envs
+venv/
