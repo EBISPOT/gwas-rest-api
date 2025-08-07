@@ -33,7 +33,7 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
     @Autowired
     EFOWrapperDtoAssembler efoWrapperDtoAssembler;
 
-    private final String RANGE_PATTERN_REGEX = "\\[([+-]?\\d+.?\\d+)-([+-]?\\d+.\\d+)\\]";
+    private final String RANGE_PATTERN_REGEX = "\\[([+-]?\\d+\\.?\\d*)-([+-]?\\d+\\.?\\d*)\\]";
 
     public AssociationDtoAssembler() {
         super(AssociationController.class, AssociationDTO.class);

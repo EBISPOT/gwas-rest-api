@@ -8,7 +8,7 @@ info:
                 <p>Note that this API allows access to the literature-curated top associations & metadata (the same data that is available via the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog Website</a>. A second API enabling access to full genome-side summary statistics is under development.</p>
   version: "2.0"
 servers:
-- url: https://wwwdev.ebi.ac.uk/gwas/beta/rest/api
+- url: https://www.ebi.ac.uk/gwas/beta/rest/api
   #url: http://localhost:8087/gwas/rest/api
   description: Generated server url
 tags:
