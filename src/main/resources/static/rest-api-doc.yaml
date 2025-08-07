@@ -8,10 +8,12 @@ info:
                 <p>Note that this API allows access to the literature-curated top associations & metadata (the same data that is available via the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog Website</a>. A second API enabling access to full genome-side summary statistics is under development.</p>
   version: "2.0"
 servers:
-- url: https://www.ebi.ac.uk/gwas/beta/rest/api
+- url: https://wwwdev.ebi.ac.uk/gwas/beta/rest/api
   #url: http://localhost:8087/gwas/rest/api
   description: Generated server url
 tags:
+  - name: metadata
+    description: The metadata resource is used to list general information and metrics about API at every point of API release and new data release
   - name: studies
     description: The studies resource is used to list studies in the GWAS Catalog
   - name: associations
@@ -37,6 +39,25 @@ tags:
   - name: unpublished-studies
     description: The unpublished studies resource is used to list studies submitted to the GWAS Catalog that have not yet been published in a journal
 paths:
+  /v2/metadata:
+    get:
+      tags:
+        - metadata
+      operationId: getVersion
+      summary: A GET request to expose metadata that reveals general information and metrics about API at every point of API release and new data release
+      responses:
+        "500":
+          description: Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errors'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/metadata'
   /v2/unpublished-studies:
     get:
       tags:
@@ -1520,6 +1541,90 @@ paths:
                 $ref: '#/components/schemas/loci'
 components:
   schemas:
+    metadata:
+      type: object
+      properties:
+        title:
+          type: string
+          description: API title
+          example: GWAS Catalog Rest API 2.0
+        version:
+          type: string
+          description: API version
+          example: 2.0
+        data_release_date:
+          type: string
+          description: Latest Gwas Catalog Data Release date
+          example: 2025-07-21
+        api_release_date:
+          type: string
+          description: Latest Gwas Catalog API Release date
+          example: 2025-08-01
+        dbsnp_build:
+          type: string
+          description: Latest DBsnp Build version
+          example: 156
+        gene_build:
+          type: string
+          description: Latest Gene Build version
+          example: GRCh38.p14
+        efo_version:
+          type: string
+          description: Latest Efo Build version
+          example: v3.80.0
+        ensembl_version:
+          type: string
+          description: Latest Ensembl Build version
+          example: 114
+        terms_of_service:
+          type: string
+          description: API Terms of Use
+          example: https://www.ebi.ac.uk/about/terms-of-use/
+        commit_hash:
+          type: string
+          description: Latest Build commit Id
+          example: 0b8cf34
+        license:
+          $ref: '#/components/schemas/license'
+        contact:
+          $ref: '#/components/schemas/contact'
+        api_reference:
+          type: string
+          description: API reference url
+          example: https://www.ebi.ac.uk/gwas/rest/api/v2/reference
+        api_documentation:
+          type: string
+          description: API documentation url
+          example: https://www.ebi.ac.uk/gwas/rest/api/v2/docs
+
+    contact:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Contact details for Gwas Support
+          example: GWAS Helpdesk
+        email:
+          type: string
+          description: Contact email for Gwas Support
+          example: gwas-info@ebi.ac.uk
+        url:
+          type: string
+          description: Contact url for Gwas Support
+          example: mailto:gwas-info@ebi.ac.uk
+
+    license:
+      type: object
+      properties:
+        name:
+          type: string
+          description: API License details
+          example: Apache License 2.0
+        url:
+          type: string
+          description: Github repository details for Rest Api
+          example: Apache License 2.0
+
     link:
       type: object
       properties:
@@ -1594,7 +1699,7 @@ components:
           type: string
           description: The SNP’s rs Id
           example: rs3093017
-        risk_allele:
+        effect_allele:
           type: string
           description: risk allele label
           example: C
@@ -1757,13 +1862,13 @@ components:
             type: string
             description: Gene(s) overlapping the variant. If a variant is intergenic, the closest 5' and 3' genes are listed
             example: CCR6
-        snp_risk_allele:
+        snp_effect_allele:
           type: array
           items:
             type: string
             description: SNP(s) and risk allele most strongly associated within the locus
             example: rs7329174-G
-        effect_allele:
+        snp_allele:
           type: array
           description: SNP(s) and risk allele most strongly associated within the locus
           items:
