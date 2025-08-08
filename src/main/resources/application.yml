@@ -29,7 +29,7 @@ springdoc:
     url: /rest-api-doc.yaml
     layout: BaseLayout
     #disable-swagger-default-url: true
-    path: /documentation
+    path: /v2/reference
   api-docs:
     enabled: true
     #path: /rest-api-doc
