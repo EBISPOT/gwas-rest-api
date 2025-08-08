@@ -1,6 +1,7 @@
 server:
   name: gwas-rest-api
   port: 80
+  forward-headers-strategy: framework
 
 logging:
   level:
