@@ -1,7 +1,6 @@
 server:
   name: gwas-rest-api
   port: 80
-  forward-headers-strategy: framework
 
 logging:
   level:
@@ -34,6 +33,7 @@ springdoc:
   api-docs:
     enabled: true
     #path: /rest-api-doc
+    path: /v2/reference/api-docs
 
 
 sumstats:
