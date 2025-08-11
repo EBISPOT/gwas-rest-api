@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Gwas Catalog Rest API V2
-  description:  <p><img width="10%" alt="gwas_icon" src="../../GWAS_Catalog_circle_178x178.png"></p>
+  description:  <p><img width="10%" alt="gwas_icon" src="../../v2/GWAS_Catalog_circle_178x178.png"></p>
                 <p>Welcome to the <a rel="noopener noreferrer" target="_blank" href="https://www.ebi.ac.uk/gwas">GWAS Catalog</a> Restful API.</p>
                 <p>The GWAS RESTful API provides programmatic access to the GWAS Catalog, enables integration of the GWAS Catalog data into custom applications and services, allowing external bioinformatics developers to leverage the curated GWAS datasets, and create more extended solutions for the scientific community.</p>
                 <p>GWAS RESTful API V2 has been released with various enhancements & improvements over GWAS RESTful API V1. V1 is deprecated and will be retired no later than May 2026.<p>
