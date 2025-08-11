@@ -26,7 +26,7 @@ ensembl:
 
 springdoc:
   swagger-ui:
-    url: /rest-api-doc.yaml
+    url: /v2/rest-api-doc.yaml
     layout: BaseLayout
     #disable-swagger-default-url: true
     path: /v2/reference
