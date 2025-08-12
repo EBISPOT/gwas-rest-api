@@ -30,5 +30,5 @@ public class RestAPIConstants {
 
     public static final String API_VERSION = "/metadata";
 
-
+    public static final String LOG_FILE_NAME = "LOG_FILE_NAME";
 }

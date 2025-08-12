@@ -9,6 +9,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import uk.ac.ebi.spot.gwas.rest.api.config.ApiMetadataConfig;
+import uk.ac.ebi.spot.gwas.rest.api.constants.RestAPIConstants;
+
+import java.net.InetAddress;
 
 @Slf4j
 @EntityScan("uk.ac.ebi.spot.gwas.model")
@@ -21,6 +24,9 @@ public class Application {
     public static void main(String[] args) {
         log.info("Inside GWAS Rest API V2 Application");
         try {
+            String hostAddress = InetAddress.getLocalHost().getHostAddress();
+            String logFileName = System.getenv(RestAPIConstants.LOG_FILE_NAME);
+            System.setProperty("log.file.name", logFileName + "-" + hostAddress);
             SpringApplication.run(Application.class, args);
         } catch (Exception e) {
             log.error("Exception occurred in main class {}", e.getMessage(), e);
