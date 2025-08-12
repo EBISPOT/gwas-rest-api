@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SwaggerEmbedPageController {
 
-    @GetMapping("/docs/reference")
+    @GetMapping("/v2/docs/reference")
     public String swaggerDocsPage() {
         return "swagger-template";
     }
