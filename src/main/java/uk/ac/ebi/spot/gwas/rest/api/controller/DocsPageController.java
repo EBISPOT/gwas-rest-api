@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DocsPageController {
 
-    @GetMapping("/docs/index")
+    @GetMapping("/v2/docs")
     public String showDocsPage() {
         return "docs-template";
     }
