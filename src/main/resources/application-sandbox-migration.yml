@@ -8,6 +8,7 @@ server:
       directory: /var/log/gwas/restapi-access
       pattern: combined
       rotate: true
+      condition-unless: skipLogging
 
 
 spring:
