@@ -33,7 +33,7 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
     @Autowired
     EFOWrapperDtoAssembler efoWrapperDtoAssembler;
 
-    private final String RANGE_PATTERN_REGEX = "\\[([+-]?\\d+\\.?\\d*)-([+-]?\\d+\\.?\\d*)\\]";
+    private final String RANGE_PATTERN_REGEX = "\\[?([+-]?\\d+\\.?\\d*) ?- ?([+-]?\\d+\\.?\\d*)\\]?";
 
     public AssociationDtoAssembler() {
         super(AssociationController.class, AssociationDTO.class);
@@ -60,8 +60,8 @@ public class AssociationDtoAssembler extends RepresentationModelAssemblerSupport
                         this.transformBeta(betaNum, association.getBetaUnit(), association.getBetaDirection()))
                         .orElse("-"))
                 .range(Optional.ofNullable(association.getRange()).orElse("-"))
-                .ciLower(Optional.ofNullable(association.getRange()).filter(range -> !range.contains("NR")).map(range -> ciValues.getLeft()).orElse(null))
-                .ciUpper(Optional.ofNullable(association.getRange()).filter(range -> !range.contains("NR")).map(range -> ciValues.getRight()).orElse(null))
+                .ciLower(Optional.ofNullable(ciValues).map(range -> ciValues.getLeft()).orElse(null))
+                .ciUpper(Optional.ofNullable(ciValues).map(range -> ciValues.getRight()).orElse(null))
                 .mappedGenes(this.getMappedGenes(association))
                 .reportedTrait(this.getReportedTrait(association.getId()))
                 .efoTraits(this.getEFOTraits(association))
